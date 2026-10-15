@@ -1,0 +1,219 @@
+{
+  "knownTables": [
+    "site_settings",
+    "pages_content",
+    "profiles",
+    "roles",
+    "articles",
+    "videos",
+    "podcasts",
+    "health_profiles",
+    "consultations",
+    "events",
+    "volunteers",
+    "campaigns",
+    "partners",
+    "digital_library",
+    "wilayas_stats",
+    "activity_logs",
+    "audit_logs",
+    "user_sessions",
+    "security_threats",
+    "notifications",
+    "subscribers",
+    "email_templates",
+    "email_campaigns",
+    "email_logs",
+    "media_library",
+    "certificate_templates",
+    "certificates",
+    "ai_conversations",
+    "ai_messages",
+    "ai_prompts",
+    "ai_settings",
+    "seo_pages",
+    "specialist_profiles",
+    "case_files",
+    "chat_messages",
+    "case_notes",
+    "appointments",
+    "event_registrations",
+    "reviews",
+    "users"
+  ],
+  "tablesAccessed": {
+    "ai_settings": [
+      "js/admin_ai.js",
+      "js/user_ai.js"
+    ],
+    "ai_prompts": [
+      "js/admin_ai.js"
+    ],
+    "ai_conversations": [
+      "js/admin_ai.js",
+      "js/user_ai.js"
+    ],
+    "ai_messages": [
+      "js/admin_ai.js",
+      "js/user_ai.js"
+    ],
+    "articles": [
+      "js/admin_articles.js",
+      "js/data.js",
+      "js/homepage.js"
+    ],
+    "certificate_templates": [
+      "js/admin_certificates.js"
+    ],
+    "certificates": [
+      "js/admin_certificates.js",
+      "js/verify.js"
+    ],
+    "site_settings": [
+      "js/admin_cms.js",
+      "js/admin_settings.js",
+      "js/cms.js",
+      "js/components.js",
+      "js/homepage.js",
+      "js/site_initializer.js"
+    ],
+    "campaigns": [
+      "js/admin_cms.js",
+      "js/homepage.js"
+    ],
+    "partners": [
+      "js/admin_cms.js"
+    ],
+    "profiles": [
+      "js/admin_consultations.js",
+      "js/admin_crm.js",
+      "js/admin_crm_profile.js",
+      "js/admin_dashboard.js",
+      "js/admin_events.js",
+      "js/admin_users.js",
+      "js/auth.js",
+      "js/components.js",
+      "js/dashboard.js",
+      "js/doctor_profile.js",
+      "js/event_details.js",
+      "js/guard.js",
+      "js/homepage.js",
+      "js/profile.js",
+      "js/specialist/calendar.js",
+      "js/specialist/consultations.js",
+      "js/specialist/dashboard.js",
+      "js/specialist/live_session.js",
+      "js/specialist/patients.js",
+      "js/specialist/profile.js",
+      "js/specialist_components.js",
+      "js/user_live_session.js"
+    ],
+    "consultations": [
+      "js/admin_consultations.js",
+      "js/consultations.js",
+      "js/dashboard.js",
+      "js/specialist/calendar.js",
+      "js/specialist/consultations.js",
+      "js/specialist/dashboard.js",
+      "js/specialist/live_session.js",
+      "js/specialist/patients.js",
+      "js/user_live_session.js"
+    ],
+    "audit_logs": [
+      "js/admin_crm_profile.js",
+      "js/admin_security.js"
+    ],
+    "events": [
+      "js/admin_events.js",
+      "js/data.js",
+      "js/events.js",
+      "js/event_details.js",
+      "js/homepage.js"
+    ],
+    "media_library": [
+      "js/admin_media.js"
+    ],
+    "media": [
+      "js/admin_media.js"
+    ],
+    "email_logs": [
+      "js/admin_notifications.js"
+    ],
+    "subscribers": [
+      "js/admin_notifications.js"
+    ],
+    "notifications": [
+      "js/admin_notifications.js"
+    ],
+    "email_campaigns": [
+      "js/admin_notifications.js"
+    ],
+    "email_templates": [
+      "js/admin_notifications.js"
+    ],
+    "security_threats": [
+      "js/admin_security.js"
+    ],
+    "user_sessions": [
+      "js/admin_security.js"
+    ],
+    "seo_pages": [
+      "js/admin_seo.js",
+      "js/seo_injector.js"
+    ],
+    "pages_content": [
+      "js/cms.js"
+    ],
+    "specialist_profiles": [
+      "js/doctor_profile.js",
+      "js/specialist/dashboard.js",
+      "js/specialist/profile.js",
+      "js/specialist_components.js"
+    ],
+    "event_registrations": [
+      "js/event_details.js"
+    ],
+    "videos": [
+      "js/homepage.js"
+    ],
+    "digital_library": [
+      "js/homepage.js"
+    ],
+    "wilayas_stats": [
+      "js/map.js"
+    ],
+    "health_profiles": [
+      "js/profile.js"
+    ],
+    "appointments": [
+      "js/specialist/calendar.js",
+      "js/specialist/dashboard.js"
+    ],
+    "reviews": [
+      "js/specialist/dashboard.js",
+      "js/user_live_session.js"
+    ],
+    "case_files": [
+      "js/specialist/live_session.js",
+      "js/specialist/patients.js"
+    ],
+    "chat_messages": [
+      "js/specialist/live_session.js",
+      "js/user_live_session.js"
+    ],
+    "case_notes": [
+      "js/specialist/live_session.js",
+      "js/specialist/patients.js"
+    ]
+  },
+  "unknownTables": [
+    {
+      "file": "js/admin_media.js",
+      "table": "media"
+    },
+    {
+      "file": "js/admin_media.js",
+      "table": "media"
+    }
+  ]
+}

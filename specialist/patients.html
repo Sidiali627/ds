@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المرضى الطبي (EMR) - بوابة المختصين</title>
+    
+    <!-- Performance Optimization & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    
+    <style>
+        :root { 
+            --specialist-primary: #0284c7;
+            --specialist-hover: #0369a1;
+            --specialist-tint: rgba(2, 132, 199, 0.08);
+            --specialist-glow: rgba(2, 132, 199, 0.2);
+        }
+
+        /* ═══════════════════════════════════════════
+           Layout Architecture (Consistent with Portal)
+           ═══════════════════════════════════════════ */
+        .admin-layout {
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .admin-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-main > #specialist-header-root {
+            padding: 1rem 1.5rem 0;
+        }
+
+        /* Header overrides */
+        .admin-main .admin-header {
+            margin-bottom: 1rem !important;
+            padding: 0.85rem 1.25rem !important;
+            min-height: 0;
+            border-radius: var(--border-radius) !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+        }
+        .admin-main .admin-header h3 {
+            font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
+            font-weight: 800;
+            line-height: 1.35;
+            color: var(--text-primary) !important;
+        }
+        .admin-main .admin-header p {
+            color: var(--text-secondary) !important;
+            font-size: 0.78rem !important;
+            line-height: 1.5;
+            margin-top: 2px;
+        }
+
+        /* Content Area */
+        .admin-content.patients-content {
+            flex: 1;
+            padding: 0 1.5rem 2rem;
+            overflow: visible;
+        }
+
+        /* ═══════════════════════════════════════════
+           Sidebar Scoped Refinements (Matches Consultations)
+           ═══════════════════════════════════════════ */
+        .admin-sidebar .sidebar-header h2 {
+            font-size: 1.05rem;
+        }
+
+        .admin-sidebar .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .admin-sidebar .sidebar-nav .nav-item {
+            padding: 0.65rem 0.85rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            gap: 10px;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .admin-sidebar .sidebar-nav .nav-item:hover {
+            background: var(--specialist-tint);
+            color: var(--specialist-primary);
+        }
+        .admin-sidebar .sidebar-nav .nav-item.active {
+            background: rgba(2, 132, 199, 0.12);
+            color: var(--specialist-primary);
+            font-weight: 700;
+        }
+
+        .admin-sidebar .sidebar-nav .nav-item .nav-icon {
+            font-size: 1.05rem;
+            width: 1.4em;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .admin-sidebar .sidebar-footer {
+            padding: 0.75rem;
+        }
+
+        .admin-sidebar .admin-user-profile {
+            padding: 0.75rem;
+            margin: 0.5rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+        .admin-sidebar .admin-user-profile h4 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .admin-sidebar .admin-user-profile .status-badge {
+            font-size: 0.72rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           Page Intro & Medical Dashboard KPIs
+           ═══════════════════════════════════════════ */
+        .patients-intro-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .patients-intro-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .patients-intro-copy h1 {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 0 0 0.35rem;
+            font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .patients-intro-copy p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            max-width: 680px;
+        }
+
+        .patients-intro-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.95rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border-radius: var(--border-radius-sm);
+            background: var(--surface-color);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-refresh:hover {
+            color: var(--specialist-primary);
+            border-color: var(--specialist-primary);
+            background: var(--specialist-tint);
+        }
+
+        /* ── Medical Stats KPI Grid ── */
+        .patients-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-patients { background: rgba(2, 132, 199, 0.12); color: #0284c7; }
+        .stat-icon-consults { background: rgba(139, 92, 246, 0.12); color: #7c3aed; }
+        .stat-icon-active   { background: rgba(16, 185, 129, 0.12); color: #059669; }
+        .stat-icon-completed{ background: rgba(100, 116, 139, 0.12); color: #475569; }
+
+        .stat-card-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .stat-card-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+        }
+
+        .stat-card-val {
+            display: flex;
+            align-items: baseline;
+            gap: 0.35rem;
+        }
+
+        .stat-card-val strong {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .stat-unit {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+        }
+
+        /* ═══════════════════════════════════════════
+           Main Table Panel & Enhanced Toolbar
+           ═══════════════════════════════════════════ */
+        .patients-panel {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        .patients-toolbar {
+            padding: 1.15rem 1.4rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--surface-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .patients-toolbar-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .patients-toolbar-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .patients-toolbar-heading h2 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .patients-records-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            border-radius: var(--border-radius-full);
+            background: var(--specialist-tint);
+            color: var(--specialist-primary);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .patients-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            justify-content: flex-end;
+            min-width: min(100%, 460px);
+            flex-wrap: wrap;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            max-width: 320px;
+        }
+
+        .search-input-icon {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.88rem;
+            pointer-events: none;
+        }
+
+        .patients-search {
+            width: 100%;
+            min-height: 40px;
+            padding: 0.5rem 2.2rem 0.5rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .patients-search::placeholder {
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .patients-search:focus {
+            border-color: var(--specialist-primary);
+            background: var(--surface-color);
+            box-shadow: 0 0 0 3px var(--specialist-glow);
+        }
+
+        .patients-status-filter {
+            min-height: 40px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .patients-status-filter:focus {
+            border-color: var(--specialist-primary);
+            box-shadow: 0 0 0 3px var(--specialist-glow);
+        }
+
+        /* ── Quick Filter Chips ── */
+        .patients-toolbar-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding-top: 0.4rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .quick-chips-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .patients-quick-chips {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .chip-btn {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-full);
+            padding: 0.3rem 0.75rem;
+            font-family: inherit;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .chip-btn:hover {
+            color: var(--specialist-primary);
+            background: var(--specialist-tint);
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+
+        .chip-btn.active {
+            background: var(--specialist-primary);
+            color: #ffffff;
+            border-color: var(--specialist-primary);
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════
+           High-Contrast Medical Patients Table
+           ═══════════════════════════════════════════ */
+        .patients-table-wrap {
+            overflow-x: auto;
+            background: var(--surface-color);
+            scrollbar-width: thin;
+        }
+
+        .patients-table {
+            width: 100%;
+            min-width: 820px;
+            margin: 0;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .patients-table thead th {
+            padding: 0.9rem 1.2rem;
+            color: var(--text-secondary);
+            background: color-mix(in srgb, var(--bg-primary) 85%, var(--surface-color));
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        .patients-table tbody td {
+            padding: 0.95rem 1.2rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.86rem;
+            vertical-align: middle;
+        }
+
+        .patients-table tbody tr.patient-table-row {
+            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .patients-table tbody tr.patient-table-row:hover {
+            background-color: var(--specialist-tint);
+        }
+
+        .patients-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        /* ── Patient Name & Avatar Cell ── */
+        .patient-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 200px;
+        }
+
+        .patient-avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+        }
+
+        .patient-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .patient-name {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.92rem;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .patient-meta {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.74rem;
+            direction: ltr;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .patient-meta-empty {
+            color: var(--text-tertiary);
+            font-style: italic;
+        }
+
+        /* ── Consultation Count Badge ── */
+        .patient-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.65rem;
+            color: #0369a1;
+            background: rgba(2, 132, 199, 0.1);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+            border-radius: var(--border-radius-full);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .patient-count-num {
+            font-weight: 900;
+        }
+
+        /* ── Date Cell ── */
+        .patient-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .patient-date-icon {
+            color: var(--text-tertiary);
+            font-size: 0.82rem;
+        }
+
+        /* ── Specialty Badges ── */
+        .specialty-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.65rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.76rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .spec-psychology {
+            background: rgba(139, 92, 246, 0.12);
+            color: #6d28d9;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+        }
+
+        .spec-nutrition {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .spec-general {
+            background: rgba(2, 132, 199, 0.1);
+            color: #0369a1;
+            border: 1px solid rgba(2, 132, 199, 0.25);
+        }
+
+        /* ── Status Badges with Dots ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.32rem 0.7rem;
+            border-radius: var(--border-radius-full);
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-dot-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-pending { 
+            background: rgba(245, 158, 11, 0.14); 
+            color: #b45309; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .status-pending .status-dot-indicator { background: #d97706; }
+
+        .status-accepted { 
+            background: rgba(16, 185, 129, 0.14); 
+            color: #047857; 
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .status-accepted .status-dot-indicator { background: #10b981; }
+
+        .status-inprogress { 
+            background: rgba(2, 132, 199, 0.14); 
+            color: #0369a1; 
+            border: 1px solid rgba(2, 132, 199, 0.3);
+        }
+        .status-inprogress .status-dot-indicator { 
+            background: #0284c7; 
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.3);
+            animation: pulseDot 1.8s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .status-completed { 
+            background: rgba(100, 116, 139, 0.14); 
+            color: #334155; 
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+        .status-completed .status-dot-indicator { background: #64748b; }
+
+        .status-cancelled { 
+            background: rgba(239, 68, 68, 0.14); 
+            color: #b91c1c; 
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .status-cancelled .status-dot-indicator { background: #ef4444; }
+
+        /* ── Action Buttons ── */
+        .patient-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.52rem 0.95rem !important;
+            border-radius: var(--border-radius-sm) !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            background: var(--specialist-primary) !important;
+            color: #ffffff !important;
+            border: 1px solid var(--specialist-primary) !important;
+            cursor: pointer;
+            transition: all 0.2s ease !important;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+        }
+
+        .patient-action:hover {
+            background: var(--specialist-hover) !important;
+            border-color: var(--specialist-hover) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+        }
+
+        .patient-action-icon {
+            font-size: 0.88rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           Loading, Empty & Error States
+           ═══════════════════════════════════════════ */
+        .table-state {
+            padding: 4rem 1.5rem !important;
+            text-align: center;
+        }
+
+        .table-state-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .table-state-icon {
+            font-size: 2.8rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            opacity: 0.85;
+        }
+
+        .table-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(2, 132, 199, 0.2);
+            border-top-color: var(--specialist-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .table-state-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .table-state-desc {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            line-height: 1.6;
+        }
+
+        .table-state-action {
+            margin-top: 0.5rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           EMR Medical Record Modal Architecture
+           ═══════════════════════════════════════════ */
+        .emr-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            animation: fadeInModal 0.2s ease;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .emr-box {
+            width: 100%;
+            max-width: 860px;
+            max-height: min(90vh, 840px);
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+            animation: scaleModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes scaleModal {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .emr-modal-top {
+            padding: 1.25rem 1.5rem;
+            background: color-mix(in srgb, var(--bg-primary) 60%, var(--surface-color));
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .emr-patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .emr-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: 800;
+            background: var(--specialist-tint);
+            color: var(--specialist-primary);
+            border: 1px solid rgba(2, 132, 199, 0.3);
+            flex-shrink: 0;
+        }
+
+        .emr-patient-headings h2 {
+            margin: 0 0 0.15rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .emr-patient-email {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            direction: ltr;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .emr-modal-close {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.45rem 0.85rem;
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .emr-modal-close:hover {
+            color: #ef4444;
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* ── EMR Quick Stats Strip ── */
+        .emr-stats-strip {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .emr-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .emr-stat-item strong {
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        /* ── EMR Tabs ── */
+        .emr-tabs {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.65rem 1.5rem 0;
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .emr-tab {
+            padding: 0.65rem 1rem;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .emr-tab:hover {
+            color: var(--specialist-primary);
+        }
+
+        .emr-tab.active {
+            color: var(--specialist-primary);
+            border-bottom-color: var(--specialist-primary);
+        }
+
+        /* ── EMR Tab Content Areas ── */
+        .emr-body-wrap {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .emr-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .emr-card:hover {
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+
+        .emr-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .emr-card-id-block {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .emr-session-code {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            background: var(--surface-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            letter-spacing: 0.03em;
+        }
+
+        .emr-card-meta-block {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .emr-date-badge {
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            direction: ltr;
+        }
+
+        .emr-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .emr-card-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .emr-card-text {
+            margin: 0;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-line;
+        }
+
+        .emr-note-author {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--specialist-primary);
+        }
+
+        .emr-field-block {
+            background: var(--surface-color);
+            padding: 0.75rem 0.9rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            margin-top: 0.35rem;
+        }
+
+        .emr-field-block strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .emr-empty-box,
+        .emr-loading-box {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .emr-empty-icon {
+            font-size: 2.4rem;
+            opacity: 0.75;
+            margin-bottom: 0.25rem;
+        }
+
+        .emr-empty-box h4 {
+            margin: 0;
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .emr-empty-box p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            max-width: 380px;
+        }
+
+        .emr-modal-footer {
+            padding: 0.85rem 1.5rem;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .emr-security-notice {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           Dark Mode Full Compliance
+           ═══════════════════════════════════════════ */
+        [data-theme="dark"] .patients-panel,
+        [data-theme="dark"] .stat-card,
+        [data-theme="dark"] .emr-box {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="dark"] .patients-table thead th {
+            background: #111827;
+        }
+
+        [data-theme="dark"] .patients-table tbody tr.patient-table-row:hover {
+            background-color: rgba(2, 132, 199, 0.12);
+        }
+
+        [data-theme="dark"] .patient-count {
+            color: #7dd3fc;
+            background: rgba(2, 132, 199, 0.2);
+            border-color: rgba(125, 211, 252, 0.25);
+        }
+
+        [data-theme="dark"] .spec-psychology {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(196, 181, 253, 0.3);
+        }
+
+        [data-theme="dark"] .spec-nutrition {
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(110, 231, 183, 0.3);
+        }
+
+        [data-theme="dark"] .spec-general {
+            color: #7dd3fc;
+            background: rgba(2, 132, 199, 0.2);
+            border-color: rgba(125, 211, 252, 0.3);
+        }
+
+        [data-theme="dark"] .status-completed {
+            color: #cbd5e1;
+            background: rgba(100, 116, 139, 0.25);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        [data-theme="dark"] .status-pending {
+            color: #fde68a;
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        [data-theme="dark"] .status-accepted {
+            color: #a7f3d0;
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(52, 211, 153, 0.3);
+        }
+
+        [data-theme="dark"] .status-inprogress {
+            color: #bae6fd;
+            background: rgba(2, 132, 199, 0.2);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        [data-theme="dark"] .emr-modal-top {
+            background: #111827;
+        }
+
+        [data-theme="dark"] .emr-card {
+            background: #111827;
+        }
+
+        [data-theme="dark"] .emr-field-block {
+            background: var(--surface-color);
+        }
+
+        /* ═══════════════════════════════════════════
+           Responsive Breakpoints
+           ═══════════════════════════════════════════ */
+        @media (max-width: 1200px) {
+            .patients-stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-main > #specialist-header-root {
+                padding: 0.85rem 0.85rem 0;
+            }
+            .admin-content.patients-content {
+                padding: 0 0.85rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .patients-intro-head {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .patients-intro-actions {
+                width: 100%;
+            }
+
+            .btn-refresh {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .patients-stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.65rem;
+            }
+
+            .stat-card {
+                padding: 0.85rem 1rem;
+            }
+
+            .patients-controls {
+                width: 100%;
+                min-width: 0;
+                justify-content: stretch;
+            }
+
+            .search-input-wrapper {
+                max-width: none;
+                width: 100%;
+            }
+
+            .patients-status-filter {
+                width: 100%;
+            }
+
+            .patients-toolbar-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .patients-quick-chips {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.35rem;
+            }
+
+            .emr-modal {
+                padding: 0.5rem;
+            }
+
+            .emr-box {
+                max-height: 94vh;
+            }
+
+            .emr-modal-top {
+                padding: 1rem;
+            }
+
+            .emr-body-wrap {
+                padding: 1rem;
+            }
+
+            .emr-stats-strip {
+                padding: 0.65rem 1rem;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+    
+    <script type="module" src="../js/specialist_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout patients-page">
+        <!-- Specialist Sidebar Root (Injected by specialist_components.js) -->
+        <div id="specialist-sidebar-root"></div>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Specialist Header Root (Injected by specialist_components.js) -->
+            <div id="specialist-header-root"></div>
+
+            <div class="admin-content patients-content">
+                <!-- Page Introduction Section -->
+                <section class="patients-intro-section" aria-labelledby="patients-title">
+                    <div class="patients-intro-head">
+                        <div class="patients-intro-copy">
+                            <h1 id="patients-title">
+                                <span aria-hidden="true">👥</span>
+                                سجل المرضى الطبي (EMR)
+                            </h1>
+                            <p>الملفات الصحية والسجلات السريرية المأمونة لجميع المرضى الذين تمت متابعتهم واستشارتهم في عيادتك التخصصية.</p>
+                        </div>
+                        <div class="patients-intro-actions">
+                            <button type="button" class="btn-refresh" onclick="window.retryLoadPatients()" title="تحديث السجلات">
+                                <span aria-hidden="true">🔄</span>
+                                <span>تحديث السجلات</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Medical Dashboard KPI Cards -->
+                    <div class="patients-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-icon stat-icon-patients" aria-hidden="true">👥</div>
+                            <div class="stat-card-info">
+                                <span class="stat-card-label">إجمالي المرضى</span>
+                                <div class="stat-card-val">
+                                    <strong id="patients-total">0</strong>
+                                    <span class="stat-unit">مريض مسجل</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-icon stat-icon-consults" aria-hidden="true">📋</div>
+                            <div class="stat-card-info">
+                                <span class="stat-card-label">إجمالي الاستشارات</span>
+                                <div class="stat-card-val">
+                                    <strong id="stat-consults-total">0</strong>
+                                    <span class="stat-unit">جلسة سريرية</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-icon stat-icon-active" aria-hidden="true">⚡</div>
+                            <div class="stat-card-info">
+                                <span class="stat-card-label">متابعات نشطة وجارية</span>
+                                <div class="stat-card-val">
+                                    <strong id="stat-active-total">0</strong>
+                                    <span class="stat-unit">حالة قيد المتابعة</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-icon stat-icon-completed" aria-hidden="true">✅</div>
+                            <div class="stat-card-info">
+                                <span class="stat-card-label">استشارات مكتملة</span>
+                                <div class="stat-card-val">
+                                    <strong id="stat-completed-total">0</strong>
+                                    <span class="stat-unit">سجل منتهي</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Patients EMR Table Panel -->
+                <section class="patients-panel" aria-labelledby="patients-table-heading">
+                    <div class="patients-toolbar">
+                        <div class="patients-toolbar-top">
+                            <div class="patients-toolbar-heading">
+                                <h2 id="patients-table-heading">قائمة المرضى والمتابعات السريرية</h2>
+                                <span class="patients-records-badge">سجلات موثقة</span>
+                            </div>
+
+                            <div class="patients-controls">
+                                <div class="search-input-wrapper">
+                                    <span class="search-input-icon" aria-hidden="true">🔍</span>
+                                    <input id="patients-search" class="patients-search" type="search" placeholder="ابحث باسم المريض أو البريد..." aria-label="البحث عن مريض">
+                                </div>
+
+                                <select id="patients-status-filter" class="patients-status-filter" aria-label="تصفية حسب الحالة السريرية">
+                                    <option value="all">كل الحالات السريرية</option>
+                                    <option value="in_progress">جلسات جارية (In Progress)</option>
+                                    <option value="accepted">مقبولة / انتظار (Accepted)</option>
+                                    <option value="pending">طلبات جديدة (Pending)</option>
+                                    <option value="completed">مكتملة ومغلقة (Completed)</option>
+                                    <option value="cancelled">ملغاة (Cancelled)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Quick Filter Chips -->
+                        <div class="patients-toolbar-bottom">
+                            <span class="quick-chips-label">
+                                <span aria-hidden="true">⚡</span>
+                                فرز سريع:
+                            </span>
+                            <div class="patients-quick-chips" id="patients-quick-chips">
+                                <button type="button" class="chip-btn active" data-status="all">الكل</button>
+                                <button type="button" class="chip-btn" data-status="in_progress">جارية</button>
+                                <button type="button" class="chip-btn" data-status="accepted">مقبولة</button>
+                                <button type="button" class="chip-btn" data-status="pending">قيد الانتظار</button>
+                                <button type="button" class="chip-btn" data-status="completed">مكتملة</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Table -->
+                    <div class="patients-table-wrap">
+                        <table class="patients-table" aria-describedby="patients-table-heading">
+                            <thead>
+                                <tr>
+                                    <th scope="col">المريض والملف</th>
+                                    <th scope="col">إجمالي الاستشارات</th>
+                                    <th scope="col">تاريخ آخر زيارة</th>
+                                    <th scope="col">التخصص المرتبط</th>
+                                    <th scope="col">الحالة الحية</th>
+                                    <th scope="col">الإجراء السريري</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patients-tbody">
+                                <tr>
+                                    <td colspan="6" class="table-state">
+                                        <div class="table-state-content">
+                                            <div class="table-spinner"></div>
+                                            <h3 class="table-state-title">جاري تحميل سجلات المرضى...</h3>
+                                            <p class="table-state-desc">يتم فحص صلاحيات الطبيب والوصول إلى قاعدة بيانات العيادة بأمان.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- EMR Record Modal (Medical Dossier View) -->
+    <div class="emr-modal" id="emr-modal" role="dialog" aria-modal="true" aria-labelledby="emr-patient-name">
+        <div class="emr-box">
+            <div class="emr-modal-top">
+                <div class="emr-patient-profile">
+                    <div class="emr-avatar" id="emr-patient-avatar">م</div>
+                    <div class="emr-patient-headings">
+                        <h2>
+                            الملف الطبي للمريض:
+                            <span id="emr-patient-name" style="color:var(--specialist-primary);">...</span>
+                        </h2>
+                        <p class="emr-patient-email" id="emr-patient-email">...</p>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="window.printCurrentPatientSummary()" style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; font-size:0.85rem; border-radius:10px; border-color:var(--border-color); color:var(--text-primary);">
+                        🖨️ طباعة الملخص الطبي (Print / PDF)
+                    </button>
+                    <button type="button" class="emr-modal-close" onclick="closeEmrModal()" title="إغلاق الملف">&times; إغلاق الملف</button>
+                </div>
+            </div>
+
+            <!-- Modal Quick Information Strip & Clinical Vitals -->
+            <div class="emr-stats-strip" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+                <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <div class="emr-stat-item">
+                        <span>عدد الاستشارات:</span>
+                        <strong id="emr-patient-consults-count">0</strong>
+                    </div>
+                    <div class="emr-stat-item">
+                        <span>تاريخ آخر مراجعة:</span>
+                        <strong id="emr-patient-last-date">غير متوفر</strong>
+                    </div>
+                    <div class="emr-stat-item">
+                        <span>فصيلة الدم:</span>
+                        <strong id="emr-patient-blood">غير محدد</strong>
+                    </div>
+                    <div class="emr-stat-item">
+                        <span>القياسات (الطول/الوزن/BMI):</span>
+                        <strong id="emr-patient-vitals">--</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prominent Alerts (Allergies & Current Meds) -->
+            <div id="emr-modal-allergies-banner" style="display:none; background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.25); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:0.85rem; color:#dc2626;">
+                ⚠️ <strong>الحساسية السريرية للمريض:</strong> <span id="emr-modal-allergies-val"></span>
+            </div>
+            <div id="emr-modal-meds-banner" style="display:none; background:rgba(2, 132, 199, 0.08); border:1px solid rgba(2, 132, 199, 0.2); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:0.85rem; color:#0284c7;">
+                💊 <strong>الأدوية الحالية والتاريخ الصحي:</strong> <span id="emr-modal-meds-val"></span>
+            </div>
+
+            <!-- EMR Navigation Tabs -->
+            <div class="emr-tabs" role="tablist">
+                <button type="button" class="emr-tab active" data-tab="history" role="tab" onclick="switchEmrTab('history', this)">
+                    <span aria-hidden="true">📜</span>
+                    تاريخ الاستشارات
+                </button>
+                <button type="button" class="emr-tab" data-tab="notes" role="tab" onclick="switchEmrTab('notes', this)">
+                    <span aria-hidden="true">🩺</span>
+                    الملاحظات السريرية
+                </button>
+                <button type="button" class="emr-tab" data-tab="prescriptions" role="tab" onclick="switchEmrTab('prescriptions', this)">
+                    <span aria-hidden="true">💊</span>
+                    الوصفات والتقارير
+                </button>
+                <button type="button" class="emr-tab" data-tab="add-note" role="tab" onclick="switchEmrTab('add-note', this)" style="color:#0284c7; font-weight:800;">
+                    <span aria-hidden="true">➕</span>
+                    إضافة تدوين / وصفة
+                </button>
+            </div>
+
+            <!-- Tab 1: Consultations History -->
+            <div id="emr-tab-history" class="emr-content emr-body-wrap" role="tabpanel">
+                <div id="emr-history-list"></div>
+            </div>
+
+            <!-- Tab 2: Clinical Notes -->
+            <div id="emr-tab-notes" class="emr-content emr-body-wrap" role="tabpanel" style="display:none;">
+                <div id="emr-notes-list"></div>
+            </div>
+
+            <!-- Tab 3: Prescriptions and Reports -->
+            <div id="emr-tab-prescriptions" class="emr-content emr-body-wrap" role="tabpanel" style="display:none;">
+                <div id="emr-prescriptions-list"></div>
+            </div>
+
+            <!-- Tab 4: Add Clinical Note / Prescription -->
+            <div id="emr-tab-add-note" class="emr-content emr-body-wrap" role="tabpanel" style="display:none;">
+                <form id="emr-add-note-form" onsubmit="window.saveClinicalNote(event)" style="background:var(--bg-secondary); padding:1.25rem; border-radius:16px; border:1px solid var(--border-color);">
+                    <h4 style="margin:0 0 12px 0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">📝 تدوين ملاحظة سريرية أو وصفة طبية جديدة</h4>
+                    
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:12px;">
+                        <div>
+                            <label style="display:block; margin-bottom:4px; font-size:0.82rem; font-weight:700;">نوع التدوين السريري *</label>
+                            <select id="emr-note-type-select" required onchange="window.handleNoteTypeChange(this.value)" style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--surface-color); color:var(--text-primary); font-family:inherit; font-size:0.88rem;">
+                                <option value="diagnosis">تشخيص سريري (Clinical Diagnosis)</option>
+                                <option value="prescription">وصفة طبية علاجية (Prescription)</option>
+                                <option value="treatment_plan">خطة علاجية وتأهيلية (Treatment Plan)</option>
+                                <option value="general">ملاحظة سريرية عامة (General Note)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display:block; margin-bottom:4px; font-size:0.82rem; font-weight:700;">ربط بجلسة استشارة (اختياري)</label>
+                            <select id="emr-note-consultation-select" style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--surface-color); color:var(--text-primary); font-family:inherit; font-size:0.88rem;">
+                                <option value="">سجل عام للمريض</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Diagnosis input (Useful especially for Prescriptions & Diagnoses) -->
+                    <div id="emr-diagnosis-field-box" style="margin-bottom:12px;">
+                        <label style="display:block; margin-bottom:4px; font-size:0.82rem; font-weight:700;">التشخيص السريري / سبب الوصفة</label>
+                        <input type="text" id="emr-note-diagnosis-input" placeholder="مثال: التهاب الأذن الوسطى الحاد، قلق توتر عام..." style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--surface-color); color:var(--text-primary); font-family:inherit; font-size:0.88rem;">
+                    </div>
+
+                    <!-- Structured Medications Repeater (Displayed when Prescription is chosen) -->
+                    <div id="emr-structured-meds-box" style="display:none; margin-bottom:14px; background:var(--surface-color); padding:1rem; border-radius:12px; border:1px solid var(--border-color);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <label style="font-size:0.85rem; font-weight:800; color:var(--specialist-primary);">💊 الأدوية الموصوفة والجرعات المعتمدة:</label>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="window.addMedicationRow()" style="padding:4px 10px; font-size:0.8rem; border-radius:8px;">
+                                ➕ إضافة دواء للوصفة
+                            </button>
+                        </div>
+                        <div id="emr-meds-rows-container" style="display:flex; flex-direction:column; gap:8px;">
+                            <!-- Dynamic Med Rows Inserted Here -->
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; margin-bottom:4px; font-size:0.82rem; font-weight:700;">التعليمات والملاحظات السريرية الإضافية *</label>
+                        <textarea id="emr-note-content-input" rows="3" required placeholder="تعليمات الاستخدام، الجرعات، المحاذير الغذائية، أو تفاصيل الملاحظة الطبية..." style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--surface-color); color:var(--text-primary); font-family:inherit; font-size:0.9rem; line-height:1.6;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="emr-note-is-patient-visible" checked style="width:18px; height:18px; cursor:pointer;">
+                        <label for="emr-note-is-patient-visible" style="font-size:0.85rem; font-weight:700; color:var(--text-primary); cursor:pointer;">
+                            إتاحة هذا التدوين للمريض في سجله الطبي مع إمكانية طباعة الوصفة ✅
+                        </label>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="switchEmrTab('notes')">إلغاء</button>
+                        <button type="submit" id="btn-save-clinical-note" class="btn btn-primary" style="padding:8px 18px; border-radius:10px; font-weight:800; font-size:0.9rem;">
+                            حفظ واعتماد التدوين 💾
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="emr-modal-footer">
+                <div class="emr-security-notice">
+                    <span aria-hidden="true">🔒</span>
+                    <span>سجل طبي محمي وفق سياسات الخصوصية السريرية وHIPAA الرقمية.</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="closeEmrModal()">تم الإطلاع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/specialist/patients.js"></script>
+
+    <!-- Global Toast Notification System -->
+    <script>
+        window.showToast = function(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = 'position: fixed; bottom: 20px; left: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            let bg = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#0284c7';
+            toast.style.cssText = `background: ${bg}; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); font-size: 0.92rem; font-weight: 700; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        };
+    </script>
+</body>
+</html>

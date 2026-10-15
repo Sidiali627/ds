@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>السجل الطبي الإلكتروني (EMR) - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/guard.js"></script>
+
+    <style>
+        .emr-header-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        .emr-header-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--brand-accent), #10b981, #06b6d4);
+        }
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .vital-box {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease;
+        }
+        .vital-box:hover {
+            transform: translateY(-2px);
+        }
+        .vital-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .alert-card-warning {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 18px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .emr-nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .emr-nav-tab {
+            padding: 10px 18px;
+            border-radius: 12px 12px 0 0;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .emr-nav-tab.active {
+            color: var(--brand-accent);
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-bottom-color: var(--surface-color);
+            margin-bottom: -1px;
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.02);
+        }
+        .timeline-item {
+            position: relative;
+            padding-right: 2rem;
+            padding-bottom: 1.75rem;
+            border-right: 2px solid var(--border-color);
+        }
+        .timeline-item:last-child {
+            border-right-color: transparent;
+            padding-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            right: -9px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--brand-accent);
+            border: 3px solid var(--surface-color);
+            box-shadow: 0 0 0 2px var(--brand-accent);
+        }
+        .prescription-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border-right: 4px solid #10b981;
+        }
+        @media print {
+            body { background: white !important; color: black !important; }
+            .main-header, .portal-sidebar, .emr-nav-tabs, .btn-print, .nav-actions { display: none !important; }
+            .portal-layout { display: block !important; }
+            .portal-content { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            .emr-header-card, .vital-box, .prescription-card { border: 1px solid #ccc !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container navbar">
+            <a href="index.html" class="nav-brand" style="display:flex; align-items:center; gap:8px;">
+                <img loading="lazy" decoding="async" src="images/logo.png" alt="الشعار" style="height:36px; object-fit:contain;">
+                <span style="font-weight:800; font-size:1.1rem; color:var(--text-primary);">استوديو صحة الشباب</span>
+            </a>
+            <div class="nav-actions" style="display:flex; align-items:center; gap:10px;">
+                <div id="user-notifications-container" style="position: relative;"></div>
+                <button class="theme-switcher" title="تبديل المظهر"></button>
+                <button id="logout-btn" class="btn btn-outline" style="border: 1px solid var(--danger-color); color: var(--danger-color); border-radius:12px; font-weight:700;">تسجيل الخروج</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="portal-layout">
+        <aside class="portal-sidebar">
+            <ul>
+                <li><a href="dashboard.html"><span>📊</span> لوحة التحكم واستشاراتي</a></li>
+                <li><a href="emr.html" class="active"><span>📋</span> سجلي الطبي (EMR)</a></li>
+                <li><a href="dashboard.html#appointments-section"><span>📅</span> مواعيدي الطبية المحجوزة</a></li>
+                <li><a href="consultations.html"><span>🩺</span> طلب استشارة طبية جديدة</a></li>
+                <li><a href="events.html"><span>🎟️</span> الفعاليات الوطنية والتذاكر</a></li>
+                <li><a href="articles.html"><span>📝</span> مكتبة المقالات والوعي</a></li>
+                <li><a href="ai_assistant.html"><span>🤖</span> المساعد التوعوي الذكي</a></li>
+                <li><a href="profile.html"><span>👤</span> الملف الشخصي والصحي</a></li>
+                <li><a href="support.html"><span>💬</span> مركز الدعم والشكاوى</a></li>
+            </ul>
+        </aside>
+
+        <main class="portal-content">
+            <!-- Header Identity Banner -->
+            <div class="emr-header-card">
+                <div class="emr-header-strip"></div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.25rem;">
+                    <div style="display: flex; gap: 1.25rem; align-items: center;">
+                        <div id="patient-avatar-badge" style="width: 72px; height: 72px; border-radius: 20px; background: rgba(2, 132, 199, 0.12); color: #0284c7; font-size: 2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(2, 132, 199, 0.2);">
+                            م
+                        </div>
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <h1 id="emr-patient-name" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary);">جاري تحميل السجل...</h1>
+                                <span id="emr-blood-badge" style="background: rgba(239, 68, 68, 0.12); color: #dc2626; padding: 4px 10px; border-radius: 999px; font-weight: 800; font-size: 0.85rem; border: 1px solid rgba(239, 68, 68, 0.2);">فصيلة: --</span>
+                                <span style="background: rgba(16, 185, 129, 0.12); color: #059669; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 0.8rem;">🔒 ملف موثق EMR</span>
+                            </div>
+                            <div style="margin-top: 6px; color: var(--text-secondary); font-size: 0.88rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <span>📧 <span id="emr-patient-email">-</span></span>
+                                <span>📱 <span id="emr-patient-phone">-</span></span>
+                                <span>🆔 كود الملف: <strong id="emr-record-code" style="font-family: monospace;">#EMR----</strong></span>
+                            </div>
+                            <div style="margin-top: 4px; font-size: 0.78rem; color: var(--text-tertiary);">
+                                <span>تاريخ فتح الملف: <span id="emr-created-date">-</span></span> | 
+                                <span>آخر تحديث سريري: <span id="emr-updated-date">-</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-outline btn-print" onclick="window.openPrintSummary()" style="padding: 8px 16px; border-radius: 12px; font-weight: 700;">
+                            🖨️ طباعة ملخص السجل (Print / PDF)
+                        </button>
+                        <a href="profile.html" class="btn btn-primary" style="padding: 8px 16px; border-radius: 12px; font-weight: 700;">
+                            ✏️ تعديل القياسات
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vitals Grid -->
+            <div class="vitals-grid">
+                <div class="vital-box">
+                    <div class="vital-icon" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">📏</div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">الطول</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary);"><span id="vital-height">--</span> سم</div>
+                    </div>
+                </div>
+
+                <div class="vital-box">
+                    <div class="vital-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">⚖️</div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">الوزن</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary);"><span id="vital-weight">--</span> كغ</div>
+                    </div>
+                </div>
+
+                <div class="vital-box">
+                    <div class="vital-icon" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">📊</div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">مؤشر كتلة الجسم (BMI)</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary);">
+                            <span id="vital-bmi">--</span>
+                            <span id="vital-bmi-label" style="font-size: 0.75rem; font-weight: 700; margin-right: 4px;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vital-box">
+                    <div class="vital-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🩺</div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">إجمالي المراجعات</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary);"><span id="vital-encounters-count">0</span> لقاء</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Alerts (Allergies & Current Medications) -->
+            <div id="emr-allergies-box" class="alert-card-warning" style="display: none;">
+                <div style="font-size: 1.5rem; line-height: 1;">⚠️</div>
+                <div style="flex: 1;">
+                    <strong style="color: #b45309; font-size: 0.95rem; display: block; margin-bottom: 2px;">تنبيه الحساسية السريرية (Allergies Alert):</strong>
+                    <p id="emr-allergies-text" style="margin: 0; font-size: 0.9rem; color: var(--text-primary); font-weight: 600;"></p>
+                </div>
+            </div>
+
+            <div id="emr-meds-box" style="display: none; background: rgba(2, 132, 199, 0.06); border: 1px solid rgba(2, 132, 199, 0.2); border-radius: 18px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="font-size:1.2rem;">💊</span>
+                    <strong style="color: #0369a1; font-size: 0.95rem;">الأدوية الحالية المستمرة والتاريخ المرضي:</strong>
+                </div>
+                <div id="emr-meds-text" style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.6;"></div>
+            </div>
+
+            <!-- Tabbed Dossier Sections -->
+            <div class="emr-nav-tabs">
+                <button type="button" class="emr-nav-tab active" data-tab="timeline" onclick="switchTab('timeline', this)">
+                    ⏳ التسلسل الزمني للرعاية (Timeline)
+                </button>
+                <button type="button" class="emr-nav-tab" data-tab="prescriptions" onclick="switchTab('prescriptions', this)">
+                    💊 الوصفات الطبية والعلاجية
+                </button>
+                <button type="button" class="emr-nav-tab" data-tab="reports" onclick="switchTab('reports', this)">
+                    📋 التقارير السريرية والمرفقات
+                </button>
+            </div>
+
+            <!-- Tab 1: Timeline -->
+            <div id="tab-timeline" class="tab-pane">
+                <div class="card" style="border-radius: 20px; padding: 1.75rem; border: 1px solid var(--border-color); background: var(--surface-color);">
+                    <h3 style="margin: 0 0 1.25rem 0; font-size: 1.15rem; font-weight: 800;">سجل الزيارات والاستشارات الطبية الموثقة</h3>
+                    <div id="timeline-container">
+                        <div style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+                            <div class="spinner" style="margin: 0 auto 10px;"></div>
+                            جاري فحص التسلسل الزمني...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Prescriptions -->
+            <div id="tab-prescriptions" class="tab-pane" style="display: none;">
+                <div class="card" style="border-radius: 20px; padding: 1.75rem; border: 1px solid var(--border-color); background: var(--surface-color);">
+                    <h3 style="margin: 0 0 1.25rem 0; font-size: 1.15rem; font-weight: 800;">الوصفات الطبية والخطط العلاجية الصادرة</h3>
+                    <div id="prescriptions-container">
+                        <div style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+                            <div class="spinner" style="margin: 0 auto 10px;"></div>
+                            جاري تحميل الوصفات الطبية...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Reports -->
+            <div id="tab-reports" class="tab-pane" style="display: none;">
+                <div class="card" style="border-radius: 20px; padding: 1.75rem; border: 1px solid var(--border-color); background: var(--surface-color);">
+                    <h3 style="margin: 0 0 1.25rem 0; font-size: 1.15rem; font-weight: 800;">التقارير الطبية والمستندات</h3>
+                    <div id="reports-container">
+                        <div style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+                            <div class="spinner" style="margin: 0 auto 10px;"></div>
+                            جاري تحميل التقارير الطبية...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/emr.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "totalJs": 52,
+  "totalHtml": 39,
+  "brokenScriptRefs": [],
+  "brokenStyleRefs": [],
+  "brokenPageLinks": [],
+  "missingSupabaseCDN": [],
+  "missingGuardInProtected": [],
+  "adminPagesStatus": [
+    {
+      "page": "admin/ai_center.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/articles.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/certificates.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/change-password.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/cms.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/consultations.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/crm.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/crm_profile.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/events.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/index.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/login.html",
+      "hasGuard": false
+    },
+    {
+      "page": "admin/media.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/notifications.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/security.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/seo.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/settings.html",
+      "hasGuard": true
+    },
+    {
+      "page": "admin/users.html",
+      "hasGuard": true
+    }
+  ],
+  "specialistPagesStatus": [
+    {
+      "page": "specialist/calendar.html",
+      "hasGuard": true
+    },
+    {
+      "page": "specialist/consultations.html",
+      "hasGuard": true
+    },
+    {
+      "page": "specialist/index.html",
+      "hasGuard": true
+    },
+    {
+      "page": "specialist/live_session.html",
+      "hasGuard": true
+    },
+    {
+      "page": "specialist/patients.html",
+      "hasGuard": true
+    },
+    {
+      "page": "specialist/profile.html",
+      "hasGuard": true
+    }
+  ]
+}

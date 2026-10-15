@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحليلات والتقارير الإدارية - استوديو صحة الشباب</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    
+    <style>
+        /* Enhanced Analytics & Reports Design Tokens */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --blur: blur(14px);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(17, 24, 39, 0.85);
+                --glass-border: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        .analytics-panel {
+            background: var(--surface-color, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+        }
+
+        /* 10-Item Metrics Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+        .kpi-card {
+            background: var(--surface-color, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            padding: 1.35rem 1.15rem;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--brand-accent, #0284c7);
+        }
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            background: rgba(2, 132, 199, 0.1);
+        }
+        .kpi-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--admin-text-muted, #64748b);
+        }
+        .kpi-val {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .kpi-sub {
+            font-size: 0.74rem;
+            color: var(--admin-text-muted, #94a3b8);
+        }
+
+        /* Filter Toolbar */
+        .filter-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: var(--surface-color, #ffffff);
+            padding: 1rem 1.25rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+        .period-btn-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .period-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            color: var(--text-color, #334155);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .period-btn.active {
+            background: var(--primary-color, #0284c7);
+            color: white;
+            border-color: var(--primary-color, #0284c7);
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+        .period-btn:hover:not(.active) {
+            background: rgba(0,0,0,0.04);
+        }
+
+        /* Charts Grid (2x2) */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 900px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .chart-card {
+            background: var(--surface-color, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary, #0f172a);
+        }
+
+        /* Report Hub Controls */
+        .report-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 1rem;
+        }
+        .report-tab-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--text-color, #475569);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .report-tab-btn.active {
+            background: var(--primary-color, #0284c7);
+            color: white;
+            border-color: var(--primary-color, #0284c7);
+        }
+
+        .report-filters-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: var(--bg-secondary, #f8fafc);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+        .report-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color, #cbd5e1);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: var(--surface-color, #ffffff);
+            font-family: inherit;
+            color: inherit;
+        }
+
+        /* Pagination & Actions */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .admin-sidebar, .admin-header, .filter-toolbar, .report-filters-bar, .pagination-bar, .no-print, button {
+                display: none !important;
+            }
+            .admin-main {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            .admin-content {
+                padding: 0 !important;
+            }
+            .analytics-panel, .chart-card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+            }
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 2rem;
+                border-bottom: 2px solid #0284c7;
+                padding-bottom: 1rem;
+            }
+        }
+        .print-header {
+            display: none;
+        }
+    </style>
+    
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                
+                <!-- Printable Official Header (Shown during Print / PDF Export) -->
+                <div class="print-header">
+                    <h1 style="font-size: 24px; color: #0284c7; margin-bottom: 4px;">استوديو صحة الشباب — Youth Health Studio</h1>
+                    <div style="font-size: 14px; color: #64748b;">التقرير الإداري والتحليلي المعتمد للأداء والعمليات السريرية</div>
+                    <div style="font-size: 12px; color: #94a3b8; margin-top: 6px;" id="print-timestamp">تاريخ التقرير: --</div>
+                </div>
+
+                <!-- Hero Admin Header Card (Unified with Doctor Dashboard) -->
+                <div class="hero-admin-card no-print">
+                    <div class="hero-doctor-info">
+                        <h2>مرحباً بك في مركز الإشراف الإداري 👋</h2>
+                        <p>المنظومة الرقمية الشاملة لإدارة العمليات السريرية، الاستشارات الطبية، المواعيد والتحليلات المعتمدة لمنصة استوديو صحة الشباب.</p>
+                    </div>
+                    <div class="hero-metrics">
+                        <div class="hero-metric-item">
+                            <span class="hero-metric-num" id="hero-admin-online-status">🟢 متصل</span>
+                            <span class="hero-metric-label">جلسة الإدارة</span>
+                        </div>
+                        <div style="width: 1px; background: rgba(255,255,255,0.25);"></div>
+                        <div class="hero-metric-item">
+                            <span class="hero-metric-num">2026</span>
+                            <span class="hero-metric-label">Telemedicine SaaS</span>
+                        </div>
+                        <div style="width: 1px; background: rgba(255,255,255,0.25);"></div>
+                        <div class="hero-metric-item">
+                            <span class="hero-metric-num">v2.4</span>
+                            <span class="hero-metric-label">Admin Core</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live System Connectivity Ribbon -->
+                <div class="admin-panel" style="background: var(--surface-color, #ffffff); border-radius: 20px; box-shadow: var(--card-shadow); margin-bottom: 1.5rem;">
+                    <div class="admin-panel-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; align-items:center;">
+                        <div><div style="font-size:0.75rem; color:var(--admin-text-muted);">قاعدة البيانات (DB)</div><strong id="sys-db" style="font-size:0.88rem;">جاري الفحص...</strong></div>
+                        <div><div style="font-size:0.75rem; color:var(--admin-text-muted);">Supabase API</div><strong id="sys-api" style="font-size:0.88rem;">جاري الفحص...</strong></div>
+                        <div><div style="font-size:0.75rem; color:var(--admin-text-muted);">المصادقة (Auth)</div><strong id="sys-auth" style="font-size:0.88rem;">جاري الفحص...</strong></div>
+                        <div><div style="font-size:0.75rem; color:var(--admin-text-muted);">محرك البريد (Resend)</div><strong id="sys-email" style="font-size:0.88rem; color:#10b981;">نشط ومفعّل</strong></div>
+                        <div><div style="font-size:0.75rem; color:var(--admin-text-muted);">الإشعارات الفورية</div><strong id="sys-realtime" style="font-size:0.88rem; color:#10b981;">متصل 🟢</strong></div>
+                    </div>
+                </div>
+
+                <!-- Period Filter & Action Toolbar -->
+                <div class="filter-toolbar no-print">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">📅 النطاق الزمني للإحصائيات:</span>
+                        <div class="period-btn-group" id="period-btn-group">
+                            <button class="period-btn active" data-period="all">كافة الفترات</button>
+                            <button class="period-btn" data-period="7d">آخر 7 أيام</button>
+                            <button class="period-btn" data-period="30d">آخر 30 يوماً</button>
+                            <button class="period-btn" data-period="month">هذا الشهر</button>
+                            <button class="period-btn" data-period="custom">مخصص</button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Date Range Inputs (Hidden by default) -->
+                    <div id="custom-date-container" style="display: none; align-items: center; gap: 8px;">
+                        <input type="date" id="filter-date-from" class="report-input">
+                        <span>إلى</span>
+                        <input type="date" id="filter-date-to" class="report-input">
+                        <button class="btn btn-outline" id="btn-apply-custom-date" style="padding: 6px 12px; font-size: 0.8rem;">تطبيق</button>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span id="last-updated-text" style="font-size: 0.78rem; color: var(--admin-text-muted);">آخر تحديث: الآن</span>
+                        <button class="btn btn-outline" id="btn-refresh-dashboard" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 0.85rem;" title="تحديث البيانات فورياً">
+                            <span>🔄</span> تحديث
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 10 Comprehensive KPI Cards (Actual Database Metrics) -->
+                <div class="kpi-grid">
+                    <!-- 1. Users -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">إجمالي المستخدمين</span>
+                            <div class="kpi-icon" style="color: #0284c7; background: rgba(2, 132, 199, 0.1);">👥</div>
+                        </div>
+                        <div class="kpi-val" id="metric-total-users">--</div>
+                        <div class="kpi-sub" id="metric-sub-users">مسجلون في المنصة</div>
+                    </div>
+
+                    <!-- 2. Active Specialists -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">الأطباء والمختصون</span>
+                            <div class="kpi-icon" style="color: #059669; background: rgba(5, 150, 105, 0.1);">🩺</div>
+                        </div>
+                        <div class="kpi-val" id="metric-specialists">--</div>
+                        <div class="kpi-sub">أطباء واستشاريون معتمدون</div>
+                    </div>
+
+                    <!-- 3. Total Consultations -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">إجمالي الاستشارات</span>
+                            <div class="kpi-icon" style="color: #3b82f6; background: rgba(59, 130, 246, 0.1);">💬</div>
+                        </div>
+                        <div class="kpi-val" id="metric-total-consultations">--</div>
+                        <div class="kpi-sub">طلبات استشارة مسجلة</div>
+                    </div>
+
+                    <!-- 4. Pending Consultations -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">استشارات قيد الانتظار</span>
+                            <div class="kpi-icon" style="color: #d97706; background: rgba(217, 119, 6, 0.1);">⏳</div>
+                        </div>
+                        <div class="kpi-val" id="metric-pending-consultations" style="color: #d97706;">--</div>
+                        <div class="kpi-sub">تتطلب المراجعة أو التعيين</div>
+                    </div>
+
+                    <!-- 5. Completed Consultations -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">استشارات مكتملة</span>
+                            <div class="kpi-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">✅</div>
+                        </div>
+                        <div class="kpi-val" id="metric-completed-consultations" style="color: #10b981;">--</div>
+                        <div class="kpi-sub">تم تقديم الرعاية وإغلاقها</div>
+                    </div>
+
+                    <!-- 6. Upcoming Appointments -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">المواعيد السريرية</span>
+                            <div class="kpi-icon" style="color: #7c3aed; background: rgba(124, 58, 237, 0.1);">📅</div>
+                        </div>
+                        <div class="kpi-val" id="metric-appointments">--</div>
+                        <div class="kpi-sub" id="metric-sub-appointments">مواعيد مؤكدة ومجدولة</div>
+                    </div>
+
+                    <!-- 7. Volunteers -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">المتطوعون المسجلون</span>
+                            <div class="kpi-icon" style="color: #ec4899; background: rgba(236, 72, 153, 0.1);">🤝</div>
+                        </div>
+                        <div class="kpi-val" id="metric-volunteers">--</div>
+                        <div class="kpi-sub">مبادرات صحة الشباب</div>
+                    </div>
+
+                    <!-- 8. Prescriptions & EMR Reports -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">السجلات والوصفات</span>
+                            <div class="kpi-icon" style="color: #06b6d4; background: rgba(6, 182, 212, 0.1);">💊</div>
+                        </div>
+                        <div class="kpi-val" id="metric-emr-notes">--</div>
+                        <div class="kpi-sub" id="metric-sub-emr">تدوينات طبية ووصفات EMR</div>
+                    </div>
+
+                    <!-- 9. Published Events -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">الفعاليات والأنشطة</span>
+                            <div class="kpi-icon" style="color: #f97316; background: rgba(249, 115, 22, 0.1);">📢</div>
+                        </div>
+                        <div class="kpi-val" id="metric-events">--</div>
+                        <div class="kpi-sub">ورش عمل وأنشطة شبابية</div>
+                    </div>
+
+                    <!-- 10. Articles Published -->
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">المقالات المنشورة</span>
+                            <div class="kpi-icon" style="color: #14b8a6; background: rgba(20, 184, 166, 0.1);">📝</div>
+                        </div>
+                        <div class="kpi-val" id="metric-articles">--</div>
+                        <div class="kpi-sub">مقالات توعية وتثقيف صحي</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Charts & Trends Section (Chart.js 2x2 Grid) -->
+                <div class="charts-grid">
+                    <!-- Chart 1: Volume Over Time -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">📈 وتيرة الاستشارات والمواعيد السريرية</div>
+                            <span style="font-size:0.75rem; color:var(--admin-text-muted);">تطور الحجم التشغيلي</span>
+                        </div>
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="chart-volume-trend"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Status Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">🎯 توزيع حالات الاستشارات الطبية</div>
+                            <span style="font-size:0.75rem; color:var(--admin-text-muted);">الحالة السريرية الراهنة</span>
+                        </div>
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="chart-status-distribution"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: User Registrations Growth -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">👥 وتيرة نمو المشتركين والمستخدمين</div>
+                            <span style="font-size:0.75rem; color:var(--admin-text-muted);">حسابات مسجلة جديدة</span>
+                        </div>
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="chart-users-growth"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 4: Educational & Clinical Breakdown -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">📊 توزيع الأنشطة والمخرجات السريرية</div>
+                            <span style="font-size:0.75rem; color:var(--admin-text-muted);">وصفات، فعاليات ومقالات</span>
+                        </div>
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="chart-activity-breakdown"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administrative Reports & Export Hub -->
+                <div class="analytics-panel" id="reports-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-primary);">مركز التقارير الإدارية والتصدير (Operational Reports Hub)</h2>
+                            <p style="font-size: 0.82rem; color: var(--admin-text-muted); margin: 4px 0 0 0;">
+                                تقارير تشغيلية مصفاة مع عزل تام للمعلومات الشخصية والطبية الحساسة لضمان الخصوصية.
+                            </p>
+                        </div>
+
+                        <!-- Action Export Buttons -->
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-outline" id="btn-export-csv" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 0.86rem; font-weight: 700;">
+                                <span>📥</span> تصدير ملف CSV (Excel)
+                            </button>
+                            <button class="btn btn-primary" id="btn-print-report" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 0.86rem; font-weight: 700;">
+                                <span>🖨️</span> طباعة التقرير / PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Types Tabs -->
+                    <div class="report-tabs no-print">
+                        <button class="report-tab-btn active" data-report-type="consultations">🩺 تقرير الاستشارات الطبية</button>
+                        <button class="report-tab-btn" data-report-type="appointments">📅 تقرير المواعيد السريرية</button>
+                        <button class="report-tab-btn" data-report-type="users">👥 تقرير المستخدمين والنشاط</button>
+                        <button class="report-tab-btn" data-report-type="emr">📋 ملخص السجلات والوصفات (EMR)</button>
+                    </div>
+
+                    <!-- Filters Bar for Reports -->
+                    <div class="report-filters-bar no-print">
+                        <div style="flex: 1; min-width: 220px;">
+                            <input type="text" id="report-search-input" class="report-input" placeholder="🔍 بحث بالرمز أو التخصص أو الحالة..." style="width: 100%;">
+                        </div>
+                        <div>
+                            <select id="report-status-filter" class="report-input">
+                                <option value="all">كافة الحالات</option>
+                                <option value="pending">قيد الانتظار (Pending)</option>
+                                <option value="accepted">مقبولة (Accepted)</option>
+                                <option value="in_progress">جلسة جارية (In Progress)</option>
+                                <option value="completed">مكتملة (Completed)</option>
+                                <option value="cancelled">ملغاة (Cancelled)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">من:</span>
+                            <input type="date" id="report-date-from" class="report-input">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">إلى:</span>
+                            <input type="date" id="report-date-to" class="report-input">
+                        </div>
+                        <button class="btn btn-outline" id="btn-filter-reports" style="padding: 8px 14px; font-size: 0.82rem;">تصفية</button>
+                    </div>
+
+                    <!-- Dynamic Report Table -->
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table" id="report-data-table">
+                            <thead id="report-table-head">
+                                <!-- Populated dynamically by JS -->
+                            </thead>
+                            <tbody id="report-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 3rem 1rem; color: var(--admin-text-muted);">
+                                        <div style="font-size: 1.8rem; margin-bottom: 8px;">⏳</div>
+                                        <div>جاري تحميل بيانات التقرير...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="pagination-bar no-print">
+                        <div style="font-size: 0.85rem; color: var(--admin-text-muted);" id="pagination-info">
+                            عرض 0 - 0 من إجمالي 0 سجل
+                        </div>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <button class="btn btn-outline" id="btn-prev-page" style="padding: 5px 12px; font-size: 0.8rem;" disabled>السابق</button>
+                            <span id="current-page-label" style="font-size: 0.85rem; font-weight: 700; padding: 0 8px;">1</span>
+                            <button class="btn btn-outline" id="btn-next-page" style="padding: 5px 12px; font-size: 0.8rem;" disabled>التالي</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Platform Activity & Task Center -->
+                <div class="cc-grid no-print">
+                    <!-- Task Center -->
+                    <div class="admin-panel">
+                        <div class="admin-panel-header"><div class="admin-panel-title">مركز المهام التشغيلية العاجلة</div></div>
+                        <div class="admin-panel-body" id="task-center">
+                            <div class="cc-empty">جاري تحميل المهام...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Timeline -->
+                    <div class="admin-panel">
+                        <div class="admin-panel-header"><div class="admin-panel-title">سجل النشاط المباشر للمنصة</div></div>
+                        <div class="admin-panel-body" id="activity-timeline">
+                            <div class="cc-empty">جاري تحميل النشاطات...</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_dashboard.js"></script>
+</body>
+</html>

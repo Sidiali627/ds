@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    
+    <title>إدارة الاستشارات - بوابة المختصين</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        :root { 
+            --specialist-primary: #0284c7;
+            --specialist-hover: #0369a1;
+            --kanban-bg: #f8fafc;
+        }
+
+        .scope-tab-btn {
+            padding: 0.45rem 0.95rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .scope-tab-btn:hover {
+            color: var(--specialist-primary);
+        }
+        .scope-tab-btn.active {
+            background: var(--specialist-primary);
+            color: white;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+        }
+        
+        /* ═══════════════════════════════════════════
+           Kanban Board — 4-column responsive grid
+           ═══════════════════════════════════════════ */
+        .kanban-board { 
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.85rem;
+            min-height: 0;
+            overflow: visible;
+            padding-bottom: 0;
+            align-items: stretch;
+        }
+        
+        /* ── Kanban Column ── */
+        .kanban-col { 
+            background: color-mix(in srgb, var(--bg-primary) 92%, var(--surface-color));
+            border-radius: var(--border-radius);
+            min-width: 0;
+            width: auto;
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid var(--border-color);
+            max-height: calc(100vh - 160px);
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+        }
+        
+        .kanban-col-header { 
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--surface-color);
+            border-top-right-radius: var(--border-radius);
+            border-top-left-radius: var(--border-radius);
+            min-height: 52px;
+        }
+        .kanban-col-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.4;
+        }
+        .kanban-col-title span {
+            font-size: 0.72rem !important;
+            font-weight: 500 !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .kanban-col-header .cc-badge {
+            min-width: 24px;
+            padding: 0.15rem 0.45rem;
+            text-align: center;
+            border-radius: var(--border-radius-full);
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .kanban-col-body { 
+            padding: 0.65rem;
+            flex: 1; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.55rem;
+            scrollbar-gutter: stable;
+        }
+        
+        /* ═══════════════════════════════════════════
+           Consultation Card — compact & clear
+           ═══════════════════════════════════════════ */
+        .consult-card { 
+            background: var(--surface-color); 
+            border-radius: 0.65rem;
+            padding: 0.75rem 0.85rem;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+            border: 1px solid var(--border-color);
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.45rem;
+            cursor: pointer; 
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            position: relative;
+        }
+        .consult-card:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.1);
+            border-color: var(--specialist-primary);
+        }
+        .consult-card:focus-visible {
+            outline: 2px solid var(--accent-glow);
+            outline-offset: 2px;
+        }
+        
+        /* ── Card Header: ID + Badge ── */
+        .cc-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 0;
+        }
+        .cc-header > div {
+            gap: 0.4rem !important;
+        }
+        .cc-header > div > div {
+            gap: 0.4rem !important;
+        }
+
+        .cc-id { 
+            font-size: 0.74rem;
+            font-weight: 800;
+            font-family: 'Inter', var(--font-arabic), monospace;
+            color: #075985;
+            background: #e0f2fe;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.35rem;
+            border: 1px solid rgba(2, 132, 199, 0.18);
+            letter-spacing: 0.03em;
+        }
+
+        /* Specialty label under ID */
+        .cc-header > div > span {
+            color: #0369a1 !important;
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            line-height: 1.35;
+        }
+
+        /* Status badges inside cards (inline styles from JS) */
+        .consult-card .cc-header span[style*="border-radius: 20px"],
+        .consult-card .cc-header span[style*="border-radius:20px"] {
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            padding: 3px 9px !important;
+            letter-spacing: 0.01em;
+        }
+        
+        /* ── Patient Name ── */
+        .cc-patient { 
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+            margin-top: 0.1rem !important;
+            gap: 0.45rem !important;
+        }
+
+        .cc-patient > div {
+            width: 26px !important;
+            height: 26px !important;
+            flex: 0 0 26px;
+            font-size: 0.72rem !important;
+            color: var(--specialist-primary) !important;
+            background: #e0f2fe !important;
+            border: 1px solid rgba(2, 132, 199, 0.15);
+            font-weight: 800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Description ── */
+        .cc-desc { 
+            font-size: 0.8rem;
+            color: var(--text-secondary) !important;
+            line-height: 1.55;
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden;
+            margin-top: 0 !important;
+            min-height: 0;
+        }
+        
+        /* ── Card Footer: Date ── */
+        .cc-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: 0.2rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .cc-date { 
+            width: 100%;
+            font-size: 0.73rem;
+            color: var(--text-secondary) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+        .cc-date span[style] {
+            color: var(--border-strong) !important;
+        }
+        
+        /* ═══════════════════════════════════════════
+           Modal
+           ═══════════════════════════════════════════ */
+        #req-modal .modal-content { max-width: 600px; width: 100%; }
+        .req-detail-row { display: flex; margin-bottom: 14px; align-items: flex-start; }
+        .req-detail-label { width: 120px; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem; }
+        .req-detail-val { flex: 1; color: var(--text-primary); font-size: 0.9rem; line-height: 1.6; }
+        .req-actions { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px; justify-content: flex-end; }
+
+        #req-modal {
+            background: var(--overlay-bg) !important;
+            backdrop-filter: blur(4px);
+            padding: 1rem !important;
+        }
+        #req-modal .modal-content {
+            max-height: min(720px, calc(100vh - 2rem));
+            overflow-y: auto;
+            background: var(--surface-color) !important;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem !important;
+            border-radius: var(--border-radius) !important;
+        }
+        #req-modal h3 {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            border-bottom-color: var(--border-color) !important;
+        }
+        #req-modal .req-detail-label {
+            color: var(--text-secondary);
+        }
+        #req-modal .req-detail-val {
+            color: var(--text-primary);
+        }
+        #req-modal #mod-desc {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           Page Layout: Admin shell
+           ═══════════════════════════════════════════ */
+        .admin-layout {
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .admin-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-main > #specialist-header-root {
+            padding: 1rem 1.5rem 0;
+        }
+
+        /* ── Header ── */
+        .admin-main .admin-header {
+            margin-bottom: 1rem !important;
+            padding: 0.85rem 1.25rem !important;
+            min-height: 0;
+            border-radius: var(--border-radius) !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+        }
+        .admin-main .admin-header h3 {
+            font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
+            font-weight: 800;
+            line-height: 1.35;
+            color: var(--text-primary) !important;
+        }
+        .admin-main .admin-header p {
+            color: var(--text-secondary) !important;
+            font-size: 0.78rem !important;
+            line-height: 1.5;
+            margin-top: 2px;
+        }
+
+        /* ── Content Area ── */
+        .admin-content {
+            flex: 1;
+            padding: 0 1.5rem 1.5rem;
+            overflow: visible;
+        }
+
+        /* ═══════════════════════════════════════════
+           Sidebar refinements (scoped to this page)
+           ═══════════════════════════════════════════ */
+        .admin-sidebar .sidebar-header h2 {
+            font-size: 1.05rem;
+        }
+
+        .admin-sidebar .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .admin-sidebar .sidebar-nav .nav-item {
+            padding: 0.65rem 0.85rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            gap: 10px;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .admin-sidebar .sidebar-nav .nav-item:hover {
+            background: var(--brand-light, rgba(2, 132, 199, 0.08));
+            color: var(--specialist-primary);
+        }
+        .admin-sidebar .sidebar-nav .nav-item.active {
+            background: rgba(2, 132, 199, 0.12);
+            color: var(--specialist-primary);
+            font-weight: 700;
+        }
+
+        .admin-sidebar .sidebar-nav .nav-item .nav-icon {
+            font-size: 1.05rem;
+            width: 1.4em;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .admin-sidebar .sidebar-footer {
+            padding: 0.75rem;
+        }
+
+        .admin-sidebar .admin-user-profile {
+            padding: 0.75rem;
+            margin: 0.5rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+        .admin-sidebar .admin-user-profile h4 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .admin-sidebar .admin-user-profile .status-badge {
+            font-size: 0.72rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           Responsive Breakpoints
+           ═══════════════════════════════════════════ */
+        @media (max-width: 1200px) {
+            .kanban-board {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .kanban-col {
+                max-height: 520px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-main > #specialist-header-root {
+                padding: 0.85rem 0.85rem 0;
+            }
+            .admin-content {
+                padding: 0 0.85rem 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kanban-board {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0.65rem;
+            }
+            .kanban-col {
+                max-height: none;
+            }
+            .kanban-col-body {
+                max-height: 400px;
+            }
+            .admin-main .admin-header {
+                align-items: flex-start !important;
+                gap: 0.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .admin-main .admin-header {
+                flex-wrap: wrap;
+            }
+            .admin-main .admin-header > div:last-child {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .admin-main .admin-header > div:last-child .btn {
+                flex: 1;
+            }
+            .admin-content {
+                padding: 0 0.65rem 1rem;
+            }
+            .consult-card {
+                padding: 0.65rem 0.75rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           Dark Mode adjustments
+           ═══════════════════════════════════════════ */
+        [data-theme="dark"] .cc-id {
+            color: #bae6fd;
+            background: rgba(14, 165, 233, 0.18);
+            border-color: rgba(125, 211, 252, 0.22);
+        }
+        [data-theme="dark"] .cc-header > div > span {
+            color: #7dd3fc !important;
+        }
+        [data-theme="dark"] .cc-patient > div {
+            background: rgba(14, 165, 233, 0.15) !important;
+            color: #7dd3fc !important;
+            border-color: rgba(125, 211, 252, 0.18);
+        }
+        [data-theme="dark"] .kanban-col {
+            background: color-mix(in srgb, var(--bg-primary) 90%, var(--surface-color));
+        }
+        [data-theme="dark"] .kanban-col-header {
+            background: var(--surface-color);
+        }
+        [data-theme="dark"] .consult-card {
+            border-color: var(--border-color);
+        }
+        [data-theme="dark"] .consult-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.08);
+        }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/specialist_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Specialist Sidebar -->
+        <div id="specialist-sidebar-root"></div>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div id="specialist-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Consultations Scope & Search Toolbar -->
+                <div class="consultations-toolbar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div class="scope-tabs" style="display:inline-flex; background:var(--surface-color); padding:4px; border-radius:10px; border:1px solid var(--border-color);">
+                            <button type="button" class="scope-tab-btn active" id="btn-tab-assigned" onclick="window.setConsultationsScope('assigned')">👨‍⚕️ استشاراتي المسندة إليّ</button>
+                            <button type="button" class="scope-tab-btn" id="btn-tab-unassigned" onclick="window.setConsultationsScope('unassigned')">⏳ طلبات عامة شاغرة</button>
+                            <button type="button" class="scope-tab-btn" id="btn-tab-all" onclick="window.setConsultationsScope('all')">الكل</button>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="text" id="sp-cons-search" placeholder="ابحث باسم المريض أو الكود..." style="padding:0.55rem 0.85rem; border:1px solid var(--border-color); border-radius:8px; font-family:inherit; font-size:0.85rem; background:var(--surface-color); color:var(--text-primary); min-width:240px;">
+                        <button type="button" class="btn btn-outline" onclick="window.refreshConsultations()" title="تحديث السجلات" style="padding:0.55rem 0.85rem; border-radius:8px;">🔄</button>
+                    </div>
+                </div>
+
+                <div class="kanban-board">
+                    <!-- Column: Pending -->
+                    <div class="kanban-col" style="border-top: 4px solid #f59e0b;">
+                        <div class="kanban-col-header">
+                            <div class="kanban-col-title">طلبات جديدة <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-tertiary);">(Pending)</span></div>
+                            <span id="cnt-pending" class="cc-badge" style="background: rgba(245, 158, 11, 0.15); color: #d97706; font-weight: bold;">0</span>
+                        </div>
+                        <div class="kanban-col-body" id="col-pending">
+                            <!-- Cards go here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Column: Accepted -->
+                    <div class="kanban-col" style="border-top: 4px solid #10b981;">
+                        <div class="kanban-col-header">
+                            <div class="kanban-col-title">مقبولة / انتظار <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-tertiary);">(Accepted)</span></div>
+                            <span id="cnt-accepted" class="cc-badge" style="background: rgba(16, 185, 129, 0.15); color: #047857; font-weight: bold;">0</span>
+                        </div>
+                        <div class="kanban-col-body" id="col-accepted">
+                            <!-- Cards go here -->
+                        </div>
+                    </div>
+
+                    <!-- Column: In Progress -->
+                    <div class="kanban-col" style="border-top: 4px solid var(--specialist-primary);">
+                        <div class="kanban-col-header">
+                            <div class="kanban-col-title">جلسات جارية <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-tertiary);">(In Progress)</span></div>
+                            <span id="cnt-inprogress" class="cc-badge" style="background: rgba(2, 132, 199, 0.15); color: var(--specialist-primary); font-weight: bold;">0</span>
+                        </div>
+                        <div class="kanban-col-body" id="col-inprogress">
+                            <!-- Cards go here -->
+                        </div>
+                    </div>
+
+                    <!-- Column: Completed -->
+                    <div class="kanban-col" style="border-top: 4px solid #64748b;">
+                        <div class="kanban-col-header">
+                            <div class="kanban-col-title">مكتملة / مغلقة <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-tertiary);">(Completed)</span></div>
+                            <span id="cnt-completed" class="cc-badge" style="background: rgba(100, 116, 139, 0.15); color: #475569; font-weight: bold;">0</span>
+                        </div>
+                        <div class="kanban-col-body" id="col-completed">
+                            <!-- Cards go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Request Details Modal -->
+    <div id="req-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center; overflow-y:auto; padding: 2rem;">
+        <div class="modal-content" style="background:white; padding:2rem; border-radius:12px; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <button style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer;" onclick="document.getElementById('req-modal').style.display='none'">&times;</button>
+            <h3 style="margin-top:0; margin-bottom:1.5rem; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">تفاصيل الاستشارة <span id="mod-id" style="font-size:0.9rem; color:#94a3b8;"></span></h3>
+            
+            <div class="req-detail-row">
+                <div class="req-detail-label">المريض:</div>
+                <div class="req-detail-val" id="mod-patient">...</div>
+            </div>
+            <div class="req-detail-row">
+                <div class="req-detail-label">التاريخ:</div>
+                <div class="req-detail-val" id="mod-date" dir="ltr" style="text-align:right;">...</div>
+            </div>
+            <div class="req-detail-row">
+                <div class="req-detail-label">الأولوية:</div>
+                <div class="req-detail-val" id="mod-priority">...</div>
+            </div>
+            <div class="req-detail-row">
+                <div class="req-detail-label">وصف الحالة:</div>
+                <div class="req-detail-val" id="mod-desc" style="background:#f8fafc; padding:10px; border-radius:8px;">...</div>
+            </div>
+
+            <div class="req-actions" id="mod-actions">
+                <!-- Buttons injected dynamically based on state -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/specialist/consultations.js"></script>
+
+    <!-- Global Toast Notification System -->
+    <script>
+        window.showToast = function(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = 'position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            let bg = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+            toast.style.cssText = `background: ${bg}; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+    </script>
+
+</body>
+</html>

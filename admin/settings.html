@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الموقع (Website Management) - الإدارة</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        .settings-layout { display: flex; gap: var(--spacing-xl); }
+        .settings-nav { width: 250px; flex-shrink: 0; background: var(--surface-color); border-radius: var(--border-radius); padding: var(--spacing-md); border: 1px solid var(--admin-border); }
+        .settings-nav-item { display: block; padding: 10px 16px; margin-bottom: 4px; border-radius: 6px; color: var(--text-color); cursor: pointer; transition: all 0.2s ease; font-weight: 500; }
+        .settings-nav-item:hover { background: rgba(0,0,0,0.03); }
+        .settings-nav-item.active { background: var(--primary-color); color: white; }
+        .settings-content { flex: 1; }
+        .settings-section { display: none; background: var(--surface-color); border-radius: var(--border-radius); padding: var(--spacing-xl); border: 1px solid var(--admin-border); }
+        .settings-section.active { display: block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; }
+        .form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; transition: border-color 0.2s ease; }
+        .form-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .color-picker-wrap { display: flex; align-items: center; gap: 12px; }
+        .color-picker { width: 50px; height: 50px; padding: 0; border: none; border-radius: 8px; cursor: pointer; }
+        
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(24px); }
+        .toggle-group { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        @media (max-width: 900px) {
+            .settings-layout { flex-direction: column; }
+            .settings-nav { width: 100%; display: flex; overflow-x: auto; gap: 6px; padding: 8px; }
+            .settings-nav-item { white-space: nowrap; margin-bottom: 0; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div id="admin-sidebar-root"></div>
+
+        <!-- Main -->
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <div class="settings-layout">
+                    <div class="settings-nav" id="settings-tabs">
+                    <div class="settings-nav-item active" data-target="sec-identity">الهوية والمعلومات</div>
+                    <div class="settings-nav-item" data-target="sec-home">الصفحة الرئيسية</div>
+                    <div class="settings-nav-item" data-target="sec-theme">الألوان والخطوط</div>
+                    <div class="settings-nav-item" data-target="sec-seo">تحسين محركات البحث (SEO)</div>
+                    <div class="settings-nav-item" data-target="sec-maintenance">وضع الصيانة والإعلانات</div>
+                </div>
+                
+                <div class="settings-content" id="settings-forms">
+                    <div id="save-indicator" style="display:none; padding:1rem; background:var(--success-color); color:white; border-radius:8px; margin-bottom:1rem; text-align:center;">تم حفظ الإعدادات بنجاح. سيتم تطبيقها فوراً على الموقع العام.</div>
+
+                    <!-- 1. Identity -->
+                    <div class="settings-section active" id="sec-identity">
+                        <h2 style="margin-bottom: 1.5rem;">هوية المنصة</h2>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">اسم المنصة</label><input type="text" class="form-input" id="id_platform_name"></div>
+                            <div class="form-group"><label class="form-label">البريد الإلكتروني الرسمي</label><input type="email" class="form-input" id="id_email"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">وصف الموقع (مختصر)</label><textarea class="form-input" id="id_description" rows="3"></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="text" class="form-input" id="id_phone"></div>
+                            <div class="form-group"><label class="form-label">العنوان</label><input type="text" class="form-input" id="id_address"></div>
+                        </div>
+                        <h3 style="margin: 2rem 0 1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">التواصل الاجتماعي</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">رابط فيسبوك</label><input type="text" class="form-input" id="id_facebook"></div>
+                            <div class="form-group"><label class="form-label">رابط تويتر (X)</label><input type="text" class="form-input" id="id_twitter"></div>
+                            <div class="form-group"><label class="form-label">رابط إنستغرام</label><input type="text" class="form-input" id="id_instagram"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Homepage -->
+                    <div class="settings-section" id="sec-home">
+                        <h2 style="margin-bottom: 1.5rem;">تخطيط الصفحة الرئيسية</h2>
+                        <div class="form-group"><label class="form-label">عنوان الـ Hero الرئيسي</label><input type="text" class="form-input" id="hm_hero_title"></div>
+                        <div class="form-group"><label class="form-label">وصف الـ Hero</label><textarea class="form-input" id="hm_hero_desc" rows="2"></textarea></div>
+                        
+                        <h3 style="margin: 2rem 0 1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">إظهار / إخفاء الأقسام</h3>
+                        <div class="toggle-group">
+                            <div><strong>قسم الـ Hero</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">الشاشة الترحيبية الأولى</div></div>
+                            <label class="switch"><input type="checkbox" id="hm_show_hero"><span class="slider"></span></label>
+                        </div>
+                        <div class="toggle-group">
+                            <div><strong>قسم الميزات</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">يعرض ميزات المنصة (لماذا نحن)</div></div>
+                            <label class="switch"><input type="checkbox" id="hm_show_features"><span class="slider"></span></label>
+                        </div>
+                        <div class="toggle-group">
+                            <div><strong>قسم أحدث المقالات</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">يجلب أحدث المقالات المنشورة</div></div>
+                            <label class="switch"><input type="checkbox" id="hm_show_articles"><span class="slider"></span></label>
+                        </div>
+                        <div class="toggle-group">
+                            <div><strong>قسم الفعاليات القادمة</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">يجلب أحدث الفعاليات من قاعدة البيانات</div></div>
+                            <label class="switch"><input type="checkbox" id="hm_show_events"><span class="slider"></span></label>
+                        </div>
+                    </div>
+
+                    <!-- 3. Theme & Colors -->
+                    <div class="settings-section" id="sec-theme">
+                        <h2 style="margin-bottom: 1.5rem;">الهوية البصرية (Theme Engine)</h2>
+                        <div style="margin-bottom:2rem; padding:1rem; background:rgba(26,86,219,0.05); border:1px solid rgba(26,86,219,0.2); border-radius:8px;">
+                            <p style="margin-bottom:0.5rem; font-weight:600;">⚠️ تغيير الألوان سيتم تطبيقه ديناميكياً على كامل الموقع فور الحفظ.</p>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">اللون الرئيسي (Primary)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_primary"><input type="text" class="form-input" id="th_c_primary_hex" readonly></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">اللون الثانوي (Secondary)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_secondary"><input type="text" class="form-input" id="th_c_secondary_hex" readonly></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">لون النجاح (Success)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_success"><input type="text" class="form-input" id="th_c_success_hex" readonly></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">لون الخطر (Danger)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_danger"><input type="text" class="form-input" id="th_c_danger_hex" readonly></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">لون الخلفية (Background)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_bg"><input type="text" class="form-input" id="th_c_bg_hex" readonly></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">لون النصوص (Text)</label>
+                                <div class="color-picker-wrap"><input type="color" class="color-picker" id="th_c_text"><input type="text" class="form-input" id="th_c_text_hex" readonly></div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin: 2rem 0 1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">الخطوط (Typography)</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">عائلة الخط (Font Family)</label>
+                                <select class="form-input" id="th_f_family">
+                                    <option value="Inter">Inter (Default)</option>
+                                    <option value="Tajawal">Tajawal</option>
+                                    <option value="Cairo">Cairo</option>
+                                    <option value="Almarai">Almarai</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">حجم الخط الأساسي</label>
+                                <input type="text" class="form-input" id="th_f_size" placeholder="16px">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. SEO -->
+                    <div class="settings-section" id="sec-seo">
+                        <h2 style="margin-bottom: 1.5rem;">إعدادات السيو (SEO & Meta)</h2>
+                        <div class="form-group"><label class="form-label">Meta Title (عنوان الموقع في جوجل)</label><input type="text" class="form-input" id="seo_title"></div>
+                        <div class="form-group"><label class="form-label">Meta Description (وصف الموقع في جوجل)</label><textarea class="form-input" id="seo_desc" rows="3"></textarea></div>
+                        <div class="form-group"><label class="form-label">نوع بطاقة تويتر (Twitter Card)</label>
+                            <select class="form-input" id="seo_twitter">
+                                <option value="summary_large_image">Summary Large Image</option>
+                                <option value="summary">Summary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 5. Maintenance & Ads -->
+                    <div class="settings-section" id="sec-maintenance">
+                        <h2 style="margin-bottom: 1.5rem;">وضع الصيانة والإعلانات</h2>
+                        
+                        <div class="toggle-group" style="background: rgba(229,62,62,0.05); padding: 1rem; border: 1px solid rgba(229,62,62,0.2); border-radius: 8px; margin-bottom: 1rem;">
+                            <div><strong style="color:var(--danger-color);">تفعيل وضع الصيانة ⚠️</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">سيتم إغلاق الموقع العام تماماً عن الزوار وإظهار رسالة الصيانة.</div></div>
+                            <label class="switch"><input type="checkbox" id="mt_active"><span class="slider"></span></label>
+                        </div>
+                        <div class="form-group"><label class="form-label">رسالة وضع الصيانة للزوار</label><textarea class="form-input" id="mt_msg" rows="2"></textarea></div>
+                        <div class="form-group"><label class="form-label">تاريخ الانتهاء المتوقع (اختياري)</label><input type="date" class="form-input" id="mt_date"></div>
+
+                        <h3 style="margin: 2rem 0 1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">شريط الإعلانات العُلوي (Announcement Bar)</h3>
+                        <div class="toggle-group">
+                            <div><strong>إظهار شريط الإعلانات</strong><div style="font-size:0.85rem; color:var(--admin-text-muted);">سيظهر شريط في أعلى كل صفحات الموقع</div></div>
+                            <label class="switch"><input type="checkbox" id="ad_active"><span class="slider"></span></label>
+                        </div>
+                        <div class="form-group"><label class="form-label">رسالة الإعلان</label><input type="text" class="form-input" id="ad_msg"></div>
+                        <div class="form-group"><label class="form-label">رابط الإعلان (اختياري)</label><input type="text" class="form-input" id="ad_link" placeholder="https://..."></div>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border-color);">
+                        <span id="save-indicator" style="display:none; color:var(--success-color, #10b981); font-weight:700;">✅ تم حفظ جميع الإعدادات بنجاح!</span>
+                        <button type="button" class="btn btn-primary" id="save-all-btn" style="padding:10px 24px; border-radius:8px; font-weight:700; cursor:pointer;">حفظ جميع التغييرات</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_settings.js"></script>
+    <script>
+        // Simple Tab Switching Logic
+        document.querySelectorAll('.settings-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.getAttribute('data-target')).classList.add('active');
+            });
+        });
+        
+        // Color Picker Sync
+        document.querySelectorAll('.color-picker').forEach(picker => {
+            picker.addEventListener('input', (e) => {
+                document.getElementById(e.target.id + '_hex').value = e.target.value;
+            });
+        });
+    </script>
+</body>
+</html>

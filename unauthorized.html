@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غير مصرح بالوصول (403) - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script type="module" src="js/theme.js"></script>
+    <style>
+        body { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--bg-primary); padding: 1.5rem; }
+        .unauth-box { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 24px; padding: 3rem 2rem; max-width: 480px; width: 100%; box-shadow: var(--shadow-xl); }
+        .unauth-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .unauth-title { font-size: 1.8rem; font-weight: 800; color: #ef4444; margin-bottom: 0.5rem; }
+        .unauth-desc { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="unauth-box">
+        <div class="unauth-icon">🚫</div>
+        <h1 class="unauth-title">عذراً، الوصول غير مصرح به (403)</h1>
+        <p class="unauth-desc">ليس لديك الصلاحية الكافية لدخول هذه الصفحة أو البوابة. تم حظر محاولة الوصول لحماية خصوصية وأمان المنصة.</p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <a href="index.html" class="btn btn-primary">العودة للرئيسية</a>
+            <a href="dashboard.html" class="btn btn-outline">لوحة حسابي</a>
+        </div>
+    </div>
+</body>
+</html>

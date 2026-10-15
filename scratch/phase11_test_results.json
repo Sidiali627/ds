@@ -1,0 +1,292 @@
+{
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Phase 11 SQL Migration file exists",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Migration creates public.support_tickets table with sequence and unique ticket_number",
+      "passed": true,
+      "details": "TICK-YYYY-XXXX pattern"
+    },
+    {
+      "name": "Migration includes all required ticket fields (category, priority, status, assigned_to, internal_notes)",
+      "passed": true,
+      "details": "Complete ticket lifecycle fields"
+    },
+    {
+      "name": "Migration creates public.support_ticket_messages table with is_internal flag",
+      "passed": true,
+      "details": "Strict isolation for internal notes"
+    },
+    {
+      "name": "Migration creates performance indexes for tickets and messages",
+      "passed": true,
+      "details": "Fast query indexes on user_id, status, ticket_id, is_internal"
+    },
+    {
+      "name": "Migration enables RLS on both support_tickets and support_ticket_messages",
+      "passed": true,
+      "details": "Enforced at database level"
+    },
+    {
+      "name": "Migration implements strict RLS SELECT isolating user tickets",
+      "passed": true,
+      "details": "Users view own; Admins view all"
+    },
+    {
+      "name": "Migration implements strict RLS for messages hiding internal notes from users",
+      "passed": true,
+      "details": "Users NEVER receive is_internal = true messages"
+    },
+    {
+      "name": "Migration implements database trigger protecting ticket integrity",
+      "passed": true,
+      "details": "Prevents ownership theft, internal note tamper, or rogue escalations"
+    },
+    {
+      "name": "Migration implements secure RPC procedures with audit logging",
+      "passed": true,
+      "details": "RPC functions with parameter validation and audit logging"
+    },
+    {
+      "name": "support.html exists in project root",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html has RTL direction",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html has viewport meta tag",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html has descriptive meta title and description",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html displays healthcare privacy alert (no clinical details in support)",
+      "passed": true,
+      "details": "Healthcare privacy guard against clinical data leakage"
+    },
+    {
+      "name": "support.html has tab bar (My Tickets vs New Ticket)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html new ticket form has all 6 required categories",
+      "passed": true,
+      "details": "technical, account, appointment, consultation, inquiry, complaint"
+    },
+    {
+      "name": "support.html has priority select (normal, low, high, urgent)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "support.html has ticket conversation modal with reply composer & close button",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "js/support.js exists and is loaded as module",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "js/support.js validates input lengths (subject >= 3, description >= 10)",
+      "passed": true,
+      "details": "Subject min 3, description min 10"
+    },
+    {
+      "name": "js/support.js restricts file upload size to 5MB",
+      "passed": true,
+      "details": "5MB max attachment limit"
+    },
+    {
+      "name": "js/support.js integrates with notification engine (createNotification)",
+      "passed": true,
+      "details": "In-app notifications on ticket creation"
+    },
+    {
+      "name": "js/support.js provides safe local fallback for resilience",
+      "passed": true,
+      "details": "Zero crashes if network or migration pending"
+    },
+    {
+      "name": "admin/support.html exists",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin/support.html includes dynamic sidebar and header roots",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin/support.html loads admin_components.js and guard.js",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin/support.html has 5 KPI stat cards",
+      "passed": true,
+      "details": "Total, Open, In Progress, Waiting, Resolved"
+    },
+    {
+      "name": "admin/support.html has search and multi-criteria filters",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin/support.html has dual composer (Public Reply vs Internal Staff Note)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin/support.html has CSV export button",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "js/admin_support.js exists and is loaded as module",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_support.js strictly checks admin/super_admin role in profiles",
+      "passed": true,
+      "details": "Strict RBAC route protection"
+    },
+    {
+      "name": "admin_support.js clearly differentiates internal notes from public replies",
+      "passed": true,
+      "details": "Internal note banner and styling"
+    },
+    {
+      "name": "admin_support.js automatically updates ticket status to waiting_user on public reply",
+      "passed": true,
+      "details": "Prompts user for followup"
+    },
+    {
+      "name": "admin_support.js generates UTF-8 BOM CSV for Arabic spreadsheet compatibility",
+      "passed": true,
+      "details": "Compatible with Excel in Arabic"
+    },
+    {
+      "name": "services/email_service.js exists",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "email_service.js has support_ticket_created template",
+      "passed": true,
+      "details": "Ticket confirmation template"
+    },
+    {
+      "name": "email_service.js has support_ticket_reply template",
+      "passed": true,
+      "details": "Staff response notification template"
+    },
+    {
+      "name": "email_service.js has support_ticket_status template",
+      "passed": true,
+      "details": "Status transition / resolution template"
+    },
+    {
+      "name": "email_service.js sanitizes medical keywords from support emails",
+      "passed": true,
+      "details": "Prevents accidental leakage of clinical keywords"
+    },
+    {
+      "name": "css/admin.css has ticket status badges (open, waiting_user, resolved, closed)",
+      "passed": true,
+      "details": "Colors match design system"
+    },
+    {
+      "name": "css/admin.css has priority badges (urgent, high, normal, low)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "css/admin.css has conversation thread and bubble styles (user, staff, internal)",
+      "passed": true,
+      "details": "Clear visual distinction for internal notes"
+    },
+    {
+      "name": "admin_components.js sidebar has link to support.html (مركز الدعم والشكاوى)",
+      "passed": true,
+      "details": "Integrated in Admin navigation"
+    },
+    {
+      "name": "dashboard.html sidebar has link to support.html",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "profile.html sidebar has link to support.html",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "emr.html sidebar has link to support.html",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User Alpha can view their own ticket (t1)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User Alpha CANNOT view User Beta's ticket (t2)",
+      "passed": true,
+      "details": "RLS User Isolation enforced"
+    },
+    {
+      "name": "User Beta CANNOT view User Alpha's ticket (t1)",
+      "passed": true,
+      "details": "Bidirectional Isolation enforced"
+    },
+    {
+      "name": "Admin can view all tickets (t1 & t2)",
+      "passed": true,
+      "details": "Staff supervision authorized"
+    },
+    {
+      "name": "User Alpha can view public message on their ticket",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User Alpha CANNOT view internal staff note on their ticket",
+      "passed": true,
+      "details": "Internal staff notes strictly hidden from requester"
+    },
+    {
+      "name": "Admin can view both public messages and internal notes",
+      "passed": true,
+      "details": "Admins have complete visibility"
+    },
+    {
+      "name": "Super Admin Authentication",
+      "passed": true,
+      "details": "Logged in as sidialiabdouu@gmail.com"
+    },
+    {
+      "name": "Super Admin Profile Verification",
+      "passed": true,
+      "details": "Role: super_admin"
+    }
+  ]
+}

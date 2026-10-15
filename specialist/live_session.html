@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرفة الجلسة الحية - بوابة المختصين</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <style>
+        body { background-color: var(--bg-primary); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .ls-header { background: #0f172a; color: white; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10; }
+        .ls-header-left { display: flex; align-items: center; gap: 15px; }
+        .ls-patient-info { display: flex; flex-direction: column; }
+        .ls-patient-name { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .ls-status-dot { width: 10px; height: 10px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+        .ls-header-right { display: flex; align-items: center; gap: 1rem; }
+        .ls-timer { font-family: monospace; font-size: 1.4rem; font-weight: bold; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 8px; color: #38bdf8; }
+        
+        .ls-main { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Chat Area */
+        .ls-chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-primary); border-left: 1px solid var(--border-color); position: relative; }
+        
+        /* Video Container */
+        .video-box { display: none; background: #0f172a; position: relative; height: 260px; border-bottom: 2px solid var(--brand-accent); }
+        .video-remote { width: 100%; height: 100%; object-fit: cover; }
+        .video-local { position: absolute; bottom: 12px; left: 12px; width: 100px; height: 75px; border-radius: 8px; object-fit: cover; border: 2px solid white; background: #1e293b; z-index: 5; }
+        .video-controls { position: absolute; bottom: 12px; right: 50%; transform: translateX(50%); display: flex; gap: 8px; background: rgba(0,0,0,0.6); padding: 6px 14px; border-radius: 20px; z-index: 5; }
+        .v-btn { background: #334155; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .v-btn:hover { background: var(--brand-accent); }
+        .v-btn-danger { background: #ef4444; }
+
+        .ls-messages { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+        
+        .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; position: relative; font-size: 0.95rem; line-height: 1.5; word-break: break-word; }
+        .msg-me { background: var(--brand-accent); color: white; align-self: flex-start; border-top-right-radius: 2px; }
+        .msg-other { background: var(--surface-color); color: var(--text-primary); align-self: flex-end; border-top-left-radius: 2px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .msg-meta { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 0.7rem; opacity: 0.85; margin-top: 4px; }
+        .msg-status-ticks { font-weight: bold; }
+        .msg-status-read { color: #60a5fa; }
+        
+        .msg-typing { padding: 0 1.5rem 0.5rem 1.5rem; color: var(--brand-accent); font-size: 0.85rem; font-style: italic; display: none; }
+        
+        .ls-input-area { padding: 1rem; background: var(--surface-color); border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; }
+        .ls-input-wrapper { flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 24px; padding: 4px 12px; display: flex; align-items: center; }
+        .ls-input-wrapper textarea { flex: 1; border: none; background: transparent; resize: none; max-height: 100px; padding: 8px 0; font-family: inherit; outline: none; color: var(--text-primary); }
+        .ls-send-btn { background: var(--brand-accent); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform var(--transition-fast); }
+        .ls-send-btn:hover { transform: scale(1.05); }
+
+        .ls-sidebar { width: 350px; background: var(--surface-color); display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
+        .ls-tabs { display: flex; border-bottom: 1px solid var(--border-color); }
+        .ls-tab { flex: 1; text-align: center; padding: 12px 0; font-weight: bold; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; }
+        .ls-tab.active { color: var(--brand-accent); border-bottom-color: var(--brand-accent); }
+        
+        .ls-tab-content { flex: 1; padding: 1.5rem; overflow-y: auto; display: none; }
+        .ls-tab-content.active { display: block; }
+        
+        .note-textarea { width: 100%; height: 180px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-family: inherit; resize: vertical; margin-bottom: 10px; background: var(--bg-secondary); color: var(--text-primary); }
+        
+        @media (max-width: 991px) {
+            .ls-main { flex-direction: column; }
+            .ls-sidebar { width: 100%; height: 300px; }
+        }
+    </style>
+    <script type="module" src="../js/specialist_components.js"></script>
+</head>
+<body>
+    <div class="ls-header">
+        <div class="ls-header-left">
+            <a href="consultations.html" style="color: white; text-decoration: none; font-size: 0.9rem;">&larr; القائمة</a>
+            <div class="ls-patient-info">
+                <div class="ls-patient-name"><span class="ls-status-dot"></span> <span id="pat-name">جاري التحميل...</span></div>
+                <div style="font-size: 0.8rem; opacity: 0.8;">رقم الاستشارة: <span id="sess-id">...</span></div>
+            </div>
+        </div>
+        <div class="ls-header-right">
+            <button class="btn btn-primary" id="btn-start-video" style="padding:4px 10px; font-size:0.85rem;" onclick="startVideoCall()">📹 مكالمة مرئية</button>
+            <div class="ls-timer" id="timer">00:00</div>
+            <button class="theme-switcher" title="تبديل المظهر"></button>
+            <button class="btn" style="background:#dc2626; color:white; border:none; padding: 6px 14px; font-size:0.85rem;" onclick="endSession()">إنهاء الجلسة</button>
+        </div>
+    </div>
+
+    <div class="ls-main">
+        <!-- Chat Area -->
+        <div class="ls-chat-area">
+            <!-- Video Consultation Container -->
+            <div class="video-box" id="video-container">
+                <video id="remote-video" class="video-remote" autoplay playsinline></video>
+                <video id="local-video" class="video-local" autoplay playsinline muted></video>
+                <div class="video-controls">
+                    <button class="v-btn" id="btn-toggle-mic" title="كتم/تشغيل الميكروفون" onclick="toggleMic()">🎙️</button>
+                    <button class="v-btn" id="btn-toggle-cam" title="إيقاف/تشغيل الكاميرا" onclick="toggleCam()">📷</button>
+                    <button class="v-btn" id="btn-screen-share" title="مشاركة الشاشة" onclick="toggleScreen()">🖥️</button>
+                    <button class="v-btn v-btn-danger" title="إنهاء المكالمة" onclick="endVideoCall()">📵</button>
+                </div>
+                <div id="v-status" style="position:absolute; top:10px; right:15px; color:white; background:rgba(0,0,0,0.5); padding:3px 10px; border-radius:12px; font-size:0.8rem;">جاهز للاتصال</div>
+            </div>
+
+            <div class="ls-messages" id="chat-box">
+                <div style="text-align:center; color: var(--text-secondary); font-size:0.9rem; margin-top:2rem;">بدأت الجلسة، جميع الرسائل محفوظة في السجل السريري للمريض.</div>
+            </div>
+            
+            <div class="msg-typing" id="typing-ind">المريض يكتب الآن...</div>
+            
+            <div class="ls-input-area">
+                <div class="ls-input-wrapper">
+                    <textarea id="chat-input" placeholder="اكتب ردك السريري للمريض..." rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                </div>
+                <button class="ls-send-btn" onclick="sendMessage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+            </div>
+        </div>
+
+        <!-- Right Sidebar (EMR & Clinical Notes) -->
+        <div class="ls-sidebar">
+            <div class="ls-tabs">
+                <div class="ls-tab active" data-target="tab-notes">الملاحظات السريرية السرية</div>
+                <div class="ls-tab" data-target="tab-files">الوصفات والتقارير</div>
+            </div>
+            
+            <div id="tab-notes" class="ls-tab-content active">
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px;">هذه الملاحظات سرية وتُحفظ في السجل الطبي للمريض فقط، ولا تظهر له في الشات.</p>
+                <textarea class="note-textarea" id="private-note" placeholder="اكتب التشخيص أو الملاحظات السريرية هنا..."></textarea>
+                <button class="btn btn-primary" style="width:100%; font-size:0.9rem;" onclick="saveNote()">حفظ الملاحظة للسجل الطبي</button>
+                <div id="notes-list" style="margin-top: 1rem; display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+            
+            <div id="tab-files" class="ls-tab-content">
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+                    <button type="button" class="btn btn-outline" style="width:100%; font-size:0.9rem;" onclick="openPrescriptionModal()">إصدار وصفة طبية معتمدة 💊</button>
+                    <button type="button" class="btn btn-outline" style="width:100%; font-size:0.9rem;" onclick="openReportModal()">كتابة واعتماد تقرير الجلسة 📄</button>
+                </div>
+                <div id="live-session-docs-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Prescription Modal -->
+    <div id="modal-live-prescription" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:99999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:18px; max-width:650px; width:100%; max-height:90vh; overflow-y:auto; padding:1.5rem; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
+                <h3 style="margin:0; font-size:1.15rem; color:var(--specialist-primary); font-weight:800;">💊 إصدار وصفة طبية علاجية للجلسة</h3>
+                <button type="button" onclick="closePrescriptionModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <form onsubmit="handleLivePrescriptionSubmit(event)">
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; margin-bottom:4px;">التشخيص السريري المعتمد:</label>
+                    <input type="text" id="live-rx-diagnosis" placeholder="مثال: التهاب حاد، قلق واضطراب نوم..." style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit; font-size:0.88rem;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="font-size:0.82rem; font-weight:700;">الأدوية الموصوفة والجرعات:</label>
+                        <button type="button" onclick="addLiveMedRow()" class="btn btn-outline btn-sm" style="padding:3px 10px; font-size:0.78rem; border-radius:6px;">➕ إضافة دواء</button>
+                    </div>
+                    <div id="live-rx-meds-container" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; margin-bottom:4px;">تعليمات الاستخدام والملاحظات السريرية *:</label>
+                    <textarea id="live-rx-instructions" rows="3" required placeholder="إرشادات الجرعات ومواعيد الاستخدام والمحاذير..." style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit; font-size:0.88rem; line-height:1.6;"></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closePrescriptionModal()">إلغاء</button>
+                    <button type="submit" id="btn-submit-live-rx" class="btn btn-primary" style="padding:8px 16px; border-radius:10px; font-weight:700;">حفظ واعتماد الوصفة 💾</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Consultation Report Modal -->
+    <div id="modal-live-report" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:99999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:18px; max-width:650px; width:100%; max-height:90vh; overflow-y:auto; padding:1.5rem; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
+                <h3 style="margin:0; font-size:1.15rem; color:var(--specialist-primary); font-weight:800;">📄 كتابة واعتماد تقرير الاستشارة الطبية</h3>
+                <button type="button" onclick="closeReportModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <form onsubmit="handleLiveReportSubmit(event)">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; margin-bottom:4px;">التقرير الطبي والتوصيات السريرية للجلسة *:</label>
+                    <textarea id="live-report-text" rows="5" required placeholder="تدوين التقييم السريري، نتائج الجلسة، والخطة العلاجية والتوصيات المستقبلية..." style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit; font-size:0.88rem; line-height:1.6;"></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closeReportModal()">إلغاء</button>
+                    <button type="submit" id="btn-submit-live-report" class="btn btn-primary" style="padding:8px 16px; border-radius:10px; font-weight:700;">اعتماد وحفظ التقرير 💾</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/specialist/live_session.js"></script>
+    <script>
+        document.querySelectorAll('.ls-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.ls-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.ls-tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+            });
+        });
+    </script>
+
+    <!-- Global Toast Notification System -->
+    <script>
+        window.showToast = function(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = 'position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            let bg = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+            toast.style.cssText = `background: ${bg}; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+    </script>
+
+</body>
+</html>

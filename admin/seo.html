@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    <title>مركز إدارة السيو (SEO Center)</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .seo-panel { background: var(--surface-color); border: 1px solid var(--border-color, #e2e8f0); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.75rem; box-shadow: var(--card-shadow); transition: all 0.25s ease; }
+        .tabs-nav { display: flex; gap: 8px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--admin-border); padding-bottom: 12px; }
+        .tab-btn { background: transparent; border: none; color: var(--admin-text-muted); padding: 8px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+        .tab-btn:hover { background: rgba(0,0,0,0.03); }
+        .tab-btn.active { background: var(--primary-color); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Google Preview Styles */
+        .google-preview { background: #fff; border-radius: 8px; padding: 1.2rem; margin-top: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-family: Arial, sans-serif; text-align: left; direction: ltr; }
+        .g-url { color: #202124; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .g-title { color: #1a0dab; font-size: 20px; text-decoration: none; margin-bottom: 4px; cursor: pointer; display: block; }
+        .g-title:hover { text-decoration: underline; }
+        .g-desc { color: #4d5156; font-size: 14px; line-height: 1.58; word-wrap: break-word; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        @media(min-width: 768px) { .form-row { grid-template-columns: 1fr 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-weight: 600; font-size: 0.95rem; display: flex; justify-content: space-between; }
+        .char-count { font-size: 0.8rem; font-weight: normal; color: var(--admin-text-muted); }
+        .char-count.good { color: var(--success-color); }
+        .char-count.warning { color: #f59e0b; }
+        .char-count.danger { color: var(--danger-color); }
+        .form-input, .form-textarea { width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); font-family: inherit; font-size: 0.95rem; }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-input:focus, .form-textarea:focus { border-color: var(--primary-color); outline: none; }
+
+        .seo-score { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px; }
+        .score-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; color: white; }
+        .score-good { background: var(--success-color); }
+        .score-warning { background: #f59e0b; }
+        .score-danger { background: var(--danger-color); }
+        .score-details ul { margin: 0; padding-right: 1.5rem; color: var(--admin-text-muted); font-size: 0.9rem; }
+        .score-details li { margin-bottom: 4px; }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-target="tab-pages">صفحات الموقع</button>
+                    <button class="tab-btn" data-target="tab-sitemap">Sitemap & Robots</button>
+                </div>
+
+                <!-- Tab 1: Pages List -->
+                <div id="tab-pages" class="tab-content active">
+                    <div class="seo-panel" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0;">الصفحات المهيأة</h3>
+                        <button class="btn btn-primary" onclick="openEditModal('')">+ تهيئة صفحة جديدة</button>
+                    </div>
+                    
+                    <div class="seo-panel">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>المسار (Path)</th>
+                                    <th>العنوان (Title)</th>
+                                    <th>الكلمات المفتاحية</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pages-tbody">
+                                <tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Sitemap -->
+                <div id="tab-sitemap" class="tab-content">
+                    <div class="seo-panel">
+                        <h3 style="margin-bottom:1rem;">توليد ملفات العناكب (Crawlers)</h3>
+                        <p style="color:var(--admin-text-muted); margin-bottom: 1.5rem;">بما أن الموقع لا يمتلك خادماً لتوليد هذه الملفات ديناميكياً عند الطلب، يمكنك توليدها هنا ونسخ محتواها لملفات <code>sitemap.xml</code> و <code>robots.txt</code> في استضافتك.</p>
+                        
+                        <div class="form-row">
+                            <div>
+                                <h4 style="margin-bottom:8px;">sitemap.xml</h4>
+                                <button class="btn btn-outline" onclick="generateSitemap()" style="margin-bottom:8px; width:100%;">توليد Sitemap</button>
+                                <textarea id="sitemap-output" class="form-textarea" style="height:300px; font-family:monospace; direction:ltr;" readonly></textarea>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom:8px;">robots.txt</h4>
+                                <button class="btn btn-outline" onclick="generateRobots()" style="margin-bottom:8px; width:100%;">توليد Robots.txt</button>
+                                <textarea id="robots-output" class="form-textarea" style="height:300px; font-family:monospace; direction:ltr;" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit SEO Modal -->
+    <div id="edit-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center; overflow-y:auto; padding: 2rem;">
+        <div class="seo-panel" style="width:900px; max-width:100%; position:relative;">
+            <button style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer;" onclick="document.getElementById('edit-modal').style.display='none'">&times;</button>
+            <h3 style="margin-bottom:1.5rem;" id="modal-title">تعديل الـ SEO</h3>
+            
+            <div class="form-row">
+                <!-- Left Side: Inputs -->
+                <div>
+                    <input type="hidden" id="seo_id">
+                    <div class="form-group">
+                        <label>مسار الصفحة (مثال: /about.html)</label>
+                        <input type="text" id="seo_path" class="form-input" dir="ltr">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>عنوان الصفحة (Meta Title) <span id="title-count" class="char-count">0/60</span></label>
+                        <input type="text" id="seo_title" class="form-input" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>وصف الصفحة (Meta Description) <span id="desc-count" class="char-count">0/160</span></label>
+                        <textarea id="seo_desc" class="form-textarea" oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>الكلمات المفتاحية (مفصولة بفاصلة)</label>
+                        <input type="text" id="seo_keywords" class="form-input">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>رابط الصورة (Open Graph Image)</label>
+                        <input type="text" id="seo_og" class="form-input" dir="ltr" placeholder="https://...">
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>الرابط الأصلي (Canonical URL)</label>
+                        <input type="text" id="seo_canonical" class="form-input" dir="ltr" placeholder="https://yhs.com/...">
+                    </div>
+                </div>
+                
+                <!-- Right Side: Preview & Analysis -->
+                <div>
+                    <h4 style="margin-bottom:8px;">معاينة نتائج جوجل (Google Preview)</h4>
+                    <div class="google-preview">
+                        <div class="g-url" id="pv-url">https://yhs.com <span>›</span> ...</div>
+                        <div class="g-title" id="pv-title">العنوان سيظهر هنا</div>
+                        <div class="g-desc" id="pv-desc">وصف الصفحة سيظهر هنا في محركات البحث. تأكد من أنه جذاب ويشجع على النقر.</div>
+                    </div>
+
+                    <div class="seo-score" id="seo-score-box">
+                        <div class="score-circle score-warning" id="seo-score-num">0</div>
+                        <div class="score-details" id="seo-score-details">
+                            <ul>
+                                <li>جاري التحليل...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:2rem; border-top:1px solid var(--border-color); padding-top:1rem;">
+                <button class="btn btn-outline" onclick="document.getElementById('edit-modal').style.display='none'">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveSEO()">حفظ التعديلات</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_seo.js"></script>
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.getAttribute('data-target')).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

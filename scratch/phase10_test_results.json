@@ -1,0 +1,292 @@
+{
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Phase 10 SQL Migration file exists",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Migration has column idempotency (ADD COLUMN IF NOT EXISTS)",
+      "passed": true,
+      "details": "email, account_status columns"
+    },
+    {
+      "name": "Migration creates performance indexes on email, role, and status",
+      "passed": true,
+      "details": "idx_profiles_email, idx_profiles_role, idx_profiles_status"
+    },
+    {
+      "name": "Migration seeds standard approved project roles",
+      "passed": true,
+      "details": "super_admin, admin, specialist, volunteer, user"
+    },
+    {
+      "name": "Migration enforces RLS on roles and adds SELECT policy",
+      "passed": true,
+      "details": "Protects roles table with authenticated SELECT"
+    },
+    {
+      "name": "Migration hardens profiles UPDATE RLS policy for Admin management",
+      "passed": true,
+      "details": "Allows users own profile OR admins management"
+    },
+    {
+      "name": "Migration implements DB trigger function protect_profile_roles_and_status",
+      "passed": true,
+      "details": "Engine-level trigger preventing client privilege escalation"
+    },
+    {
+      "name": "Migration trigger strictly protects Super Admin privilege escalation",
+      "passed": true,
+      "details": "Non-super_admin cannot grant or touch super_admin"
+    },
+    {
+      "name": "Migration trigger strictly prevents self-role changes and self-banning",
+      "passed": true,
+      "details": "Prevents accidental lockout and self-elevation"
+    },
+    {
+      "name": "Migration includes secure RPC functions with audit logging",
+      "passed": true,
+      "details": "Audit logging for role and status changes"
+    },
+    {
+      "name": "Guard normalizes role strings (handles 'Super Admin', uppercase, whitespace)",
+      "passed": true,
+      "details": "Normalized lowercase underscore"
+    },
+    {
+      "name": "auth.js normalizes role in signIn, getUserRole, and redirectUserByRole",
+      "passed": true,
+      "details": "Resilient role matching"
+    },
+    {
+      "name": "Access to /admin/users.html for [Visitor] -> REDIRECT_LOGIN",
+      "passed": true,
+      "details": "Result: REDIRECT_LOGIN"
+    },
+    {
+      "name": "Access to /admin/users.html for [user] -> BLOCK_UNAUTHORIZED",
+      "passed": true,
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Access to /admin/users.html for [volunteer] -> BLOCK_UNAUTHORIZED",
+      "passed": true,
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Access to /admin/users.html for [specialist] -> BLOCK_UNAUTHORIZED",
+      "passed": true,
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Access to /admin/users.html for [doctor] -> BLOCK_UNAUTHORIZED",
+      "passed": true,
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Access to /admin/users.html for [admin] -> ALLOW_ADMIN",
+      "passed": true,
+      "details": "Result: ALLOW_ADMIN"
+    },
+    {
+      "name": "Access to /admin/users.html for [super_admin] -> ALLOW_ADMIN",
+      "passed": true,
+      "details": "Result: ALLOW_ADMIN"
+    },
+    {
+      "name": "Access to /admin/users.html for [Super Admin] -> ALLOW_ADMIN",
+      "passed": true,
+      "details": "Result: ALLOW_ADMIN"
+    },
+    {
+      "name": "users.html has RTL direction",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has mobile viewport meta tag",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has search input with aria-label",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has role filter with all project roles",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has status filter (active, inactive, suspended, banned)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has sorting controls (sortBy)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has page size selector (pageSizeSelect)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has CSV export button (exportUsersBtn)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html has statistics overview cards",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html contains Role Edit Modal (roleEditModal)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html contains Status Edit Modal (statusEditModal)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html contains Profile 360 Details Modal (profileDetailsModal)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html contains Confirmation Dialog (confirmActionModal)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "users.html contains Skeleton shimmer loaders",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains volunteer status badge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains inactive status badge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains suspended status badge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains banned status badge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains user details grid classes",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin.css contains confirmation dialog classes",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js checks session and verifies admin role",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js loads real data from Supabase profiles",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js handles network errors with friendly error state and retry",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js supports multi-attribute live search (name, email, phone, wilaya, id)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js supports role and status filtering",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js supports sorting (newest, oldest, name, role, status)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js prevents self-role modification (Privilege Lockout Protection)",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js prevents non-super-admin from granting or editing Super Admin",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js prevents self-ban or self-suspension",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js requires confirmation dialog before sensitive changes",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js logs administrative operations to audit_logs",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "admin_users.js includes CSV export with UTF-8 BOM",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Anonymous client cannot elevate privileges or update profiles",
+      "passed": true,
+      "details": "0 rows updated (RLS active)"
+    },
+    {
+      "name": "Super Admin authentication works with production credentials",
+      "passed": true,
+      "details": "UID: e1ffe9ec-305d-411b-a762-b157d7b5311a"
+    },
+    {
+      "name": "Authorized Administrator can read all registered user profiles",
+      "passed": true,
+      "details": "Found 2 real profiles"
+    },
+    {
+      "name": "Profile records never expose passwords or secret tokens",
+      "passed": true,
+      "details": "Clean data model adheres to SECURITY.md"
+    },
+    {
+      "name": "Profiles contain role, created_at, and account_status fields",
+      "passed": true,
+      "details": "Role: super_admin, Created: 2026-10-13T00:59:34.079842+00:00"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "total": 26,
+  "passed": 25,
+  "failed": 1,
+  "tests": [
+    {
+      "name": "Authentication for test session",
+      "status": "PASSED",
+      "details": "Authenticated sidialiabdouu@gmail.com"
+    },
+    {
+      "name": "1.1 Create consultation request notification",
+      "status": "PASSED",
+      "details": "Created ID: 8f0b084e-f3d6-4d6d-9583-5df69cd3f0d8"
+    },
+    {
+      "name": "1.2 Create consultation status change notification",
+      "status": "PASSED",
+      "details": "Created ID: 618e0061-78c1-426e-ac64-bdaa2e189516"
+    },
+    {
+      "name": "1.3 Create appointment confirmation notification",
+      "status": "PASSED",
+      "details": "Created ID: 47feaabd-883e-4f06-88b9-1cf02397653d"
+    },
+    {
+      "name": "1.4 Create upcoming appointment reminder notification",
+      "status": "PASSED",
+      "details": "Created ID: 391cf18d-b4be-4691-b7d4-79090b178538"
+    },
+    {
+      "name": "1.5 Create medical report & prescription notification",
+      "status": "PASSED",
+      "details": "Created ID: 7a8dff2d-0130-4d1d-8224-7abd3a540b54"
+    },
+    {
+      "name": "1.6 Create global administrative announcement (user_id = null)",
+      "status": "PASSED",
+      "details": "Created ID: 9754206a-0041-441a-8a02-ff1745a8203e"
+    },
+    {
+      "name": "2.1 Initial state of created notification is is_read = false",
+      "status": "PASSED",
+      "details": "is_read is false"
+    },
+    {
+      "name": "2.2 Mark single notification as read persists in DB",
+      "status": "PASSED",
+      "details": "is_read = true"
+    },
+    {
+      "name": "2.3 Mark all as read executes successfully",
+      "status": "PASSED",
+      "details": "Success"
+    },
+    {
+      "name": "2.4 Unread count correctly drops to 0 after mark-all-read",
+      "status": "PASSED",
+      "details": "Remaining unread: 0"
+    },
+    {
+      "name": "3.1 User A cannot access User B private notifications (Strict Isolation)",
+      "status": "PASSED",
+      "details": "No cross-user leakage detected"
+    },
+    {
+      "name": "4.1 In-App deduplication logic detects recent identical notification within 5m",
+      "status": "PASSED",
+      "details": "Found 1 matches"
+    },
+    {
+      "name": "4.2 Email deduplication prevents sending duplicate email within 15m window",
+      "status": "PASSED",
+      "details": "Duplicate email was identified and blocked"
+    },
+    {
+      "name": "5.1 Privacy sanitizer strips clinical diagnosis and medication dosages",
+      "status": "PASSED",
+      "details": "Sanitized: The patient *** is Hypertension, prescribed Amoxicillin 500*** ***."
+    },
+    {
+      "name": "5.2 Email template renders valid Arabic RTL HTML with confidentiality callout",
+      "status": "PASSED",
+      "details": "Arabic RTL and privacy callout verified"
+    },
+    {
+      "name": "5.3 Email service successfully dispatches via Resend API when credentials are provided",
+      "status": "FAILED",
+      "details": "Status: duplicate_skipped, Resend ID: N/A"
+    },
+    {
+      "name": "5.4 email_logs table captures safe audit record without secret leakage",
+      "status": "PASSED",
+      "details": "Latest audit status: failed"
+    },
+    {
+      "name": "6.1 Test appointments setup (Confirmed & Cancelled)",
+      "status": "PASSED",
+      "details": "Confirmed: 0faea736-cd4f-4e85-84a2-003b905d1d2e, Cancelled: 9a0f0ba8-8b28-4367-9262-4508d975cacc"
+    },
+    {
+      "name": "6.2 Reminder runner correctly skips cancelled/rescheduled appointments",
+      "status": "PASSED",
+      "details": "Skipped cancelled count: 1"
+    },
+    {
+      "name": "6.3 Reminder runner dispatches reminder for confirmed appointment",
+      "status": "PASSED",
+      "details": "Dispatched: 1, Duplicates skipped: 0"
+    },
+    {
+      "name": "6.4 hasExistingInAppReminder confirms in-app reminder creation",
+      "status": "PASSED",
+      "details": "Reminder confirmed in notifications table"
+    },
+    {
+      "name": "6.5 Second reminder run skips confirmed appointment due to deduplication",
+      "status": "PASSED",
+      "details": "Duplicates skipped on second run: 1"
+    },
+    {
+      "name": "7.1 Consultations table accessible without RLS breakage",
+      "status": "PASSED",
+      "details": "Rows: 0"
+    },
+    {
+      "name": "7.2 EMR case_notes table accessible",
+      "status": "PASSED",
+      "details": "Rows: 0"
+    },
+    {
+      "name": "7.3 Profiles and roles preserved without degradation",
+      "status": "PASSED",
+      "details": "Role: super_admin"
+    }
+  ]
+}

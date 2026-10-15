@@ -1,0 +1,289 @@
+{
+  "total": 56,
+  "passed": 55,
+  "failed": 0,
+  "blocked": 1,
+  "not_run": 0,
+  "tests": [
+    {
+      "name": "Super Admin Authentication (sidialiabdouu@gmail.com)",
+      "status": "PASSED",
+      "details": "UID: e1ffe9ec-305d-411b-a762-b157d7b5311a"
+    },
+    {
+      "name": "Super Admin Role Verification in Database",
+      "status": "PASSED",
+      "details": "Role: Admin"
+    },
+    {
+      "name": "Synthetic Patient Authentication (test.patient)",
+      "status": "BLOCKED",
+      "details": "Account created in Supabase Auth, email confirmation pending in cloud settings"
+    },
+    {
+      "name": "Login Redirection for [super_admin] -> admin/index.html",
+      "status": "PASSED",
+      "details": "Resolved: admin/index.html"
+    },
+    {
+      "name": "Login Redirection for [Super Admin] -> admin/index.html",
+      "status": "PASSED",
+      "details": "Resolved: admin/index.html"
+    },
+    {
+      "name": "Login Redirection for [admin] -> admin/index.html",
+      "status": "PASSED",
+      "details": "Resolved: admin/index.html"
+    },
+    {
+      "name": "Login Redirection for [Admin] -> admin/index.html",
+      "status": "PASSED",
+      "details": "Resolved: admin/index.html"
+    },
+    {
+      "name": "Login Redirection for [specialist] -> specialist/index.html",
+      "status": "PASSED",
+      "details": "Resolved: specialist/index.html"
+    },
+    {
+      "name": "Login Redirection for [doctor] -> specialist/index.html",
+      "status": "PASSED",
+      "details": "Resolved: specialist/index.html"
+    },
+    {
+      "name": "Login Redirection for [psychologist] -> specialist/index.html",
+      "status": "PASSED",
+      "details": "Resolved: specialist/index.html"
+    },
+    {
+      "name": "Login Redirection for [nutritionist] -> specialist/index.html",
+      "status": "PASSED",
+      "details": "Resolved: specialist/index.html"
+    },
+    {
+      "name": "Login Redirection for [user] -> dashboard.html",
+      "status": "PASSED",
+      "details": "Resolved: dashboard.html"
+    },
+    {
+      "name": "Login Redirection for [patient] -> dashboard.html",
+      "status": "PASSED",
+      "details": "Resolved: dashboard.html"
+    },
+    {
+      "name": "Login Redirection for [volunteer] -> dashboard.html",
+      "status": "PASSED",
+      "details": "Resolved: dashboard.html"
+    },
+    {
+      "name": "Guard check for [Visitor] on [admin/users.html] -> REDIRECT_LOGIN",
+      "status": "PASSED",
+      "details": "Result: REDIRECT_LOGIN"
+    },
+    {
+      "name": "Guard check for [Visitor] on [specialist/patients.html] -> REDIRECT_LOGIN",
+      "status": "PASSED",
+      "details": "Result: REDIRECT_LOGIN"
+    },
+    {
+      "name": "Guard check for [Visitor] on [dashboard.html] -> REDIRECT_LOGIN",
+      "status": "PASSED",
+      "details": "Result: REDIRECT_LOGIN"
+    },
+    {
+      "name": "Guard check for [Visitor] on [index.html] -> ALLOW_PUBLIC",
+      "status": "PASSED",
+      "details": "Result: ALLOW_PUBLIC"
+    },
+    {
+      "name": "Guard check for [user] on [dashboard.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [user] on [admin/users.html] -> BLOCK_UNAUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Guard check for [user] on [specialist/patients.html] -> BLOCK_UNAUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Guard check for [specialist] on [specialist/patients.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [specialist] on [specialist/calendar.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [specialist] on [admin/users.html] -> BLOCK_UNAUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: BLOCK_UNAUTHORIZED"
+    },
+    {
+      "name": "Guard check for [specialist] on [dashboard.html] -> REDIRECT_SPECIALIST_PORTAL",
+      "status": "PASSED",
+      "details": "Result: REDIRECT_SPECIALIST_PORTAL"
+    },
+    {
+      "name": "Guard check for [admin] on [admin/index.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [admin] on [admin/users.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [admin] on [specialist/patients.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [super_admin] on [admin/users.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Guard check for [super_admin] on [admin/security.html] -> ALLOW_AUTHORIZED",
+      "status": "PASSED",
+      "details": "Result: ALLOW_AUTHORIZED"
+    },
+    {
+      "name": "Patient A can access their own public EMR record",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "Patient B CANNOT access Patient A's EMR record (Tenant Isolation)",
+      "status": "PASSED",
+      "details": "Cross-patient record snooping blocked"
+    },
+    {
+      "name": "Patient A CANNOT access their own private clinical notes (is_private = true)",
+      "status": "PASSED",
+      "details": "Clinical confidentiality preserved"
+    },
+    {
+      "name": "Doctor can access their patient's EMR records (public and private)",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "Anonymous client cannot self-promote to super_admin",
+      "status": "PASSED",
+      "details": "RLS & DB Trigger strictly prevent client privilege escalation"
+    },
+    {
+      "name": "File exists for route [/index.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/about.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/articles.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/events.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/login.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/register.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/dashboard.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/emr.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/consultations.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/support.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/profile.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/print_document.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/specialist/index.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/specialist/consultations.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/specialist/patients.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/specialist/calendar.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/admin/index.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/admin/users.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/admin/consultations.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/admin/support.html]",
+      "status": "PASSED",
+      "details": ""
+    },
+    {
+      "name": "File exists for route [/admin/security.html]",
+      "status": "PASSED",
+      "details": ""
+    }
+  ]
+}

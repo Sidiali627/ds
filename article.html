@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المقال - استوديو صحة الشباب</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        .article-header { text-align: center; margin-bottom: var(--spacing-xl); }
+        .article-header img { width: 100%; max-height: 400px; object-fit: cover; border-radius: var(--border-radius); margin-top: var(--spacing-md); }
+        .article-meta { color: var(--text-secondary); margin-bottom: var(--spacing-md); }
+        .article-body { font-size: 1.1rem; line-height: 1.8; }
+    </style>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container navbar">
+            <a href="index.html" class="nav-brand"><img loading="lazy" decoding="async" src="images/logo.png" alt="الشعار"></a>
+            <nav><ul class="nav-links"><li><a href="index.html">الرئيسية</a></li><li><a href="articles.html">المقالات</a></li></ul></nav>
+        </div>
+    </header>
+
+    <div class="container" style="max-width: 800px; padding: var(--spacing-xl) var(--spacing-md);" id="article-container">
+        <p>جاري التحميل...</p>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module">
+        import { fetchArticleById } from './js/data.js';
+        
+        async function loadArticle() {
+            const container = document.getElementById('article-container');
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            
+            if(!id) {
+                container.innerHTML = '<p>المقال غير موجود.</p>';
+                return;
+            }
+            
+            const article = await fetchArticleById(id);
+            if(!article) {
+                container.innerHTML = '<p>المقال غير موجود أو تم حذفه.</p>';
+                return;
+            }
+            
+            const date = new Date(article.created_at).toLocaleDateString('ar');
+            const author = article.profiles ? article.profiles.full_name : 'غير معروف';
+            const img = article.image_url ? `<img loading="lazy" decoding="async" src="${article.image_url}" alt="${article.title}">` : '';
+            
+            container.innerHTML = `
+                <div class="article-header">
+                    <h1>${article.title}</h1>
+                    <div class="article-meta">بقلم ${author} | ${date}</div>
+                    ${img}
+                </div>
+                <div class="article-body">
+                    ${article.content.replace(/\n/g, '<br>')}
+                </div>
+            `;
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadArticle);
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+{
+  "jsSyntaxErrors": [
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_ai.js",
+      "error": "(node:12108) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_ai.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_ai.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_appointments.js",
+      "error": "(node:3764) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_appointments.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_appointments.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_articles.js",
+      "error": "(node:2900) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_articles.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_articles.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_certificates.js",
+      "error": "(node:396) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_certificates.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_certificates.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_cms.js",
+      "error": "(node:1268) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_cms.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_cms.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_components.js",
+      "error": "(node:9744) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_components.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_components.js:2\r\nimport { signOut } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_consultations.js",
+      "error": "(node:8448) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_consultations.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_consultations.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm.js",
+      "error": "(node:9584) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm_profile.js",
+      "error": "(node:2068) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm_profile.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_crm_profile.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_dashboard.js",
+      "error": "(node:6764) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_dashboard.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_dashboard.js:2\r\nimport './guard.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_events.js",
+      "error": "(node:12196) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_events.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_events.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_media.js",
+      "error": "(node:1876) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_media.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_media.js:2\r\nimport { supabase, SUPABASE_URL } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_notifications.js",
+      "error": "(node:4128) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_notifications.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_notifications.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_security.js",
+      "error": "(node:9320) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_security.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_security.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_seo.js",
+      "error": "(node:12168) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_seo.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_seo.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_settings.js",
+      "error": "(node:7816) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_settings.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_settings.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_support.js",
+      "error": "(node:12192) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_support.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_support.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_users.js",
+      "error": "(node:4392) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_users.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\admin_users.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\ai_engine.js",
+      "error": "(node:5040) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\ai_engine.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\ai_engine.js:9\r\nexport async function askAI(messages, settings) {\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\auth.js",
+      "error": "(node:1564) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\auth.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\auth.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\cms.js",
+      "error": "(node:8560) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\cms.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\cms.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\components.js",
+      "error": "(node:6032) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\components.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\components.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\config.js",
+      "error": "(node:8320) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\config.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\config.js:16\r\nexport const SUPABASE_URL = getEnvVar('NEXT_PUBLIC_SUPABASE_URL') ||\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\consultations.js",
+      "error": "(node:1192) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\consultations.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\consultations.js:2\r\nimport { requireAuth } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\dashboard.js",
+      "error": "(node:2732) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\dashboard.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\dashboard.js:2\r\nimport { requireAuth, signOut } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\data.js",
+      "error": "(node:11852) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\data.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\data.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\doctor_profile.js",
+      "error": "(node:4104) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\doctor_profile.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\doctor_profile.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\emr.js",
+      "error": "(node:10584) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\emr.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\emr.js:2\r\nimport { requireAuth, signOut } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\events.js",
+      "error": "(node:6812) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\events.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\events.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\event_details.js",
+      "error": "(node:11892) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\event_details.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\event_details.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\guard.js",
+      "error": "(node:12092) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\guard.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\guard.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\health_tools.js",
+      "error": "(node:2184) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\health_tools.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\health_tools.js:2\r\nexport function calculateBMI(weightKg, heightCm) {\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\homepage.js",
+      "error": "(node:3764) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\homepage.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\homepage.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\map.js",
+      "error": "(node:10996) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\map.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\map.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\notifications.js",
+      "error": "(node:10128) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\notifications.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\notifications.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\print_document.js",
+      "error": "(node:5648) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\print_document.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\print_document.js:2\r\nimport { requireAuth } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\profile.js",
+      "error": "(node:7884) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\profile.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\profile.js:2\r\nimport { requireAuth, signOut } from './auth.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\seo_injector.js",
+      "error": "(node:32) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\seo_injector.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\seo_injector.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\site_initializer.js",
+      "error": "(node:1364) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\site_initializer.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\site_initializer.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\calendar.js",
+      "error": "(node:7192) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\calendar.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\calendar.js:2\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\consultations.js",
+      "error": "(node:4932) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\consultations.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\consultations.js:2\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\dashboard.js",
+      "error": "(node:7588) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\dashboard.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\dashboard.js:1\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\live_session.js",
+      "error": "(node:9252) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\live_session.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\live_session.js:1\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\patients.js",
+      "error": "(node:7128) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\patients.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\patients.js:1\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\profile.js",
+      "error": "(node:5936) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\profile.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist\\profile.js:1\r\nimport { supabase } from '../supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist_components.js",
+      "error": "(node:2952) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist_components.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\specialist_components.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\supabase.js",
+      "error": "(node:9860) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\supabase.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\supabase.js:2\r\nimport { SUPABASE_URL, SUPABASE_ANON_KEY, IS_CONFIGURED } from './config.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\support.js",
+      "error": "(node:11760) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\support.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\support.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\theme.js",
+      "error": "(node:12072) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\theme.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\theme.js:5\r\nexport function getPreferredTheme() {\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\toast.js",
+      "error": "(node:11416) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\toast.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\toast.js:2\r\nexport function showToast(message, type = 'info', duration = 4000) {\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_ai.js",
+      "error": "(node:5040) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_ai.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_ai.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_live_session.js",
+      "error": "(node:11840) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_live_session.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\user_live_session.js:1\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\verify.js",
+      "error": "(node:10360) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\verify.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\verify.js:2\r\nimport { supabase } from './supabase.js';\r\n^^^^^^\r\n\r\nSyntaxError: Cannot use import statement outside a module\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    },
+    {
+      "file": "C:\\Users\\abdelilah\\Desktop\\studio project\\js\\webrtc.js",
+      "error": "(node:10372) Warning: Failed to load the ES module: C:\\Users\\abdelilah\\Desktop\\studio project\\js\\webrtc.js. Make sure to set \"type\": \"module\" in the nearest package.json file or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\nC:\\Users\\abdelilah\\Desktop\\studio project\\js\\webrtc.js:2\r\nexport class WebRTCManager {\r\n^^^^^^\r\n\r\nSyntaxError: Unexpected token 'export'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\n    at checkSyntax (node:internal/main/check_syntax:76:3)\r\n\r\nNode.js v24.18.0\r\n"
+    }
+  ],
+  "missingElements": [],
+  "brokenLinks": [],
+  "missingAltImages": [],
+  "missingScripts": []
+}

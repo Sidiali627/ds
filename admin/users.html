@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المستخدمين والصلاحيات - الإدارة</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+    <style>
+        .role-shield-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin-left: 4px; }
+        .table-action-btns { display: flex; align-items: center; gap: 6px; }
+        .stat-card-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 99px; background: rgba(0,0,0,0.05); font-weight: 700; margin-top: 4px; display: inline-block; }
+        .user-quick-tag { background: rgba(2, 132, 199, 0.1); color: var(--brand-accent); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        .status-dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 6px; }
+        .status-dot-active { background: #10b981; }
+        .status-dot-inactive { background: #94a3b8; }
+        .status-dot-suspended { background: #f59e0b; }
+        .status-dot-banned { background: #ef4444; }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar dynamically injected here -->
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <!-- Header dynamically injected here -->
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Page Title & Header Actions -->
+                <div class="admin-panel-header" style="background: transparent; border: none; padding: 0 0 1.5rem 0; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h2 style="margin: 0; font-weight: 800; font-size: 1.6rem; color: var(--text-primary);">
+                            إدارة المستخدمين والصلاحيات (RBAC)
+                        </h2>
+                        <p style="color: var(--text-secondary); margin: 6px 0 0 0; font-size: 0.95rem;">
+                            التحكم الكامل في حسابات الأعضاء، الأدوار الوظيفية، حالات التفعيل، والامتيازات الإدارية وفق معايير الأمان المتقدمة.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-outline" id="refreshUsersBtn" title="تحديث البيانات">
+                            <span>🔄</span>
+                            <span>تحديث</span>
+                        </button>
+                        <button class="btn btn-outline" id="exportUsersBtn" title="تصدير قائمة المستخدمين بصيغة CSV">
+                            <span>📥</span>
+                            <span>تصدير CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Overview Grid -->
+                <div class="stats-grid" style="margin-bottom: 1.75rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(2, 132, 199, 0.1); color: var(--brand-accent, #0284c7);">
+                            👥
+                        </div>
+                        <div class="stat-details">
+                            <h3>إجمالي الحسابات</h3>
+                            <div class="stat-number" id="statTotalUsers">0</div>
+                            <span class="stat-card-badge">قاعدة البيانات الفعلية</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: #0284c7;">
+                            🩺
+                        </div>
+                        <div class="stat-details">
+                            <h3>الأطباء والمختصون</h3>
+                            <div class="stat-number" id="statSpecialists">0</div>
+                            <span class="stat-card-badge" style="color: #0284c7;">وصول سريري</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+                            🛡️
+                        </div>
+                        <div class="stat-details">
+                            <h3>فريق الإدارة</h3>
+                            <div class="stat-number" id="statAdmins">0</div>
+                            <span class="stat-card-badge" style="color: #7c3aed;">إشراف وصلاحيات</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                            🤝
+                        </div>
+                        <div class="stat-details">
+                            <h3>المتطوعون</h3>
+                            <div class="stat-number" id="statVolunteers">0</div>
+                            <span class="stat-card-badge" style="color: #059669;">العمل المجتمعي</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #dc2626;">
+                            🚫
+                        </div>
+                        <div class="stat-details">
+                            <h3>الحسابات المقيدة</h3>
+                            <div class="stat-number" id="statRestricted">0</div>
+                            <span class="stat-card-badge" style="color: #dc2626;">محظورة / موقوفة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Table Component -->
+                <div class="advanced-table-wrapper">
+                    <!-- Toolbar (Search, Filter, Sort & Counter) -->
+                    <div class="table-toolbar" style="padding: 1.25rem 1.5rem; gap: 1rem;">
+                        <div class="table-search" style="min-width: 280px; flex: 1.2;">
+                            <input type="text" id="searchInput" class="form-control" placeholder="ابحث بالاسم، البريد الإلكتروني، الهاتف، أو الولاية..." aria-label="البحث عن مستخدم">
+                        </div>
+
+                        <div class="table-filters" style="display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;">
+                            <!-- Filter by Role -->
+                            <select id="roleFilter" class="form-control" aria-label="تصفية حسب الدور" style="min-width: 160px;">
+                                <option value="all">كل الأدوار (All Roles)</option>
+                                <option value="super_admin">مدير نظام عام (Super Admin)</option>
+                                <option value="admin">مدير نظام (Admin)</option>
+                                <option value="specialist">طبيب / مختص (Specialist)</option>
+                                <option value="volunteer">متطوع (Volunteer)</option>
+                                <option value="user">مستخدم عادي (User)</option>
+                            </select>
+
+                            <!-- Filter by Status -->
+                            <select id="statusFilter" class="form-control" aria-label="تصفية حسب الحالة" style="min-width: 150px;">
+                                <option value="all">كل الحالات (All Statuses)</option>
+                                <option value="active">نشط (Active)</option>
+                                <option value="inactive">غير نشط (Inactive)</option>
+                                <option value="suspended">موقوف مؤقتاً (Suspended)</option>
+                                <option value="banned">محظور (Banned)</option>
+                            </select>
+
+                            <!-- Sort By -->
+                            <select id="sortBy" class="form-control" aria-label="ترتيب النتائج" style="min-width: 160px;">
+                                <option value="newest">الأحدث تسجيلاً</option>
+                                <option value="oldest">الأقدم تسجيلاً</option>
+                                <option value="name_asc">الاسم (أ - ي)</option>
+                                <option value="name_desc">الاسم (ي - أ)</option>
+                                <option value="role">حسب الصلاحية / الدور</option>
+                                <option value="status">حسب حالة الحساب</option>
+                            </select>
+
+                            <!-- Page Size -->
+                            <select id="pageSizeSelect" class="form-control" aria-label="عدد الصفوف" style="min-width: 90px;">
+                                <option value="10">10 / صفحة</option>
+                                <option value="25">25 / صفحة</option>
+                                <option value="50">50 / صفحة</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Filter Summary Indicator -->
+                    <div id="filterSummaryBar" style="padding: 0.5rem 1.5rem; background: var(--bg-primary); border-bottom: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+                        <span id="activeFilterCountText">جاري تحميل السجلات...</span>
+                        <button id="resetFiltersBtn" style="background: none; border: none; color: var(--brand-accent); font-weight: 700; cursor: pointer; padding: 0; font-size: 0.82rem; display: none;">
+                            إعادة ضبط الفلاتر ↺
+                        </button>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="advanced-table">
+                            <thead>
+                                <tr>
+                                    <th>المستخدم (User)</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الدور (Role)</th>
+                                    <th>حالة الحساب (Status)</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <tr>
+                                    <td colspan="6" class="text-center" style="padding: 3rem;">
+                                        <div class="skeleton" style="height: 24px; width: 60%; margin: 10px auto;"></div>
+                                        <div class="skeleton" style="height: 24px; width: 80%; margin: 10px auto;"></div>
+                                        <div class="skeleton" style="height: 24px; width: 50%; margin: 10px auto;"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="table-pagination">
+                        <div class="pagination-info" id="pagination-info">يعرض 0 إلى 0 من أصل 0 حساب</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" id="prevPage" disabled aria-label="الصفحة السابقة">السابق</button>
+                            <span id="pageNumbers" style="display: flex; gap: 4px;"></span>
+                            <button class="page-btn" id="nextPage" disabled aria-label="الصفحة التالية">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 1. Role Management Modal -->
+    <div class="modal-overlay" id="roleEditModal" aria-hidden="true" role="dialog" aria-labelledby="roleModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="roleModalTitle">تعديل صلاحيات المستخدم والأدوار</h3>
+                <button class="modal-close" id="closeRoleModalBtn" aria-label="إغلاق">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-info-cell" style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                    <div class="avatar-sm" id="modalUserAvatar">U</div>
+                    <div class="user-info-text">
+                        <strong id="modalUserName">اسم المستخدم</strong>
+                        <span id="modalUserEmail" style="color: var(--text-secondary); font-size: 0.85rem;">البريد الإلكتروني</span>
+                        <div style="margin-top: 4px;">
+                            الدور الحالي: <span class="status-badge" id="modalCurrentRoleBadge">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" for="modalRoleSelect" style="font-weight: 700; margin-bottom: 6px; display: block;">
+                        اختر الدور الجديد للحساب:
+                    </label>
+                    <select id="modalRoleSelect" class="form-control" style="width: 100%; padding: 10px 12px; font-weight: 600;">
+                        <option value="user">مستخدم عادي (User / Patient) - تصفح، حجز مواعيد، استشارات</option>
+                        <option value="volunteer">متطوع (Volunteer) - الأنشطة الميدانية والفعاليات</option>
+                        <option value="specialist">طبيب / مختص (Specialist / Doctor) - بوابة العيادة، EMR، وصفات</option>
+                        <option value="admin">مدير (Admin) - إدارة المنصة والمحتوى والمستخدمين</option>
+                        <option value="super_admin" id="optSuperAdmin">مدير نظام عام (Super Admin) - كامل الصلاحيات</option>
+                    </select>
+                </div>
+
+                <!-- Self-Modification & Escalation Warning Boxes -->
+                <div id="selfRoleWarning" style="display: none; background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 10px; border: 1px dashed #ef4444; margin-bottom: 1rem;">
+                    <strong style="color: #b91c1c; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span>⛔</span>
+                        <span>حماية أمنية: غير مسموح بتعديل حسابك الشخصي</span>
+                    </strong>
+                    <span style="font-size: 0.85rem; color: #b91c1c;">
+                        لا يمكنك تعديل صلاحيات حسابك الخاص لحماية النظام الإداري من الإغلاق غير المقصود (Lockout Prevention).
+                    </span>
+                </div>
+
+                <div id="superAdminRestrictedNotice" style="display: none; background: rgba(245, 158, 11, 0.1); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3); margin-bottom: 1rem;">
+                    <strong style="color: #b45309; display: block; margin-bottom: 3px;">ℹ️ ملاحظة صلاحيات Super Admin</strong>
+                    <span style="font-size: 0.82rem; color: #b45309;">
+                        ترقية الحسابات إلى Super Admin أو تعديل حسابات مدراء النظام تتطلب حساب Super Admin مصرح.
+                    </span>
+                </div>
+
+                <div class="form-group" style="background: rgba(2, 132, 199, 0.08); padding: 1rem; border-radius: 10px; border: 1px dashed rgba(2, 132, 199, 0.3);">
+                    <strong style="color: #0369a1; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span>🛡️</span>
+                        <span>تسجيل العملية في سجل التدقيق (Audit Logs)</span>
+                    </strong>
+                    <span style="font-size: 0.85rem; color: #0369a1;">
+                        سيتم تسجيل أي تغيير في الصلاحيات في سجل العمليات الأمني فور اعتماده مع توثيق هوية المدير ووقت العملية.
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelRoleModalBtn">إلغاء</button>
+                <button class="btn btn-primary" id="saveRoleBtn">تأكيد وحفظ الصلاحية</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Account Status Management Modal -->
+    <div class="modal-overlay" id="statusEditModal" aria-hidden="true" role="dialog" aria-labelledby="statusModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="statusModalTitle">إدارة حالة الحساب والوصول</h3>
+                <button class="modal-close" id="closeStatusModalBtn" aria-label="إغلاق">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-info-cell" style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                    <div class="avatar-sm" id="modalStatusUserAvatar">U</div>
+                    <div class="user-info-text">
+                        <strong id="modalStatusUserName">اسم المستخدم</strong>
+                        <span id="modalStatusUserEmail" style="color: var(--text-secondary); font-size: 0.85rem;">البريد الإلكتروني</span>
+                        <div style="margin-top: 4px;">
+                            الحالة الحالية: <span class="status-badge" id="modalCurrentStatusBadge">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" for="modalStatusSelect" style="font-weight: 700; margin-bottom: 6px; display: block;">
+                        الحالة الجديدة للحساب:
+                    </label>
+                    <select id="modalStatusSelect" class="form-control" style="width: 100%; padding: 10px 12px; font-weight: 600;">
+                        <option value="active">🟢 نشط (Active) - الحساب يعمل بشكل طبيعي وكامل الصلاحيات</option>
+                        <option value="inactive">⚪ غير نشط (Inactive) - الحساب مسجل ولكنه معطل مؤقتاً</option>
+                        <option value="suspended">🟡 موقوف مؤقتاً (Suspended) - تجميد الوصول لداعي المراجعة</option>
+                        <option value="banned">🔴 محظور (Banned) - حظر شامل لمنع الدخول والعمليات</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" for="modalStatusNote" style="font-weight: 600; margin-bottom: 4px; display: block;">
+                        سبب التغيير / ملاحظة إدارية داخلية (اختياري):
+                    </label>
+                    <textarea id="modalStatusNote" class="form-control" rows="2" placeholder="اكتب سبب تغيير حالة الحساب للتوثيق في سجل العمليات..."></textarea>
+                </div>
+
+                <!-- Self-Ban Warning -->
+                <div id="selfStatusWarning" style="display: none; background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 10px; border: 1px dashed #ef4444;">
+                    <strong style="color: #b91c1c; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span>⛔</span>
+                        <span>غير مسموح بحظر أو إيقاف حسابك الشخصي</span>
+                    </strong>
+                    <span style="font-size: 0.85rem; color: #b91c1c;">
+                        لا يمكن للمدير حظر حسابه الخاص تجنباً لفقدان التحكم في النظام.
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelStatusModalBtn">إلغاء</button>
+                <button class="btn btn-primary" id="saveStatusBtn">تحديث حالة الحساب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. User Profile 360 Details Modal -->
+    <div class="modal-overlay" id="profileDetailsModal" aria-hidden="true" role="dialog" aria-labelledby="detailsModalTitle">
+        <div class="modal-dialog" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detailsModalTitle">تفاصيل الملف الشخصي والمعلومات</h3>
+                <button class="modal-close" id="closeDetailsModalBtn" aria-label="إغلاق">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+                <!-- Header Card -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color);">
+                    <div class="avatar-sm" id="detailAvatar" style="width: 58px; height: 58px; font-size: 1.5rem; border-radius: 50%; background: var(--brand-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800;">U</div>
+                    <div style="flex: 1;">
+                        <h4 id="detailTitleName" style="margin: 0; font-size: 1.2rem; font-weight: 800;">--</h4>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px; flex-wrap: wrap;">
+                            <span class="status-badge" id="detailRoleBadge">--</span>
+                            <span class="status-badge" id="detailStatusBadge">--</span>
+                            <span style="font-size: 0.78rem; color: var(--text-tertiary);" id="detailUserIdText">ID: --</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline" id="copyUserIdBtn" style="padding: 6px 12px; font-size: 0.8rem;" title="نسخ معرّف المستخدم (UUID)">
+                            📋 نسخ المعرف
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Fields for Updating Permitted Profile Info -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="detailFullNameInput">الاسم الكامل:</label>
+                        <input type="text" id="detailFullNameInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="detailPhoneInput">رقم الهاتف:</label>
+                        <input type="text" id="detailPhoneInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="detailWilayaInput">الولاية:</label>
+                        <input type="text" id="detailWilayaInput" class="form-control" placeholder="مثال: الجزائر، برج بوعريريج">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="detailGenderSelect">الجنس:</label>
+                        <select id="detailGenderSelect" class="form-control">
+                            <option value="">غير محدد</option>
+                            <option value="male">ذكر</option>
+                            <option value="female">أنثى</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- System Metadata Overview Cards -->
+                <div class="user-details-grid">
+                    <div class="user-detail-card">
+                        <div class="user-detail-label">البريد الإلكتروني</div>
+                        <div class="user-detail-value" id="detailEmailVal">--</div>
+                    </div>
+                    <div class="user-detail-card">
+                        <div class="user-detail-label">تاريخ التسجيل</div>
+                        <div class="user-detail-value" id="detailCreatedAtVal">--</div>
+                    </div>
+                    <div class="user-detail-card">
+                        <div class="user-detail-label">آخر نشاط مسجل</div>
+                        <div class="user-detail-value" id="detailLastActiveVal">--</div>
+                    </div>
+                    <div class="user-detail-card">
+                        <div class="user-detail-label">تاريخ الميلاد</div>
+                        <div class="user-detail-value" id="detailBirthDateVal">--</div>
+                    </div>
+                </div>
+
+                <!-- Internal Notes -->
+                <div class="form-group" style="margin-top: 1.25rem;">
+                    <label class="form-label" for="detailInternalNotes" style="font-weight: 700;">ملاحظات الإدارة والفريق الطبي (خاصة):</label>
+                    <textarea id="detailInternalNotes" class="form-control" rows="3" placeholder="ملاحظات مرجعية خاصة بإدارة المنصة أو الفريق الاستشاري..."></textarea>
+                </div>
+
+                <!-- Deep Link to CRM Profile 360 -->
+                <div style="margin-top: 1rem; text-align: left;">
+                    <a href="#" id="viewFullCrmLink" target="_blank" style="color: var(--brand-accent); font-weight: 700; font-size: 0.88rem; text-decoration: none;">
+                        الانتقال إلى سجل العميل الكامل (CRM 360°) &rarr;
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeDetailsModalBtn2">إغلاق</button>
+                <button class="btn btn-primary" id="saveProfileDetailsBtn">حفظ البيانات المعدلة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Security Confirmation Dialog -->
+    <div class="modal-overlay" id="confirmActionModal" aria-hidden="true" role="dialog" aria-labelledby="confirmDialogTitle">
+        <div class="modal-dialog" style="max-width: 440px;">
+            <div class="modal-body confirmation-dialog-box">
+                <div class="confirmation-icon" id="confirmIcon">⚠️</div>
+                <h3 class="confirmation-title" id="confirmDialogTitle">تأكيد الإجراء الحساس</h3>
+                <p class="confirmation-text" id="confirmDialogMessage">هل أنت متأكد من تنفيذ هذا التغيير؟</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn btn-outline" id="cancelConfirmBtn" style="min-width: 110px;">إلغاء</button>
+                    <button class="btn btn-primary" id="actionConfirmBtn" style="min-width: 110px;">تأكيد الإجراء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script>
+        // Global High-Precision Toast Notification System
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            
+            let bg = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#0284c7';
+            let icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ️';
+            
+            toast.style.cssText = `
+                background: ${bg};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+                font-size: 0.95rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                direction: rtl;
+                max-width: 420px;
+            `;
+            
+            toast.innerHTML = `<span style="font-size: 1.1rem;">${icon}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        };
+    </script>
+    <script type="module" src="../js/admin_users.js"></script>
+</body>
+</html>

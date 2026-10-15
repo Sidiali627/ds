@@ -1,0 +1,538 @@
+[
+  {
+    "js": "js/components.js",
+    "id": "site-logo",
+    "loadedBy": [
+      "about.html",
+      "articles.html",
+      "consultations.html",
+      "doctor_profile.html",
+      "events.html",
+      "event_details.html",
+      "index.html",
+      "login.html",
+      "register.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/components.js",
+    "id": "nav-logout-btn",
+    "loadedBy": [
+      "about.html",
+      "articles.html",
+      "consultations.html",
+      "doctor_profile.html",
+      "events.html",
+      "event_details.html",
+      "index.html",
+      "login.html",
+      "register.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/components.js",
+    "id": "mobile-menu-btn",
+    "loadedBy": [
+      "about.html",
+      "articles.html",
+      "consultations.html",
+      "doctor_profile.html",
+      "events.html",
+      "event_details.html",
+      "index.html",
+      "login.html",
+      "register.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/components.js",
+    "id": "nav-menu",
+    "loadedBy": [
+      "about.html",
+      "articles.html",
+      "consultations.html",
+      "doctor_profile.html",
+      "events.html",
+      "event_details.html",
+      "index.html",
+      "login.html",
+      "register.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-user-display-name",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-user-role-badge",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-user-avatar",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-logout-btn",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "open-sidebar-btn",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-sidebar",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "admin-theme-toggle",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_components.js",
+    "id": "sidebar-theme-toggle",
+    "loadedBy": [
+      "admin/ai_center.html",
+      "admin/appointments.html",
+      "admin/articles.html",
+      "admin/certificates.html",
+      "admin/change-password.html",
+      "admin/cms.html",
+      "admin/consultations.html",
+      "admin/crm.html",
+      "admin/crm_profile.html",
+      "admin/events.html",
+      "admin/index.html",
+      "admin/login.html",
+      "admin/media.html",
+      "admin/notifications.html",
+      "admin/security.html",
+      "admin/seo.html",
+      "admin/settings.html",
+      "admin/support.html",
+      "admin/users.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_appointments.js",
+    "id": "admin-notification-container",
+    "loadedBy": [
+      "admin/appointments.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_articles.js",
+    "id": "logout-btn",
+    "loadedBy": [
+      "admin/articles.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_cms.js",
+    "id": "partners-tbody",
+    "loadedBy": [
+      "admin/cms.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_cms.js",
+    "id": "logout-btn",
+    "loadedBy": [
+      "admin/cms.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_cms.js",
+    "id": "partner-form",
+    "loadedBy": [
+      "admin/cms.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_cms.js",
+    "id": "part-name",
+    "loadedBy": [
+      "admin/cms.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_cms.js",
+    "id": "part-logo",
+    "loadedBy": [
+      "admin/cms.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_security.js",
+    "id": "logout-btn",
+    "loadedBy": [
+      "admin/security.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/admin_settings.js",
+    "id": "logout-btn",
+    "loadedBy": [
+      "admin/settings.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/consultations.js",
+    "id": "cons-msg",
+    "loadedBy": [
+      "consultations.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/calendar.js",
+    "id": "sp-name",
+    "loadedBy": [
+      "specialist/calendar.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/calendar.js",
+    "id": "sp-avatar",
+    "loadedBy": [
+      "specialist/calendar.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/calendar.js",
+    "id": "sp-notif-btn",
+    "loadedBy": [
+      "specialist/calendar.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/dashboard.js",
+    "id": "sp-name",
+    "loadedBy": [
+      "specialist/index.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/dashboard.js",
+    "id": "sp-avatar",
+    "loadedBy": [
+      "specialist/index.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/dashboard.js",
+    "id": "sp-specialty",
+    "loadedBy": [
+      "specialist/index.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/dashboard.js",
+    "id": "notif-count",
+    "loadedBy": [
+      "specialist/index.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/dashboard.js",
+    "id": "logout-btn",
+    "loadedBy": [
+      "specialist/index.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/patients.js",
+    "id": "sp-name",
+    "loadedBy": [
+      "specialist/patients.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/patients.js",
+    "id": "sp-avatar",
+    "loadedBy": [
+      "specialist/patients.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/profile.js",
+    "id": "sp-name",
+    "loadedBy": [
+      "specialist/profile.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/profile.js",
+    "id": "sp-avatar",
+    "loadedBy": [
+      "specialist/profile.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/specialist/profile.js",
+    "id": "sp-specialty",
+    "loadedBy": [
+      "specialist/profile.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/support.js",
+    "id": "emptyCreateBtn",
+    "loadedBy": [
+      "support.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "sp-name",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "sp-avatar",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "sp-status",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "chat-box",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "typing-ind",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "v-status",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "btn-toggle-mic",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "btn-toggle-cam",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  },
+  {
+    "js": "js/user_live_session.js",
+    "id": "btn-screen-share",
+    "loadedBy": [
+      "user_live_session.html"
+    ],
+    "isUnsafe": false
+  }
+]

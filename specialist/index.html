@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المختص - استوديو صحة الشباب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <style>
+        .notif-badge { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; font-weight: bold; position: absolute; top: -4px; right: -4px; }
+        .rating-box { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 24px; padding: 1.75rem; margin-top: 2rem; box-shadow: var(--shadow-sm); }
+        .review-card { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 1rem; margin-top: 12px; transition: transform 0.2s ease; }
+        .review-card:hover { transform: translateY(-2px); border-color: var(--brand-accent); }
+    </style>
+    <script type="module" src="../js/specialist_components.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Specialist Sidebar -->
+        <div id="specialist-sidebar-root"></div>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Hero Doctor Header Card -->
+            <div class="hero-doctor-card">
+                <div class="hero-doctor-info">
+                    <h2>صباح الخير دكتور <span id="welcome-name">المختص</span> 👋</h2>
+                    <p>أهلاً بك في منصتك الطبية الرقمية. لديك متابعات استشارية حية ومواعيد مجدولة لهذا اليوم.</p>
+                </div>
+                <div class="hero-metrics">
+                    <div class="hero-metric-item">
+                        <span class="hero-metric-num" id="hero-online-status">🟢 متصل</span>
+                        <span class="hero-metric-label">الحالة الحية</span>
+                    </div>
+                    <div style="width: 1px; background: rgba(255,255,255,0.2);"></div>
+                    <div class="hero-metric-item">
+                        <span class="hero-metric-num" id="hero-year">2026</span>
+                        <span class="hero-metric-label">Telemedicine SaaS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Header Actions -->
+            <div id="specialist-header-root"></div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.12); color: #3b82f6;">📩</div>
+                    <div class="stat-details">
+                        <h3>طلبات استشارة جديدة</h3>
+                        <p class="stat-number" id="stat-new">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">🟢</div>
+                    <div class="stat-details">
+                        <h3>جلسات جارية الآن</h3>
+                        <p class="stat-number" id="stat-active">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">📅</div>
+                    <div class="stat-details">
+                        <h3>مواعيد اليوم</h3>
+                        <p class="stat-number" id="stat-appointments">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(168, 85, 247, 0.12); color: #a855f7;">⭐</div>
+                    <div class="stat-details">
+                        <h3>التقييم العام</h3>
+                        <p class="stat-number" id="stat-rating">0.0 ⭐</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests Section -->
+            <div class="admin-card">
+                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <div>
+                        <h3 style="font-size:1.2rem; font-weight:800; margin:0;">أحدث طلبات الاستشارات الطبية</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">الطلبات الواردة التي تتطلب معاينة وقبولاً من الطبيب.</p>
+                    </div>
+                    <a href="consultations.html" class="btn btn-outline" style="font-size:0.85rem; border-radius:12px;">عرض الكانبان الكامل &larr;</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="advanced-table" style="width:100%; border-collapse:separate; border-spacing:0 8px;">
+                        <thead>
+                            <tr style="color:var(--text-secondary); font-size:0.88rem;">
+                                <th style="padding:10px;">رقم الطلب</th>
+                                <th style="padding:10px;">اسم المريض</th>
+                                <th style="padding:10px;">التخصص المطلوب</th>
+                                <th style="padding:10px;">تاريخ الإنشاء</th>
+                                <th style="padding:10px;">الحالة</th>
+                                <th style="padding:10px;">الإجراءات المتاحة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-tbody">
+                            <tr><td colspan="6" style="text-align:center; padding:2rem;">جاري تحميل البيانات الحقيقية من Supabase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Patient Reviews Section -->
+            <div class="rating-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <div>
+                        <h3 style="font-size:1.2rem; font-weight:800; margin:0;">تقييمات وتعليقات المرضى</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">انطباعات المرضى بعد استكمال الجلسات الاستشارية.</p>
+                    </div>
+                    <span style="font-size:1.1rem; font-weight:bold; color:#f59e0b;">رضا المرضى ممتاز ⭐</span>
+                </div>
+                <div id="reviews-list">
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">جاري تحميل تقييمات المرضى الحقيقية...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/specialist/dashboard.js"></script>
+</body>
+</html>

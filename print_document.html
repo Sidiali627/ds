@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستند الطبي المعتمد - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/guard.js"></script>
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-family: 'Cairo', 'Outfit', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Interactive Floating Action Bar (Hidden when printing) */
+        .print-actions-bar {
+            background: #0f172a;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        }
+
+        .document-wrapper {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #cbd5e1;
+            position: relative;
+        }
+
+        /* Document Header */
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #0284c7;
+            margin-bottom: 1.5rem;
+        }
+        .clinic-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .clinic-brand img {
+            height: 48px;
+            object-fit: contain;
+        }
+        .clinic-brand h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #0284c7;
+            font-weight: 800;
+        }
+        .clinic-brand p {
+            margin: 2px 0 0;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .doc-meta-badge {
+            text-align: left;
+            direction: ltr;
+        }
+        .doc-code {
+            font-family: monospace;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #0f172a;
+        }
+        .doc-date {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* Parties Info Strip */
+        .parties-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+        .party-box h4 {
+            margin: 0 0 6px;
+            font-size: 0.92rem;
+            color: #0284c7;
+            font-weight: 800;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 4px;
+        }
+        .party-detail {
+            font-size: 0.88rem;
+            color: #334155;
+            margin-bottom: 4px;
+            display: flex;
+            gap: 6px;
+        }
+        .party-detail strong {
+            color: #0f172a;
+        }
+
+        /* Prescription / Report Tables */
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.9rem;
+        }
+        .doc-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 10px 12px;
+            text-align: right;
+            border: 1px solid #cbd5e1;
+            font-weight: 800;
+        }
+        .doc-table td {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            line-height: 1.5;
+        }
+        .doc-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        /* Clinical Notes Box */
+        .clinical-section-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .clinical-section-title {
+            margin: 0 0 8px;
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .clinical-section-body {
+            font-size: 0.92rem;
+            line-height: 1.8;
+            color: #334155;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+
+        /* Document Footer & Watermark */
+        .doc-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .doc-signature-block {
+            text-align: center;
+            min-width: 180px;
+        }
+        .doc-signature-line {
+            width: 100%;
+            height: 1px;
+            background: #94a3b8;
+            margin: 30px 0 6px;
+        }
+
+        /* Print Mode Optimization */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .print-actions-bar {
+                display: none !important;
+            }
+            .document-wrapper {
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+            }
+            .parties-grid {
+                background: #f8fafc !important;
+                border: 1px solid #ccc !important;
+            }
+            .doc-table th {
+                background: #f1f5f9 !important;
+                color: black !important;
+                border: 1px solid #999 !important;
+            }
+            .doc-table td {
+                border: 1px solid #ccc !important;
+                color: black !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 15mm 12mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Top Bar with Actions -->
+    <div class="print-actions-bar">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button onclick="window.close() || history.back()" class="btn btn-outline" style="color:white; border-color:#475569; padding:6px 14px; font-size:0.85rem; border-radius:8px;">
+                &rarr; إغلاق / العودة
+            </button>
+            <span id="top-doc-title" style="font-weight:700; font-size:0.95rem;">المستند الطبي المعتمد</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button onclick="window.print()" class="btn btn-primary" style="background:#0284c7; border:none; padding:8px 18px; border-radius:8px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                <span>🖨️ طباعة المستند (Print / PDF)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Printable Paper Container -->
+    <div class="document-wrapper" id="printable-doc-root">
+        <div id="doc-loading-state" style="text-align:center; padding:5rem 1rem;">
+            <div class="spinner" style="margin:0 auto 12px;"></div>
+            <div style="font-weight:700; color:#64748b;">جاري استرجاع والتحقق من بيانات المستند الطبي بأمان...</div>
+        </div>
+
+        <div id="doc-error-state" style="display:none; text-align:center; padding:4rem 1rem; color:#dc2626;">
+            <div style="font-size:3rem; margin-bottom:10px;">🔒</div>
+            <h3 id="doc-error-title" style="margin:0 0 8px;">تعذر فتح المستند الطبي</h3>
+            <p id="doc-error-msg" style="margin:0 0 16px; font-size:0.9rem; color:#64748b;">ليس لديك الصلاحية للاطلاع على هذا المستند، أو أن المستند المطلوب غير متوفر.</p>
+            <a href="dashboard.html" class="btn btn-outline" style="border-radius:8px;">العودة للوحة التحكم</a>
+        </div>
+
+        <div id="doc-content-body" style="display:none;">
+            <!-- Document Header -->
+            <div class="doc-header">
+                <div class="clinic-brand">
+                    <img src="images/logo.png" alt="شعار استوديو صحة الشباب" onerror="this.style.display='none'">
+                    <div>
+                        <h2>استوديو صحة الشباب</h2>
+                        <p>منظومة الرعاية الصحية الرقمية والاستشارات الطبية المتخصصة</p>
+                    </div>
+                </div>
+                <div class="doc-meta-badge">
+                    <div class="doc-code" id="doc-badge-code">#DOC-XXXX</div>
+                    <div class="doc-date" id="doc-badge-date">التاريخ: --/--/----</div>
+                    <div style="margin-top:2px;" id="doc-badge-status"></div>
+                </div>
+            </div>
+
+            <!-- Parties Information (Doctor & Patient) -->
+            <div class="parties-grid">
+                <div class="party-box">
+                    <h4>👨‍⚕️ بيانات الطبيب المعالج:</h4>
+                    <div class="party-detail"><span>الاسم:</span> <strong id="doc-doctor-name">د. ...</strong></div>
+                    <div class="party-detail"><span>التخصص:</span> <span id="doc-doctor-spec">استشاري</span></div>
+                    <div class="party-detail"><span>الاعتماد:</span> <span>طبيب معتمد بالمنصة الرقمية</span></div>
+                </div>
+                <div class="party-box">
+                    <h4>👤 بيانات المريض والمستفيد:</h4>
+                    <div class="party-detail"><span>الاسم:</span> <strong id="doc-patient-name">...</strong></div>
+                    <div class="party-detail"><span>فصيلة الدم:</span> <span id="doc-patient-blood">--</span></div>
+                    <div class="party-detail"><span>كود الملف (EMR):</span> <span id="doc-patient-emr-code">--</span></div>
+                </div>
+            </div>
+
+            <!-- Dynamic Clinical Content Container (Prescription, Report, or Summary) -->
+            <div id="dynamic-clinical-container"></div>
+
+            <!-- Document Footer & Formal Digital Seal -->
+            <div class="doc-footer">
+                <div>
+                    <div>🔒 مستند رسمي موثق ومحمي صادر عبر منصة استوديو صحة الشباب.</div>
+                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">تم التوثيق الرقمي ومطابقة الصلاحيات السريرية في <span id="doc-timestamp-now"></span></div>
+                </div>
+                <div class="doc-signature-block">
+                    <div style="font-weight:700; color:#0f172a;" id="doc-signature-name">د. ...</div>
+                    <div style="font-size:0.75rem; color:#64748b;">توقيع واعتماد الطبيب المشرف</div>
+                    <div class="doc-signature-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/print_document.js"></script>
+</body>
+</html>

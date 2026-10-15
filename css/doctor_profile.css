@@ -1,0 +1,166 @@
+/* doctor_profile.css - Specific Page Styles */
+.doctor-hero {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)), url('../images/hero-bg.jpg') center/cover;
+    padding: 4rem 1rem 8rem 1rem;
+    position: relative;
+}
+
+.doctor-profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    margin-top: -5rem;
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 10;
+}
+
+.doctor-main-card {
+    background: var(--surface-color);
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+.doc-avatar-container {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 5px solid var(--surface-color);
+    overflow: hidden;
+    margin-top: -5rem;
+    margin-bottom: 1rem;
+    background: var(--bg-secondary);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.doc-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doc-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.doc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.doc-info-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.doc-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.doc-section-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Booking Card (Sticky) */
+.booking-card {
+    background: var(--surface-color);
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 90px;
+}
+
+.booking-price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--brand-accent);
+    margin-bottom: 4px;
+}
+
+.booking-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.availability-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.slot-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.slot-item.available {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.05);
+    cursor: pointer;
+}
+
+.slot-item.available:hover {
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Reviews System */
+.review-card {
+    padding: 1.25rem;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+
+.stars { color: #f59e0b; font-size: 1.1rem; letter-spacing: 2px; }
+
+@media (max-width: 992px) {
+    .doctor-profile-layout {
+        grid-template-columns: 1fr;
+    }
+    .booking-card {
+        position: relative;
+        top: 0;
+    }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الحماية (Security Center) - الإدارة</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        .sec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--spacing-xl); margin-bottom: var(--spacing-xl); }
+        .status-badge { padding: 4px 12px; border-radius: 99px; font-size: 0.85rem; font-weight: 600; }
+        .status-secure { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid var(--success-color); }
+        .status-warning { background: rgba(245, 166, 35, 0.15); color: var(--warning-color); border: 1px solid var(--warning-color); }
+        .status-danger { background: rgba(229, 62, 62, 0.15); color: var(--danger-color); border: 1px solid var(--danger-color); }
+        
+        .audit-list { list-style: none; padding: 0; margin: 0; }
+        .audit-item { padding: 12px 16px; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: flex-start; }
+        .audit-item:last-child { border-bottom: none; }
+        .audit-action { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .audit-meta { color: var(--admin-text-muted); font-size: 0.8rem; margin-top: 4px; }
+        
+        .cc-empty { padding: 2.5rem 1rem; text-align: center; color: var(--admin-text-muted); font-size: 0.95rem; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed var(--admin-border); }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div id="admin-sidebar-root"></div>
+
+        <!-- Main -->
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                
+                <!-- Security Policy Status -->
+                <div class="admin-panel">
+                    <div class="admin-panel-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+                        <div>
+                            <div style="color: var(--admin-text-muted); font-size: 0.85rem; margin-bottom: 8px;">حالة الاتصال (HTTPS)</div>
+                            <span id="sec-https" class="status-badge status-secure">محمي</span>
+                        </div>
+                        <div>
+                            <div style="color: var(--admin-text-muted); font-size: 0.85rem; margin-bottom: 8px;">قواعد (RLS)</div>
+                            <span id="sec-rls" class="status-badge status-secure">مفعلة بالكامل</span>
+                        </div>
+                        <div>
+                            <div style="color: var(--admin-text-muted); font-size: 0.85rem; margin-bottom: 8px;">سياسة (CSP)</div>
+                            <span id="sec-csp" class="status-badge status-warning">غير مفعلة محلياً</span>
+                        </div>
+                        <div>
+                            <div style="color: var(--admin-text-muted); font-size: 0.85rem; margin-bottom: 8px;">حماية التخزين (Storage)</div>
+                            <span id="sec-storage" class="status-badge status-secure">مقيدة بـ Auth</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sec-grid">
+                    <!-- Threat Detection -->
+                    <div class="admin-panel">
+                        <div class="admin-panel-header">
+                            <div class="admin-panel-title">اكتشاف التهديدات (Threat Detection)</div>
+                        </div>
+                        <div class="admin-panel-body" style="padding: 0;">
+                            <ul class="audit-list" id="threat-list">
+                                <li><div class="cc-empty">جاري الفحص...</div></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Rate Limits & Backup -->
+                    <div style="display:flex; flex-direction:column; gap: var(--spacing-xl);">
+                        <div class="admin-panel" style="margin-bottom:0;">
+                            <div class="admin-panel-header">
+                                <div class="admin-panel-title">مراقبة الحد (Rate Limit Monitor)</div>
+                            </div>
+                            <div class="admin-panel-body">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                                    <span>الطلبات العادية:</span> <strong id="rate-normal">--</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:1rem; color:var(--danger-color);">
+                                    <span>الطلبات المحجوبة:</span> <strong id="rate-blocked">--</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between;">
+                                    <span>آخر IP تم حجبه:</span> <strong id="rate-last-ip">لا يوجد</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-panel" style="margin-bottom:0;">
+                            <div class="admin-panel-header">
+                                <div class="admin-panel-title">النسخ الاحتياطي (Backup Status)</div>
+                            </div>
+                            <div class="admin-panel-body" style="text-align:center;">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--success-color)" stroke-width="1.5" style="margin-bottom:1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                <div style="font-weight:600; font-size:1.1rem; margin-bottom:4px;">اكتمل بنجاح</div>
+                                <div style="color:var(--admin-text-muted); font-size:0.85rem; margin-bottom:1rem;">آخر نسخة: <span id="backup-time">تلقائي عبر Supabase PITR</span></div>
+                                <button class="btn btn-outline" style="width:100%;" disabled>تدار من قبل Supabase</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Sessions -->
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <div class="admin-panel-title">الجلسات النشطة (Active Sessions)</div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>الجهاز (Device)</th>
+                                    <th>المتصفح (Browser)</th>
+                                    <th>IP / الدولة</th>
+                                    <th>تسجيل الدخول</th>
+                                    <th>آخر نشاط</th>
+                                    <th>الإجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sessions-tbody">
+                                <tr><td colspan="6"><div class="cc-empty">جاري التحميل...</div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Audit Logs -->
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <div class="admin-panel-title">سجل التدقيق (Audit Logs)</div>
+                    </div>
+                    <div class="admin-panel-body" style="padding: 0;">
+                        <ul class="audit-list" id="audit-list">
+                            <li><div class="cc-empty">جاري تحميل السجلات...</div></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_security.js"></script>
+</body>
+</html>

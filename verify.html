@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق من صحة الشهادة | YHS</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        body { background: var(--bg-color); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .verify-card {
+            background: var(--surface-color); padding: 3rem; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            max-width: 500px; width: 90%; text-align: center; border: 1px solid var(--border-color);
+        }
+        .v-icon { width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .v-icon.loading { background: var(--border-color); color: var(--text-color); animation: pulse 1.5s infinite; }
+        .v-icon.success { background: rgba(16,185,129,0.1); color: var(--success-color); }
+        .v-icon.error { background: rgba(239,68,68,0.1); color: var(--danger-color); }
+        
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        .v-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-color); }
+        .v-desc { color: var(--admin-text-muted); margin-bottom: 2rem; line-height: 1.6; }
+        
+        .detail-box { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: right; margin-bottom: 1.5rem; }
+        .d-row { margin-bottom: 10px; display: flex; flex-direction: column; }
+        .d-label { font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 4px; }
+        .d-val { font-weight: 600; color: var(--text-color); font-size: 1.1rem; }
+    </style>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+</head>
+<body>
+
+    <div class="verify-card" id="card">
+        <div class="v-icon loading" id="icon">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h2 class="v-title" id="title">جاري التحقق...</h2>
+        <p class="v-desc" id="desc">نحن نقوم بفحص السجلات الموثقة لدينا للتأكد من صحة هذه الشهادة.</p>
+
+        <div class="detail-box" id="details" style="display: none;">
+            <div class="d-row"><span class="d-label">اسم المستفيد:</span><span class="d-val" id="d-name">--</span></div>
+            <div class="d-row"><span class="d-label">اسم النشاط:</span><span class="d-val" id="d-activity">--</span></div>
+            <div class="d-row"><span class="d-label">تاريخ الإصدار:</span><span class="d-val" id="d-date">--</span></div>
+            <div class="d-row"><span class="d-label">رقم الشهادة:</span><span class="d-val" id="d-id" style="font-family:monospace; font-size:0.9rem;">--</span></div>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='index.html'">العودة للمنصة</button>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/verify.js"></script>
+</body>
+</html>

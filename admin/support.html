@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الدعم وإدارة الشكاوى - لوحة الإدارة</title>
+    <meta name="description" content="نظام إدارة تذاكر الدعم والشكاوى الفنية والإدارية الموحد لمنصة استوديو صحة الشباب.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+    <script type="module" src="../js/admin_support.js" defer></script>
+
+    <style>
+        .composer-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+        .composer-tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .composer-tab-btn:hover {
+            background: rgba(2, 132, 199, 0.08);
+            color: var(--brand-accent);
+        }
+        .composer-tab-btn.active-reply {
+            background: var(--brand-accent);
+            color: #ffffff;
+        }
+        .composer-tab-btn.active-note {
+            background: #d97706;
+            color: #ffffff;
+        }
+        .composer-internal-warning {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #b45309;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar dynamically injected here -->
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <!-- Header dynamically injected here -->
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Page Title & Header Actions -->
+                <div class="admin-panel-header" style="background: transparent; border: none; padding: 0 0 1.5rem 0; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h2 style="margin: 0; font-weight: 800; font-size: 1.6rem; color: var(--text-primary);">
+                            مركز الدعم الفني وإدارة الشكاوى 💬
+                        </h2>
+                        <p style="color: var(--text-secondary); margin: 6px 0 0 0; font-size: 0.95rem;">
+                            متابعة طلبات الدعم، الرد على استفسارات المستخدمين، معالجة الشكاوى، وإدارة الملاحظات الإدارية الداخلية بسرية تامة.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-outline" id="refreshTicketsBtn" title="تحديث البيانات">
+                            <span>🔄</span>
+                            <span>تحديث</span>
+                        </button>
+                        <button class="btn btn-outline" id="exportTicketsBtn" title="تصدير قائمة التذاكر بصيغة CSV">
+                            <span>📥</span>
+                            <span>تصدير CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Overview Grid -->
+                <div class="stats-grid" style="margin-bottom: 1.75rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(2, 132, 199, 0.1); color: var(--brand-accent);">
+                            💬
+                        </div>
+                        <div class="stat-details">
+                            <h3>إجمالي التذاكر</h3>
+                            <div class="stat-number" id="statTotalTickets">0</div>
+                            <span class="stat-card-badge">جميع الطلبات</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                            📬
+                        </div>
+                        <div class="stat-details">
+                            <h3>تذاكر جديدة ومفتوحة</h3>
+                            <div class="stat-number" id="statOpenTickets" style="color: #ef4444;">0</div>
+                            <span class="stat-card-badge" style="color: #ef4444;">بحاجة لمعالجة</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: #0284c7;">
+                            ⚙️
+                        </div>
+                        <div class="stat-details">
+                            <h3>قيد المعالجة</h3>
+                            <div class="stat-number" id="statInProgressTickets">0</div>
+                            <span class="stat-card-badge" style="color: #0284c7;">جاري المتابعة</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                            ⏳
+                        </div>
+                        <div class="stat-details">
+                            <h3>بانتظار رد المستخدم</h3>
+                            <div class="stat-number" id="statWaitingUserTickets">0</div>
+                            <span class="stat-card-badge" style="color: #d97706;">تم الرد عليها</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            ✅
+                        </div>
+                        <div class="stat-details">
+                            <h3>تم الحل والمغلقة</h3>
+                            <div class="stat-number" id="statResolvedTickets" style="color: #10b981;">0</div>
+                            <span class="stat-card-badge" style="color: #10b981;">مكتملة بنجاح</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Tickets Card -->
+                <div class="card" style="padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); background: var(--surface-color);">
+                    <!-- Filter Toolbar -->
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+                        <div style="flex: 1; min-width: 260px; max-width: 440px;">
+                            <input type="text" id="searchInput" class="form-control" placeholder="ابحث برقم التذكرة، العنوان، اسم المستخدم..." style="width: 100%; border-radius: 10px; padding: 10px 14px;">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <!-- Status Filter -->
+                            <select id="statusFilter" class="form-control" aria-label="فلترة حسب الحالة" style="min-width: 140px; border-radius: 10px;">
+                                <option value="all">جميع الحالات</option>
+                                <option value="open">مفتوحة (Open)</option>
+                                <option value="in_progress">قيد المتابعة (In Progress)</option>
+                                <option value="waiting_user">بانتظار المستخدم (Waiting)</option>
+                                <option value="resolved">تم الحل (Resolved)</option>
+                                <option value="closed">مغلقة (Closed)</option>
+                            </select>
+
+                            <!-- Category Filter -->
+                            <select id="categoryFilter" class="form-control" aria-label="فلترة حسب التصنيف" style="min-width: 150px; border-radius: 10px;">
+                                <option value="all">جميع التصنيفات</option>
+                                <option value="technical">🛠️ مشكلة فنية أو تقنية</option>
+                                <option value="account">🔐 الحساب والدخول</option>
+                                <option value="appointment">📅 إدارة المواعيد</option>
+                                <option value="consultation">🩺 الاستشارات والعيادة</option>
+                                <option value="inquiry">💡 استفسار عام</option>
+                                <option value="complaint">⚠️ شكوى حول الخدمات</option>
+                            </select>
+
+                            <!-- Priority Filter -->
+                            <select id="priorityFilter" class="form-control" aria-label="فلترة حسب الأولوية" style="min-width: 130px; border-radius: 10px;">
+                                <option value="all">جميع الأولويات</option>
+                                <option value="urgent">🚨 عاجلة وطارئة</option>
+                                <option value="high">🔥 عالية</option>
+                                <option value="normal">⚡ متوسطة</option>
+                                <option value="low">🌱 منخفضة</option>
+                            </select>
+
+                            <!-- Sort By -->
+                            <select id="sortBy" class="form-control" aria-label="ترتيب النتائج" style="min-width: 150px; border-radius: 10px;">
+                                <option value="newest">الأحدث أولاً</option>
+                                <option value="oldest">الأقدم أولاً</option>
+                                <option value="priority">حسب الأولوية</option>
+                                <option value="status">حسب الحالة</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Filter Summary Indicator -->
+                    <div id="filterSummaryBar" style="padding: 0.5rem 1.5rem; background: var(--bg-primary); border-bottom: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+                        <span id="activeFilterCountText">جاري تحميل التذاكر...</span>
+                        <button id="resetFiltersBtn" style="background: none; border: none; color: var(--brand-accent); font-weight: 700; cursor: pointer; padding: 0; font-size: 0.82rem; display: none;">
+                            إعادة ضبط الفلاتر ↺
+                        </button>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="advanced-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم التذكرة</th>
+                                    <th>المستخدم (صاحب الطلب)</th>
+                                    <th>الموضوع والتصنيف</th>
+                                    <th>الأولوية</th>
+                                    <th>الحالة</th>
+                                    <th>المسؤول</th>
+                                    <th>تاريخ الإنشاء</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tickets-tbody">
+                                <tr>
+                                    <td colspan="8" class="text-center" style="padding: 3rem;">
+                                        <div class="skeleton" style="height: 24px; width: 60%; margin: 10px auto;"></div>
+                                        <div class="skeleton" style="height: 24px; width: 80%; margin: 10px auto;"></div>
+                                        <div class="skeleton" style="height: 24px; width: 50%; margin: 10px auto;"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="table-pagination">
+                        <div class="pagination-info" id="pagination-info">يعرض 0 إلى 0 من أصل 0 تذكرة</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" id="prevPage" disabled aria-label="الصفحة السابقة">السابق</button>
+                            <span id="pageNumbers" style="display: flex; gap: 4px;"></span>
+                            <button class="page-btn" id="nextPage" disabled aria-label="الصفحة التالية">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- TICKET DETAIL & WORKFLOW DRAWER / MODAL -->
+    <div class="modal-overlay" id="adminTicketModal" aria-hidden="true" role="dialog" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-dialog" style="max-width: 900px; width: 95%; max-height: 92vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="flex-shrink: 0;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span class="ticket-number-tag" id="drawerTicketNumber">TICK-XXXX</span>
+                        <span class="status-badge" id="drawerTicketStatusBadge">مفتوحة</span>
+                        <span class="priority-badge" id="drawerTicketPriorityBadge">متوسطة</span>
+                        <span class="category-tag" id="drawerTicketCategoryTag">مشكلة فنية</span>
+                    </div>
+                    <h3 class="modal-title" id="drawerTicketSubject" style="font-size: 1.2rem; margin: 0;">عنوان التذكرة</h3>
+                </div>
+                <button class="modal-close" id="closeDrawerBtn" aria-label="إغلاق">&times;</button>
+            </div>
+
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+                <!-- Requester & Metadata Quick Card -->
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="avatar-sm" id="drawerUserAvatar" style="width: 44px; height: 44px; border-radius: 50%; background: var(--brand-accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">U</div>
+                            <div>
+                                <strong id="drawerUserName" style="font-size: 1.05rem; display: block;">اسم المستخدم</strong>
+                                <span id="drawerUserEmail" style="font-size: 0.85rem; color: var(--text-secondary);">user@example.com</span>
+                                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                                    <span class="status-badge user" id="drawerUserRole">مستخدم</span>
+                                    <span id="drawerUserPhone" style="font-size: 0.8rem; color: var(--text-tertiary);">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ticket Status & Assignment Controls -->
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div>
+                                <label for="drawerStatusSelect" style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">تحديث الحالة:</label>
+                                <select id="drawerStatusSelect" class="form-control" style="padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">
+                                    <option value="open">مفتوحة (Open)</option>
+                                    <option value="in_progress">قيد المتابعة (In Progress)</option>
+                                    <option value="waiting_user">بانتظار رد المستخدم (Waiting)</option>
+                                    <option value="resolved">تم الحل (Resolved)</option>
+                                    <option value="closed">مغلقة نهائياً (Closed)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="drawerPrioritySelect" style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">تغيير الأولوية:</label>
+                                <select id="drawerPrioritySelect" class="form-control" style="padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">
+                                    <option value="low">منخفضة</option>
+                                    <option value="normal">متوسطة</option>
+                                    <option value="high">عالية</option>
+                                    <option value="urgent">عاجلة وطارئة</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="drawerAssignSelect" style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">تعيين للمسؤول:</label>
+                                <select id="drawerAssignSelect" class="form-control" style="padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; min-width: 140px;">
+                                    <option value="">غير معين (عام)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-tertiary); border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        <div>تاريخ الإنشاء: <span id="drawerCreatedDate">--</span></div>
+                        <div>آخر تحديث: <span id="drawerUpdatedDate">--</span></div>
+                        <div id="drawerResolvedDateWrapper" style="display: none;">تاريخ الحل: <span id="drawerResolvedDate">--</span></div>
+                    </div>
+                </div>
+
+                <!-- Conversation History Thread -->
+                <div style="font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span>سجل المحادثة والملاحظات الإدارية:</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">الملاحظات باللون الأصفر سرية ولا تظهر للمستخدم 🔒</span>
+                </div>
+                <div class="support-conversation-thread" id="drawerConversationThread" style="max-height: 380px;">
+                    <!-- Dynamically injected messages & internal notes -->
+                </div>
+
+                <!-- Dual Response Composer -->
+                <div style="margin-top: 1.5rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.25rem;">
+                    <!-- Composer Mode Tabs -->
+                    <div class="composer-tabs">
+                        <button type="button" class="composer-tab-btn active-reply" id="tabModeReply">
+                            💬 إرسال رد رسمي للمستخدم
+                        </button>
+                        <button type="button" class="composer-tab-btn" id="tabModeInternal">
+                            🔒 إضافة ملاحظة إدارية داخلية (سرية)
+                        </button>
+                    </div>
+
+                    <!-- Internal Note Caution Banner -->
+                    <div class="composer-internal-warning" id="internalCautionBanner" style="display: none;">
+                        <span>🔒</span>
+                        <span>ملاحظة داخلية سرية: هذه الرسالة ستكون مرئية فقط لأعضاء فريق الإدارة والدعم الفني، ولن يراها المستخدم نهائياً.</span>
+                    </div>
+
+                    <form id="adminComposerForm">
+                        <div style="margin-bottom: 10px;">
+                            <textarea id="composerInput" class="form-control" rows="3" required placeholder="اكتب ردك الموجه للمستخدم هنا..." style="width: 100%; border-radius: 10px; padding: 12px; font-family: inherit; font-size: 0.92rem; line-height: 1.5;"></textarea>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button type="button" class="btn btn-outline" id="quickResolveBtn" style="border-radius: 10px; border-color: var(--success-color); color: var(--success-color); font-size: 0.85rem; padding: 6px 14px;">
+                                    ✅ تحديد كـ تم الحل
+                                </button>
+                                <button type="button" class="btn btn-outline" id="quickCloseBtn" style="border-radius: 10px; font-size: 0.85rem; padding: 6px 14px;">
+                                    🔒 إغلاق التذكرة
+                                </button>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="composerSubmitBtn" style="border-radius: 10px; padding: 8px 24px; font-size: 0.92rem;">
+                                <span id="composerSubmitText">إرسال الرد للمستخدم 💬</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

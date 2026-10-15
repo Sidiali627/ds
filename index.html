@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="meta-title">استوديو صحة الشباب</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/homepage.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+</head>
+<body>
+    <header class="main-header" id="main-header"></header>
+
+    <!-- 1. Hero Section -->
+    <section class="hero-section" id="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <h1 id="hero-title">جاري التحميل...</h1>
+            <p id="hero-desc"></p>
+            <div class="hero-buttons" id="hero-buttons-container"></div>
+        </div>
+    </section>
+
+    <!-- 2. Live Stats -->
+    <section class="stats-section section-padding bg-surface">
+        <div class="container">
+            <div class="stats-grid" id="stats-container">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Consultations Services -->
+    <section class="services-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>خدمات الاستشارات</h2>
+                <p>تواصل مع خبرائنا في مختلف المجالات</p>
+            </div>
+            <div class="services-grid" id="services-container">
+                <!-- Static definition driven by DB or JS config -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Latest Articles -->
+    <section class="articles-section section-padding bg-surface">
+        <div class="container">
+            <div class="section-header">
+                <h2>أحدث المقالات</h2>
+                <a href="articles.html" class="btn btn-outline">عرض الكل</a>
+            </div>
+            <div class="articles-grid" id="home-articles-container"></div>
+        </div>
+    </section>
+
+    <!-- 4. Latest Videos -->
+    <section class="videos-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>مكتبة الفيديو</h2>
+            </div>
+            <div class="videos-grid" id="home-videos-container"></div>
+        </div>
+    </section>
+
+    <!-- 6. Specialists -->
+    <section class="specialists-section section-padding bg-surface">
+        <div class="container">
+            <div class="section-header">
+                <h2>نخبة من المختصين</h2>
+            </div>
+            <div class="specialists-grid" id="specialists-container"></div>
+        </div>
+    </section>
+
+    <!-- 7. Upcoming Events -->
+    <section class="events-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>الفعاليات القادمة</h2>
+                <a href="events.html" class="btn btn-outline">عرض الكل</a>
+            </div>
+            <div class="events-grid" id="home-events-container"></div>
+        </div>
+    </section>
+
+    <!-- 8. National Campaigns -->
+    <section class="campaigns-section section-padding bg-surface">
+        <div class="container">
+            <div class="section-header">
+                <h2>الحملات الوطنية</h2>
+            </div>
+            <div class="campaigns-grid" id="campaigns-container"></div>
+        </div>
+    </section>
+
+    <!-- 9. Health Tools -->
+    <section class="tools-section section-padding text-center">
+        <div class="container">
+            <div class="section-header">
+                <h2>أدوات الصحة التفاعلية</h2>
+                <p>احسب واختبر حالتك الصحية بسرعة وسهولة</p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="openTool('bmi')"><h3>مؤشر كتلة الجسم (BMI)</h3></div>
+                <div class="tool-card" onclick="openTool('calories')"><h3>حساب السعرات</h3></div>
+                <div class="tool-card" onclick="openTool('mental')"><h3>اختبار الصحة النفسية</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Digital Library -->
+    <section class="library-section section-padding bg-surface">
+        <div class="container">
+            <div class="section-header">
+                <h2>المكتبة الرقمية</h2>
+            </div>
+            <div class="library-grid" id="library-container"></div>
+        </div>
+    </section>
+
+    <!-- 12. Interactive Map -->
+    <section class="map-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>خريطة الأنشطة الوطنية</h2>
+                <p>إحصائيات انتشارنا في الـ 58 ولاية</p>
+            </div>
+            <div class="map-container" id="algeria-map-container">
+                <!-- SVG map will be injected here -->
+            </div>
+            <div id="map-info-box" class="map-info-box" style="display: none;"></div>
+        </div>
+    </section>
+
+    <!-- 11. Partners & Sponsors -->
+    <section class="partners-section section-padding bg-surface">
+        <div class="container text-center">
+            <h2>شركاء النجاح</h2>
+            <div class="partners-carousel" id="partners-container"></div>
+        </div>
+    </section>
+
+    <footer class="main-footer" id="main-footer"></footer>
+
+    <!-- 13. Smart Assistant Widget -->
+    <div class="chatbot-widget" id="chatbot-widget">
+        <div class="chat-header" onclick="toggleChat()">
+            المساعد الذكي
+        </div>
+        <div class="chat-body" id="chat-body" style="display: none;">
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg bot">مرحباً بك! كيف يمكنني مساعدتك في منصة استوديو صحة الشباب؟</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input-field" placeholder="ابحث أو اسأل...">
+                <button onclick="sendChat()">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for Health Tools -->
+    <div id="tool-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" id="tool-modal-content">
+            <!-- Dynamic tool UI goes here -->
+            <button class="btn btn-outline" onclick="closeTool()">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/site_initializer.js"></script>
+    <script type="module" src="js/components.js"></script>
+    <script type="module" src="js/animations.js"></script>
+    <script type="module" src="js/homepage.js"></script>
+    <script type="module" src="js/health_tools.js"></script>
+    <script type="module" src="js/map.js"></script>
+    <script type="module" src="js/smart_assistant.js"></script>
+</body>
+</html>

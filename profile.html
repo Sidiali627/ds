@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي والصحي - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        .form-section { background: var(--surface-color); padding: 2rem; border-radius: 24px; margin-bottom: 2rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--text-primary); font-size: 0.95rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 14px; background: var(--bg-secondary); color: var(--text-primary); font-family: inherit; font-size: 0.95rem; outline: none; }
+        .prof-cover-banner { height: 130px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border-radius: 20px 20px 0 0; margin: -2rem -2rem 2rem -2rem; }
+    </style>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/guard.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container navbar">
+            <a href="index.html" class="nav-brand" style="display:flex; align-items:center; gap:8px;">
+                <img loading="lazy" decoding="async" src="images/logo.png" alt="الشعار" style="height:36px; object-fit:contain;">
+                <span style="font-weight:800; font-size:1.1rem; color:var(--text-primary);">استوديو صحة الشباب</span>
+            </a>
+            <div class="nav-actions">
+                <button class="theme-switcher" title="تبديل المظهر"></button>
+                <button id="logout-btn" class="btn btn-outline" style="border: 1px solid var(--danger-color); color: var(--danger-color); border-radius:12px; font-weight:700;">تسجيل الخروج</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="portal-layout">
+        <aside class="portal-sidebar">
+            <ul>
+                <li><a href="dashboard.html"><span>📊</span> لوحة التحكم واستشاراتي</a></li>
+                <li><a href="emr.html"><span>📋</span> سجلي الطبي (EMR)</a></li>
+                <li><a href="consultations.html"><span>🩺</span> طلب استشارة طبية جديدة</a></li>
+                <li><a href="events.html"><span>🎟️</span> الفعاليات الوطنية والتذاكر</a></li>
+                <li><a href="articles.html"><span>📝</span> مكتبة المقالات والوعي</a></li>
+                <li><a href="ai_assistant.html"><span>🤖</span> المساعد التوعوي الذكي</a></li>
+                <li><a href="profile.html" class="active"><span>👤</span> الملف الشخصي والصحي</a></li>
+                <li><a href="support.html"><span>💬</span> مركز الدعم والشكاوى</a></li>
+            </ul>
+        </aside>
+        
+        <main class="portal-content">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:4px;">الملف الشخصي والسجل الصحي 👤🩺</h1>
+                <p style="color:var(--text-secondary); font-size:0.95rem;">إدارة بياناتك الشخصية، زمرة الدم، والقياسات الطبية المحفوظة بأمان.</p>
+            </div>
+
+            <p id="status-msg" style="display:none; padding: 12px 18px; border-radius: 14px; margin-bottom: 1.5rem; font-weight:bold;"></p>
+            
+            <!-- Personal Info Card -->
+            <section class="form-section">
+                <div class="prof-cover-banner"></div>
+                <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:1.25rem;">👤 المعلومات الشخصية</h3>
+                <form id="profile-form">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; margin-bottom:1rem;">
+                        <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="full_name" placeholder="أدخل اسمك الكامل"></div>
+                        <div class="form-group"><label>رقم الهاتف *</label><input type="tel" id="phone" placeholder="06XXXXXXXX"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="padding:10px 24px; border-radius:14px; font-weight:700;">حفظ المعلومات الشخصية ✅</button>
+                </form>
+            </section>
+            
+            <!-- Health Profile Card -->
+            <section class="form-section">
+                <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:1.25rem;">🩺 الملف الصحي السريري والقياسات</h3>
+                <form id="health-form">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-bottom:1rem;">
+                        <div class="form-group"><label>الطول (سم)</label><input type="number" id="height" placeholder="مثال: 175"></div>
+                        <div class="form-group"><label>الوزن (كغ)</label><input type="number" id="weight" placeholder="مثال: 70"></div>
+                        <div class="form-group"><label>زمرة الدم</label><input type="text" id="blood_type" placeholder="مثال: O+"></div>
+                    </div>
+                    <div class="form-group"><label>الحساسية الدوائية أو الغذائية</label><textarea id="allergies" rows="2" placeholder="اذكر أية حساسية تعاني منها..."></textarea></div>
+                    <div class="form-group"><label>الأمراض المزمنة أو التاريخ الصحي</label><textarea id="chronic_diseases" rows="3" placeholder="اذكر التاريخ الصحي أو أية أدوية منتظمة..."></textarea></div>
+                    <button type="submit" class="btn btn-primary" style="padding:10px 24px; border-radius:14px; font-weight:700;">حفظ الملف الصحي السريري ✅</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>

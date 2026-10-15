@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الإشراف على المواعيد الطبية - لوحة الإدارة</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <div id="admin-sidebar-root"></div>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Header Title & Controls -->
+                <div class="admin-panel-header" style="background: transparent; border: none; padding: 0 0 1.25rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h2 style="margin: 0; font-weight: 800; font-size: 1.5rem;">📅 مركز الإشراف على المواعيد الطبية</h2>
+                        <p style="color: var(--text-secondary); margin: 4px 0 0; font-size: 0.9rem;">متابعة مواعيد الكشوفات، مراقبة جداول الأطباء، وحل أي تعارضات أو إلغاءات.</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-outline" id="btn-refresh-appts" style="display:flex; align-items:center; gap:6px;">
+                            <span>🔄</span> تحديث القائمة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Stats Cards (Unified Doctor Dashboard Pattern) -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">📋</div>
+                        <div class="stat-details">
+                            <h3>إجمالي المواعيد</h3>
+                            <p class="stat-number" id="stat-total-appts">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">✅</div>
+                        <div class="stat-details">
+                            <h3>مواعيد مؤكدة وقادمة</h3>
+                            <p class="stat-number" id="stat-confirmed-appts" style="color: #059669;">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">⏳</div>
+                        <div class="stat-details">
+                            <h3>بانتظار تأكيد الطبيب</h3>
+                            <p class="stat-number" id="stat-pending-appts" style="color: #d97706;">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.12); color: #dc2626;">❌</div>
+                        <div class="stat-details">
+                            <h3>مواعيد ملغاة</h3>
+                            <p class="stat-number" id="stat-cancelled-appts" style="color: #dc2626;">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Table Component -->
+                <div class="advanced-table-wrapper" style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <!-- Toolbar (Search & Filters) -->
+                    <div class="table-toolbar" style="padding: 1.1rem; border-bottom: 1px solid var(--border-color); display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                        <div style="display:flex; gap:0.75rem; flex:1; min-width:280px;">
+                            <input type="text" id="appt-search-input" class="form-control" placeholder="ابحث باسم المريض، الطبيب، أو رقم الموعد..." style="width:100%; max-width:360px; padding:0.6rem 0.9rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-family:inherit;">
+                        </div>
+                        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+                            <select id="appt-status-filter" class="form-control" style="padding:0.6rem 0.85rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-family:inherit;">
+                                <option value="all">كل الحالات (All Statuses)</option>
+                                <option value="confirmed">مؤكدة (Confirmed)</option>
+                                <option value="pending">بانتظار التأكيد (Pending)</option>
+                                <option value="rescheduled">مُعاد جدولتها (Rescheduled)</option>
+                                <option value="completed">مكتملة (Completed)</option>
+                                <option value="cancelled">ملغاة (Cancelled)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="admin-table" style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr style="background: var(--bg-secondary); text-align: right; border-bottom: 1px solid var(--border-color);">
+                                    <th style="padding: 12px 16px;">كود الموعد</th>
+                                    <th style="padding: 12px 16px;">المريض</th>
+                                    <th style="padding: 12px 16px;">الطبيب المعالج</th>
+                                    <th style="padding: 12px 16px;">تاريخ ووقت الموعد</th>
+                                    <th style="padding: 12px 16px;">المدة</th>
+                                    <th style="padding: 12px 16px;">الحالة</th>
+                                    <th style="padding: 12px 16px; text-align:center;">إجراءات الإشراف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-appointments-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 3rem 1rem;">
+                                        <div class="spinner" style="margin: 0 auto 10px;"></div>
+                                        جاري تحميل المواعيد الطبية...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Reschedule Modal -->
+    <div id="admin-reschedule-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:18px; max-width:480px; width:100%; box-shadow:var(--shadow-xl); overflow:hidden; text-align:right;">
+            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:800;">🔄 إعادة جدولة الموعد (إشراف الإدارة)</h3>
+                <button type="button" onclick="closeAdminRescheduleModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <div style="padding:1.5rem;">
+                <input type="hidden" id="adm-reschedule-appt-id">
+                <input type="hidden" id="adm-reschedule-doc-id">
+                <input type="hidden" id="adm-reschedule-pat-id">
+                
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:700;">التاريخ والتوقيت الجديد:</label>
+                    <input type="datetime-local" id="adm-reschedule-datetime" required style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit;">
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeAdminRescheduleModal()">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAdminReschedule()">تأكيد التعديل وإشعار الطرفين ✅</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:99999; display:flex; flex-direction:column; gap:10px;"></div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_appointments.js"></script>
+</body>
+</html>

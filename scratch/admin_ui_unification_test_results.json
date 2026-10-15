@@ -1,0 +1,382 @@
+{
+  "total": 75,
+  "passed": 75,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "[index.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[index.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[index.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[index.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[users.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[users.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[users.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[users.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[consultations.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[consultations.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[consultations.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[consultations.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[appointments.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[appointments.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[appointments.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[appointments.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[events.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[events.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[events.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[events.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[articles.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[articles.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[articles.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[articles.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[cms.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[cms.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[cms.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[cms.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[crm.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[crm.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[crm.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[crm.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[crm_profile.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[crm_profile.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[crm_profile.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[crm_profile.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[media.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[media.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[media.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[media.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[notifications.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[notifications.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[notifications.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[notifications.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[security.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[security.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[security.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[security.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[settings.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[settings.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[settings.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[settings.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[seo.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[seo.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[seo.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[seo.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[ai_center.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[ai_center.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[ai_center.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[ai_center.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "[certificates.html] Contains Sidebar Root",
+      "passed": true,
+      "details": "#admin-sidebar-root"
+    },
+    {
+      "name": "[certificates.html] Contains Header Root",
+      "passed": true,
+      "details": "#admin-header-root"
+    },
+    {
+      "name": "[certificates.html] Injects admin_components.js",
+      "passed": true,
+      "details": "admin_components.js"
+    },
+    {
+      "name": "[certificates.html] Protected by guard.js",
+      "passed": true,
+      "details": "guard.js"
+    },
+    {
+      "name": "admin.css Contains Card Shadow Tokens",
+      "passed": true,
+      "details": "--card-shadow tokens verified"
+    },
+    {
+      "name": "admin.css Standardizes 20px Border Radius on Advanced Panels & Cards",
+      "passed": true,
+      "details": "20px radius tokens verified"
+    },
+    {
+      "name": "admin.css Contains Hero Card System (Doctor & Admin)",
+      "passed": true,
+      "details": "Hero cards verified"
+    },
+    {
+      "name": "admin.css Contains RTL Nav Item Highlight",
+      "passed": true,
+      "details": "RTL active border highlight verified"
+    },
+    {
+      "name": "admin.css Contains Mobile Drawer & Overlay Animation Rules",
+      "passed": true,
+      "details": "Mobile drawer responsive rules verified"
+    },
+    {
+      "name": "admin.css Contains Complete Status Badges System",
+      "passed": true,
+      "details": "Status badges verified"
+    },
+    {
+      "name": "admin_components.js Contains Administrator Profile Card (Avatar, Role, Status Dot)",
+      "passed": true,
+      "details": "Profile header card verified"
+    },
+    {
+      "name": "admin_components.js Contains Dynamic Profile Hydration via Supabase",
+      "passed": true,
+      "details": "Profile hydration verified"
+    },
+    {
+      "name": "admin_components.js Contains 4 Clean Navigation Sections",
+      "passed": true,
+      "details": "4 clean navigation groupings verified"
+    },
+    {
+      "name": "admin_components.js Header Includes Live Sync, Notification Bell, Theme Toggle & Public Link",
+      "passed": true,
+      "details": "Unified header controls verified"
+    },
+    {
+      "name": "admin_components.js Handles Mobile Sidebar Open & Close",
+      "passed": true,
+      "details": "Mobile sidebar toggle handler verified"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "missingAssetFiles": [
+    {
+      "page": "article.html",
+      "asset": "${article.image_url}"
+    },
+    {
+      "page": "articles.html",
+      "asset": "${article.image_url}"
+    }
+  ],
+  "unresolvedOnclickHandlers": [],
+  "brokenNavLinks": []
+}

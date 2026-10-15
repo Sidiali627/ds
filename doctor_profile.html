@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف المهني للطبيب - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/doctor_profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="js/theme.js"></script>
+</head>
+<body>
+    <header class="main-header" id="main-header"></header>
+
+    <div class="doctor-hero">
+        <div class="container"></div>
+    </div>
+
+    <main class="container">
+        
+        <!-- Skeleton Loading -->
+        <div id="doctor-skeleton" class="doctor-profile-layout">
+            <div class="doctor-main-card">
+                <div class="skeleton" style="width: 130px; height: 130px; border-radius: 50%; margin-top: -5rem; margin-bottom: 1rem;"></div>
+                <div class="skeleton skeleton-line" style="width: 40%; height: 28px; margin-bottom: 1rem;"></div>
+                <div class="skeleton skeleton-line" style="width: 25%; height: 20px; margin-bottom: 2rem;"></div>
+                
+                <div style="display:flex; gap:1rem; margin-bottom:2rem;">
+                    <div class="skeleton skeleton-line" style="width: 100px; height: 20px;"></div>
+                    <div class="skeleton skeleton-line" style="width: 100px; height: 20px;"></div>
+                </div>
+
+                <div class="skeleton skeleton-line" style="width: 100%; height: 16px; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-line" style="width: 90%; height: 16px; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-line" style="width: 95%; height: 16px; margin-bottom: 8px;"></div>
+            </div>
+            
+            <div class="booking-card">
+                <div class="skeleton skeleton-line" style="width: 60%; height: 32px; margin-bottom: 1rem;"></div>
+                <div class="skeleton skeleton-line" style="width: 100%; height: 48px; border-radius: 12px; margin-bottom: 10px;"></div>
+                <div class="skeleton skeleton-line" style="width: 100%; height: 48px; border-radius: 12px; margin-bottom: 10px;"></div>
+                <div class="skeleton skeleton-line" style="width: 100%; height: 48px; border-radius: 14px; margin-top: 1rem;"></div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="doctor-error" class="error-state" style="display:none; margin-top:-3rem; position:relative; z-index:10; background:var(--surface-color);">
+            <div style="font-size:4rem; margin-bottom:1rem; color:#ef4444;">👨‍⚕️❓</div>
+            <h2 style="color:var(--text-primary); margin-bottom:1rem;">الطبيب غير موجود</h2>
+            <p style="color:var(--text-secondary); margin-bottom:1.5rem; max-width:400px; text-align:center;">تعذر العثور على بيانات الطبيب المطلوب. قد يكون الرابط خاطئاً أو تم حذف الحساب.</p>
+            <a href="consultations.html" class="btn btn-primary" style="padding:10px 24px; border-radius:12px;">العودة لقائمة الأطباء</a>
+        </div>
+
+        <!-- Main Profile Layout -->
+        <div id="doctor-content" class="doctor-profile-layout" style="display:none;">
+            <!-- Left Column: Info -->
+            <div>
+                <div class="doctor-main-card">
+                    <div class="doc-avatar-container">
+                        <img id="doc-image" src="images/default-avatar.png" class="doc-avatar" alt="صورة الطبيب">
+                    </div>
+                    
+                    <h1 id="doc-name" class="doc-name">د. ...</h1>
+                    <div id="doc-specialty" style="color:var(--text-secondary); font-size:1.1rem; font-weight:600; margin-bottom:12px;">استشاري</div>
+                    
+                    <div class="doc-badge">
+                        <span style="font-size:1.1rem;">✔️</span> طبيب موثق
+                    </div>
+
+                    <div class="doc-info-list">
+                        <div class="doc-info-item">
+                            <span style="font-size:1.2rem;">💼</span> <span id="doc-exp">5 سنوات خبرة</span>
+                        </div>
+                        <div class="doc-info-item">
+                            <span style="font-size:1.2rem;">📍</span> <span>استشارة أونلاين (عن بعد)</span>
+                        </div>
+                        <div class="doc-info-item">
+                            <span style="font-size:1.2rem;">⭐</span> <span>4.9 (124 تقييم)</span>
+                        </div>
+                    </div>
+
+                    <h3 class="doc-section-title"><span>📝</span> نبذة عن الطبيب</h3>
+                    <p id="doc-bio" style="color:var(--text-secondary); line-height:1.8; margin-bottom:2rem; font-size:0.95rem;">
+                        لم يتم إضافة نبذة مهنية بعد.
+                    </p>
+
+                    <h3 class="doc-section-title"><span>🎓</span> المؤهلات والتخصص</h3>
+                    <ul style="color:var(--text-secondary); line-height:1.8; font-size:0.95rem; margin-right:1.5rem; margin-bottom:2rem;">
+                        <li id="doc-spec-list">تخصص معتمد من وزارة الصحة</li>
+                        <li>مرخص لتقديم الاستشارات عبر الطب الاتصالي</li>
+                    </ul>
+
+                    <h3 class="doc-section-title"><span>⭐</span> أحدث التقييمات</h3>
+                    <div class="review-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="font-size:0.9rem;">مريض مجهول</strong>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">"طبيب ممتاز ومستمع جيد، أنصح به بشدة. شكراً لاستوديو صحة الشباب."</p>
+                    </div>
+                    <div class="review-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="font-size:0.9rem;">مريض مجهول</strong>
+                            <div class="stars">★★★★☆</div>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">"تجربة الاستشارة المرئية كانت ممتازة وسلسة."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Appointment Booking Widget -->
+            <div>
+                <div class="booking-card" style="position:sticky; top:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <div class="booking-price">مجاناً</div>
+                        <span style="background:rgba(16,185,129,0.12); color:#059669; padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:800;">كشف مؤكد 🛡️</span>
+                    </div>
+                    <div class="booking-subtitle">استشارة طبية عن بعد مدعومة بالكامل</div>
+                    
+                    <hr style="border:none; border-top:1px solid var(--border-color); margin:1.25rem 0;">
+                    
+                    <h4 style="margin-bottom:0.75rem; font-size:1.05rem; font-weight:800;">📅 حجز موعد محدد مع الطبيب</h4>
+                    
+                    <form id="appointment-booking-form">
+                        <!-- Select Date -->
+                        <div style="margin-bottom:1rem;">
+                            <label for="book-date" style="display:block; margin-bottom:6px; font-size:0.85rem; font-weight:700;">اختر تاريخ الموعد:</label>
+                            <input type="date" id="book-date" required style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit; font-size:0.95rem;">
+                        </div>
+
+                        <!-- Available Slots Grid -->
+                        <div style="margin-bottom:1rem;">
+                            <label style="display:block; margin-bottom:6px; font-size:0.85rem; font-weight:700;">اختر التوقيت المتاح:</label>
+                            <div id="slots-container" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;">
+                                <div style="grid-column:1/-1; text-align:center; padding:12px; font-size:0.82rem; color:var(--text-secondary);">اختر تاريخاً أولاً لعرض الأوقات المتاحة</div>
+                            </div>
+                            <input type="hidden" id="selected-slot-time" required>
+                        </div>
+
+                        <!-- Notes / Symptoms -->
+                        <div style="margin-bottom:1.25rem;">
+                            <label for="book-notes" style="display:block; margin-bottom:6px; font-size:0.85rem; font-weight:700;">سبب الموعد وملاحظات (اختياري):</label>
+                            <textarea id="book-notes" rows="2" placeholder="ملاحظات أو أسئلة ترغب بمناقشتها مع الطبيب..." style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit; font-size:0.88rem;"></textarea>
+                        </div>
+
+                        <button type="submit" id="btn-confirm-booking" class="btn btn-primary" style="width:100%; border-radius:12px; padding:12px; font-size:1rem; font-weight:800;" disabled>
+                            <span>تأكيد حجز الموعد 📅</span>
+                        </button>
+                    </form>
+
+                    <div id="book-feedback-box" style="margin-top:12px; padding:10px; border-radius:10px; display:none; font-size:0.85rem; font-weight:700; text-align:center;"></div>
+                    
+                    <p style="text-align:center; font-size:0.75rem; color:var(--text-tertiary); margin-top:1rem; margin-bottom:0;">🔒 محمي من الحجز المزدوج ويصلك إشعار فوري بعد التأكيد</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer" id="main-footer"></footer>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/components.js"></script>
+    <script type="module" src="js/doctor_profile.js"></script>
+</body>
+</html>

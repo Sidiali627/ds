@@ -1,0 +1,162 @@
+{
+  "total": 31,
+  "passed": 31,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Admin Session Authentication",
+      "passed": true,
+      "details": "UID: e1ffe9ec-305d-411b-a762-b157d7b5311a"
+    },
+    {
+      "name": "Admin Role Authorization Check",
+      "passed": true,
+      "details": "Role: super_admin"
+    },
+    {
+      "name": "Metric: Total Registered Users Count",
+      "passed": true,
+      "details": "Count: 2"
+    },
+    {
+      "name": "Metric: Active Specialists Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Total Consultations Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Pending Consultations Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Completed Consultations Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Appointments Count",
+      "passed": true,
+      "details": "Count: 8"
+    },
+    {
+      "name": "Metric: Volunteers Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: EMR Case Notes Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Published Events Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "Metric: Articles Count",
+      "passed": true,
+      "details": "Count: 0"
+    },
+    {
+      "name": "7-Day Date Filter Interval",
+      "passed": true,
+      "details": "From: 2026-10-07"
+    },
+    {
+      "name": "30-Day Date Filter Interval",
+      "passed": true,
+      "details": "From: 2026-09-14"
+    },
+    {
+      "name": "Current Month Date Filter Interval",
+      "passed": true,
+      "details": "Start: 2026-09-30"
+    },
+    {
+      "name": "Custom Date Filter Range",
+      "passed": true,
+      "details": "Interval: 2026-10-01 to 2026-10-15"
+    },
+    {
+      "name": "Filtered Count Execution on Database (30-day range)",
+      "passed": true,
+      "details": "30d Appointments: 8"
+    },
+    {
+      "name": "Daily Date Buckets Generation (7 days)",
+      "passed": true,
+      "details": "Buckets count: 7"
+    },
+    {
+      "name": "Appointments Timeline Aggregation",
+      "passed": true,
+      "details": "Mapped appointments in 7-day window: 8"
+    },
+    {
+      "name": "Consultation Status Distribution Computation",
+      "passed": true,
+      "details": "Statuses: {\"pending\":0,\"accepted\":0,\"in_progress\":0,\"completed\":0,\"cancelled\":0}"
+    },
+    {
+      "name": "Operational Reports Hub: Appointments Pagination Query",
+      "passed": true,
+      "details": "Rows returned: 8, Total in DB: 8"
+    },
+    {
+      "name": "Operational Reports Hub: Users Report Query",
+      "passed": true,
+      "details": "Users returned: 2, Total in DB: 2"
+    },
+    {
+      "name": "CSV Starts with UTF-8 BOM (\\uFEFF) for Arabic Excel Compatibility",
+      "passed": true,
+      "details": "BOM byte prefix confirmed"
+    },
+    {
+      "name": "CSV Free of Sensitive Credentials, Passwords, or Access Tokens",
+      "passed": true,
+      "details": "Zero sensitive credentials detected"
+    },
+    {
+      "name": "Unauthenticated Client Has No Active Session",
+      "passed": true,
+      "details": "Anonymous context verified"
+    },
+    {
+      "name": "guard.js Strictly Enforces ['admin', 'super_admin'] for /admin/ Routes",
+      "passed": true,
+      "details": "Unauthorized roles redirected to unauthorized.html"
+    },
+    {
+      "name": "admin_dashboard.js Performs Dedicated Administrative Role Verification",
+      "passed": true,
+      "details": "checkAdminAuth verified"
+    },
+    {
+      "name": "admin/index.html Contains All 10 Required KPI Card IDs",
+      "passed": true,
+      "details": "10 Real Metric Cards Present"
+    },
+    {
+      "name": "admin/index.html Contains All 4 Chart.js Canvas Elements",
+      "passed": true,
+      "details": "4 Chart Canvases Present"
+    },
+    {
+      "name": "admin/index.html Contains Reports Hub, Export, Print & Pagination Controls",
+      "passed": true,
+      "details": "Reports Hub UI Present"
+    },
+    {
+      "name": "admin/index.html Supports Clean @media print & Official Report Headers",
+      "passed": true,
+      "details": "@media print CSS rules verified"
+    }
+  ]
+}

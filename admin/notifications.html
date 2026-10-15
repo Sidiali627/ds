@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email & Notifications Center - الإدارة</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <style>
+        /* Premium Layout Variables */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --blur: blur(16px);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(17, 24, 39, 0.7);
+                --glass-border: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        .premium-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .premium-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        }
+        
+        .stat-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+        .stat-card {
+            background: var(--surface-color, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px; padding: 1.5rem; text-align: right;
+            display: flex; flex-direction: column; gap: 8px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); border-color: var(--brand-accent); }
+        .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); }
+        .stat-title { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+
+        .tabs-nav { display: flex; gap: 8px; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 8px; }
+        .tab-btn {
+            background: transparent; border: 1px solid transparent; color: var(--text-color);
+            padding: 10px 20px; border-radius: 99px; cursor: pointer; font-weight: 600;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .tab-btn:hover { background: rgba(0,0,0,0.04); }
+        .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(26, 86, 219, 0.2); }
+        
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .skeleton-row { height: 40px; background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-bottom: 8px; }
+        @media (prefers-color-scheme: dark) { .skeleton-row { background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%); } }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--surface-color); color: var(--text-color); font-family: inherit; font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+        
+        .badge { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
+        .badge-success { background: rgba(16,185,129,0.1); color: var(--success-color); border: 1px solid var(--success-color); }
+        .badge-warning { background: rgba(245,166,35,0.1); color: var(--warning-color); border: 1px solid var(--warning-color); }
+        .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger-color); border: 1px solid var(--danger-color); }
+        .badge-neutral { background: rgba(0,0,0,0.05); color: var(--text-color); }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.5; }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Navigation Tabs -->
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-target="tab-overview">نظرة عامة</button>
+                    <button class="tab-btn" data-target="tab-notifications">إشعارات النظام (In-App)</button>
+                    <button class="tab-btn" data-target="tab-campaigns">الحملات البريدية</button>
+                    <button class="tab-btn" data-target="tab-templates">القوالب</button>
+                    <button class="tab-btn" data-target="tab-subscribers">المشتركون</button>
+                    <button class="tab-btn" data-target="tab-logs">سجل الإرسال (Logs)</button>
+                </div>
+
+                <!-- TAB 1: Overview -->
+                <div id="tab-overview" class="tab-content active">
+                    <div class="stat-grid-4">
+                        <div class="stat-card">
+                            <div class="stat-title">إجمالي رسائل البريد المرسلة</div>
+                            <div class="stat-val" id="st-total-emails">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">المشتركين بالنشرة البريدية</div>
+                            <div class="stat-val" id="st-subs">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">الإشعارات المرسلة (In-App)</div>
+                            <div class="stat-val" id="st-notifs">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">الرسائل الفاشلة</div>
+                            <div class="stat-val" style="color:var(--danger-color);" id="st-failed">--</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="premium-panel">
+                            <h3 style="margin-bottom:1rem;">معدل إرسال البريد (آخر 7 أيام)</h3>
+                            <canvas id="emailChart" height="200"></canvas>
+                        </div>
+                        <div class="premium-panel">
+                            <h3 style="margin-bottom:1rem;">حالة الحملات</h3>
+                            <canvas id="campaignChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: In-App Notifications -->
+                <div id="tab-notifications" class="tab-content">
+                    <div class="premium-panel">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                            <h3 style="margin:0;">إرسال إشعار جديد</h3>
+                        </div>
+                        <div class="form-row">
+                            <div><label class="form-label">عنوان الإشعار</label><input type="text" id="n_title" class="form-input" placeholder="مثال: تحديث في مواعيد العمل أو إعلان هام"></div>
+                            <div>
+                                <label class="form-label">الجمهور المستهدف</label>
+                                <select id="n_target" class="form-select">
+                                    <option value="all">الجميع (إعلان عام Global)</option>
+                                    <option value="patients">المرضى فقط (Patients)</option>
+                                    <option value="specialists">الأطباء والمختصون فقط (Specialists)</option>
+                                    <option value="admins">المدراء فقط (Admins)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label">نوع الإشعار</label>
+                                <select id="n_type" class="form-select">
+                                    <option value="announcement">إعلان رسمي (Announcement)</option>
+                                    <option value="system">تنبيه نظام (System Alert)</option>
+                                    <option value="medical_record">تحديث طبي (Medical Notice)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">الأولوية</label>
+                                <select id="n_priority" class="form-select">
+                                    <option value="normal">عادي (Normal)</option>
+                                    <option value="high">هام (High)</option>
+                                    <option value="urgent">عاجل (Urgent)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div style="grid-column: 1 / -1;">
+                                <label class="form-label">رابط المتابعة (اختياري)</label>
+                                <input type="text" id="n_link" class="form-input" placeholder="مثال: dashboard.html أو events.html">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label class="form-label">نص الرسالة</label>
+                            <textarea id="n_msg" class="form-textarea" rows="3" placeholder="اكتب نص الإشعار هنا..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="btn-send-notif" onclick="sendNotification()">إرسال الإشعار الآن 🚀</button>
+                    </div>
+                    
+                    <div class="premium-panel">
+                        <h3 style="margin-bottom:1.5rem;">سجل الإشعارات الداخلية</h3>
+                        <table class="admin-table">
+                            <thead><tr><th>العنوان</th><th>النوع</th><th>المستهدف</th><th>التاريخ</th></tr></thead>
+                            <tbody id="notif-tbody">
+                                <!-- Skeleton -->
+                                <tr><td colspan="4"><div class="skeleton-row"></div><div class="skeleton-row"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Campaigns -->
+                <div id="tab-campaigns" class="tab-content">
+                    <div class="premium-panel" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0;">إدارة الحملات البريدية</h3>
+                        <button class="btn btn-primary" onclick="alert('واجهة إنشاء حملة ستفتح هنا (يحتاج لربط API SMTP)')">إنشاء حملة جديدة</button>
+                    </div>
+                    <div class="premium-panel">
+                        <table class="admin-table">
+                            <thead><tr><th>اسم الحملة</th><th>القالب المستخدم</th><th>الجمهور</th><th>تم الإرسال</th><th>الحالة</th></tr></thead>
+                            <tbody id="camp-tbody">
+                                <tr><td colspan="5"><div class="skeleton-row"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: Templates -->
+                <div id="tab-templates" class="tab-content">
+                    <div class="premium-panel" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0;">قوالب البريد الإلكتروني (Templates)</h3>
+                        <button class="btn btn-primary" onclick="createDefaultTemplates()">إنشاء القوالب الافتراضية</button>
+                    </div>
+                    <div class="stat-grid-4" id="templates-grid">
+                        <!-- Populated by JS -->
+                        <div class="skeleton-row" style="height:150px;"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: Subscribers -->
+                <div id="tab-subscribers" class="tab-content">
+                    <div class="premium-panel" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0;">قائمة المشتركين</h3>
+                        <div>
+                            <button class="btn btn-outline">استيراد CSV</button>
+                            <button class="btn btn-primary">إضافة مشترك</button>
+                        </div>
+                    </div>
+                    <div class="premium-panel">
+                        <table class="admin-table">
+                            <thead><tr><th>البريد الإلكتروني</th><th>الاسم</th><th>تاريخ الاشتراك</th><th>الحالة</th></tr></thead>
+                            <tbody id="subs-tbody">
+                                <tr><td colspan="4"><div class="skeleton-row"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 6: Logs -->
+                <div id="tab-logs" class="tab-content">
+                    <div class="premium-panel">
+                        <h3 style="margin-bottom:1.5rem;">سجل الإرسال الكامل (Audit Logs)</h3>
+                        <table class="admin-table">
+                            <thead><tr><th>المستقبل</th><th>الموضوع</th><th>الحملة</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                            <tbody id="logs-tbody">
+                                <tr><td colspan="5"><div class="skeleton-row"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Template Preview Modal -->
+                <div id="template-preview-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:10001; align-items:center; justify-content:center; padding:1rem;">
+                    <div style="background:var(--surface-color); border-radius:16px; border:1px solid var(--border-color); width:640px; max-width:95vw; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+                        <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; background:var(--bg-secondary);">
+                            <h3 id="preview-modal-title" style="margin:0; font-size:1.05rem;">معاينة القالب البريدي</h3>
+                            <button onclick="closeTemplatePreview()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-secondary);">✕</button>
+                        </div>
+                        <div id="preview-modal-body" style="padding:20px; overflow-y:auto; flex:1; background:#f8fafc; direction:rtl;">
+                            <!-- Injected HTML preview -->
+                        </div>
+                        <div style="padding:12px 20px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
+                            <button class="btn btn-outline" onclick="closeTemplatePreview()">إغلاق المعاينة</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_notifications.js"></script>
+    <script>
+        // Tab Switcher
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.getAttribute('data-target')).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

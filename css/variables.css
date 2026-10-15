@@ -1,0 +1,140 @@
+/* variables.css - Premium 2026 Design System & Dark Mode Engine */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Layout Dimensions */
+  --header-height: 70px;
+  --sidebar-width: 260px;
+  --container-max-width: 1400px;
+
+  /* Fonts */
+  --font-arabic: 'Cairo', system-ui, -apple-system, sans-serif;
+  --font-english: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* =========================================
+     LIGHT MODE PALETTE (Vercel & Apple Clean)
+     ========================================= */
+  --primary-color: #000000;
+  --primary-hover: #333333;
+  --accent-color: #0070f3; /* Vercel Blue */
+  --accent-glow: rgba(0, 112, 243, 0.15);
+  
+  --success-color: #10b981;
+  --warning-color: #f5a623;
+  --danger-color: #e53e3e;
+  --info-color: #3291ff;
+  
+  --background-color: #fafafa;
+  --surface-color: #ffffff;
+  --border-color: #eaeaea;
+  
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  
+  /* Glassmorphism & Alpha Colors */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(234, 234, 234, 0.8);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
+
+  /* Admin Theme Helpers */
+  --admin-sidebar: #0f172a;
+  --admin-sidebar-text: #cbd5e1;
+  --admin-sidebar-hover: rgba(255, 255, 255, 0.1);
+  --admin-border: var(--border-color);
+  --admin-text-muted: var(--text-secondary);
+  
+  /* Spacing System */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+  --spacing-xxl: 4rem;
+  
+  /* Borders & Radius Tokens */
+  --border-radius-sm: 6px;
+  --border-radius: 12px;
+  --border-radius-lg: 24px;
+  --border-radius-full: 9999px;
+  
+  /* Shadows */
+  --box-shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+  --box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  --box-shadow-hover: 0 14px 40px rgba(0,0,0,0.12);
+  --box-shadow-glow: 0 0 20px var(--accent-glow);
+  
+  /* Animation Speeds */
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Backward & Forward Compatibility Aliases */
+  --bg-primary: var(--background-color);
+  --bg-secondary: var(--surface-color);
+  --bg-tertiary: var(--background-color);
+  --surface-card: var(--surface-color);
+  --surface-hover: #f3f4f6;
+  --surface-active: #e5e7eb;
+  --border-subtle: #f0f0f0;
+  --border-default: var(--border-color);
+  --border-strong: #cccccc;
+  --text-muted: var(--text-secondary);
+  --text-light: var(--text-tertiary);
+  --brand-accent: var(--accent-color);
+  --brand-hover: var(--primary-hover);
+  --brand-light: var(--accent-glow);
+}
+
+/* =========================================
+   DARK MODE PALETTE (GitHub Dark & Linear)
+   ========================================= */
+[data-theme="dark"] {
+  --primary-color: #ffffff;
+  --primary-hover: #e5e5e5;
+  --accent-color: #58a6ff;
+  --accent-glow: rgba(88, 166, 255, 0.2);
+
+  --success-color: #3fb950;
+  --warning-color: #d29922;
+  --danger-color: #f85149;
+  --info-color: #58a6ff;
+  
+  --background-color: #0d1117; /* GitHub Dark Base */
+  --surface-color: #161b22;    /* GitHub Dark Card Surface */
+  --border-color: #30363d;     /* High Contrast Crisp Border */
+  
+  --text-primary: #f0f6fc;     /* Crisp White Text */
+  --text-secondary: #8b949e;   /* Soft Muted Gray */
+  --text-tertiary: #6e7681;    /* Subtle Secondary Text */
+  
+  --glass-bg: rgba(13, 17, 23, 0.85);
+  --glass-border: rgba(48, 54, 61, 0.8);
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+
+  --admin-sidebar: #0d1117;
+  --admin-sidebar-text: #8b949e;
+  --admin-sidebar-hover: rgba(255, 255, 255, 0.05);
+  --admin-border: #30363d;
+  --admin-text-muted: #8b949e;
+  
+  --box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --box-shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.8);
+  --box-shadow-glow: 0 0 25px var(--accent-glow);
+
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --surface-card: #161b22;
+  --surface-hover: #21262d;
+  --surface-active: #30363d;
+  --border-subtle: #21262d;
+  --border-default: #30363d;
+  --border-strong: #484f58;
+  --text-muted: #8b949e;
+  --text-light: #6e7681;
+  --brand-accent: #58a6ff;
+  --brand-hover: #79c0ff;
+  --brand-light: rgba(88, 166, 255, 0.15);
+}

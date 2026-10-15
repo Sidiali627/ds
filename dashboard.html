@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المستخدم - استوديو صحة الشباب</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+    <script type="module" src="js/seo_injector.js" defer></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/guard.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container navbar">
+            <a href="index.html" class="nav-brand" style="display:flex; align-items:center; gap:8px;">
+                <img loading="lazy" decoding="async" src="images/logo.png" alt="الشعار" style="height:36px; object-fit:contain;">
+                <span style="font-weight:800; font-size:1.1rem; color:var(--text-primary);">استوديو صحة الشباب</span>
+            </a>
+            <div class="nav-actions" style="display:flex; align-items:center; gap:10px;">
+                <button id="user-notif-btn" class="btn btn-outline" style="padding: 7px 12px; border-radius:12px; font-size: 0.9rem; position:relative;" title="الإشعارات">
+                    🔔 <span style="font-size:0.82rem; font-weight:700;">الإشعارات</span>
+                </button>
+                <button class="theme-switcher" title="تبديل المظهر"></button>
+                <button id="logout-btn" class="btn btn-outline" style="border: 1px solid var(--danger-color); color: var(--danger-color); border-radius:12px; font-weight:700;">تسجيل الخروج</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="portal-layout">
+        <aside class="portal-sidebar">
+            <ul>
+                <li><a href="dashboard.html" class="active"><span>📊</span> لوحة التحكم واستشاراتي</a></li>
+                <li><a href="emr.html"><span>📋</span> سجلي الطبي (EMR)</a></li>
+                <li><a href="#appointments-section"><span>📅</span> مواعيدي الطبية المحجوزة</a></li>
+                <li><a href="consultations.html"><span>🩺</span> طلب استشارة طبية جديدة</a></li>
+                <li><a href="events.html"><span>🎟️</span> الفعاليات الوطنية والتذاكر</a></li>
+                <li><a href="articles.html"><span>📝</span> مكتبة المقالات والوعي</a></li>
+                <li><a href="ai_assistant.html"><span>🤖</span> المساعد التوعوي الذكي</a></li>
+                <li><a href="profile.html"><span>👤</span> الملف الشخصي والصحي</a></li>
+                <li><a href="support.html"><span>💬</span> مركز الدعم والشكاوى</a></li>
+            </ul>
+        </aside>
+
+        <main class="portal-content">
+            <!-- User Hero Banner -->
+            <div class="user-hero-card">
+                <div class="user-hero-info">
+                    <h1 id="welcome-msg">مرحباً بك 👋</h1>
+                    <p>أهلاً بك في ملفك الصحي الرقمي المباشر. يمكنك متابعة حالة طلباتك الطبية والمواعيد المحجوزة والجلسات المرئية الحية بسهولة.</p>
+                    <div class="user-hero-actions">
+                        <a href="consultations.html" class="user-hero-btn">➕ طلب استشارة جديدة</a>
+                        <a href="#appointments-section" class="user-hero-btn outline">📅 مواعيدي المحجوزة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Quick Stats Grid -->
+            <div class="health-stats-grid">
+                <div class="health-stat-card">
+                    <div class="health-icon-box" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">🩺</div>
+                    <div>
+                        <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600;">الاستشارات المفتوحة</div>
+                        <div id="count-user-consults" style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">-</div>
+                    </div>
+                </div>
+
+                <div class="health-stat-card">
+                    <div class="health-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">📅</div>
+                    <div>
+                        <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600;">المواعيد القادمة</div>
+                        <div id="count-user-appts" style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">-</div>
+                    </div>
+                </div>
+
+                <div class="health-stat-card">
+                    <div class="health-icon-box" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">🛡️</div>
+                    <div>
+                        <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600;">الأمان والخصوصية</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">تشفير Supabase</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booked Appointments Card -->
+            <div id="appointments-section" class="card" style="margin-bottom: var(--spacing-xl); border-radius:24px; padding:1.75rem; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); background:var(--surface-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <h3 style="margin:0; font-size:1.2rem; font-weight:800;">📅 مواعيدي الطبية المحجوزة</h3>
+                        <p style="margin:2px 0 0 0; font-size:0.85rem; color:var(--text-secondary);">جدول المواعيد القادمة والسابقة مع الأطباء والمختصين.</p>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table" style="width:100%; border-collapse:separate; border-spacing:0 8px;">
+                        <thead>
+                            <tr style="color:var(--text-secondary); font-size:0.88rem;">
+                                <th style="padding:12px;">الطبيب المختص</th>
+                                <th style="padding:12px;">تاريخ ووقت الموعد</th>
+                                <th style="padding:12px;">المدة</th>
+                                <th style="padding:12px;">الحالة</th>
+                                <th style="padding:12px;">ملاحظات / الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-appointments-body">
+                            <tr><td colspan="5" style="text-align: center; padding:2rem;">جاري تحميل مواعيدك الطبية...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Consultations & Live Sessions Card -->
+            <div class="card" style="margin-bottom: var(--spacing-xl); border-radius:24px; padding:1.75rem; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); background:var(--surface-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                        <h3 style="margin:0; font-size:1.2rem; font-weight:800;">استشاراتي الطبية والجلسات المباشرة</h3>
+                        <p style="margin:2px 0 0 0; font-size:0.85rem; color:var(--text-secondary);">قائمة الطلبات والجلسات المفعلة حالياً بالمنظومة.</p>
+                    </div>
+                    <a href="consultations.html" class="btn btn-primary" style="padding:8px 16px; border-radius:12px; font-weight:700;">+ طلب استشارة جديدة</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table" style="width:100%; border-collapse:separate; border-spacing:0 8px;">
+                        <thead>
+                            <tr style="color:var(--text-secondary); font-size:0.88rem;">
+                                <th style="padding:12px;">رقم الطلب</th>
+                                <th style="padding:12px;">التخصص</th>
+                                <th style="padding:12px;">التاريخ</th>
+                                <th style="padding:12px;">الحالة</th>
+                                <th style="padding:12px;">الجلسة المباشرة والمحادثة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-consultations-body">
+                            <tr><td colspan="5" style="text-align: center; padding:2rem;">جاري تحميل استشاراتك الحقيقية...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول للإدارة - استوديو صحة الشباب</title>
+    
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--background-color);
+        }
+        .login-card {
+            background: var(--surface-color);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-card img {
+            height: 60px;
+            margin: 0 auto var(--spacing-lg);
+        }
+        .form-group {
+            margin-bottom: var(--spacing-md);
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+        }
+        .btn-full {
+            width: 100%;
+            margin-top: var(--spacing-md);
+        }
+        .error-message {
+            color: var(--danger-color);
+            margin-top: var(--spacing-md);
+            display: none;
+        }
+    </style>
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+
+    <div class="login-card">
+        <img loading="lazy" decoding="async" src="../images/logo.png" alt="الشعار">
+        <h2>تسجيل الدخول للإدارة</h2>
+        <p>الرجاء إدخال بيانات الاعتماد الخاصة بك.</p>
+        
+        <form id="admin-login-form">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">دخول</button>
+            <p class="error-message" id="error-msg"></p>
+        </form>
+    </div>
+
+    <!-- JS -->
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module">
+        import { supabase } from '../js/supabase.js';
+        
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            errorMsg.style.display = 'none';
+            
+            if (!supabase) {
+                errorMsg.innerText = "لم يتم إعداد قاعدة البيانات بعد.";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                errorMsg.innerText = error.message;
+                errorMsg.style.display = 'block';
+            } else {
+                // Check if user is super admin and needs password change
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role, must_change_password')
+                    .eq('id', data.user.id)
+                    .single();
+                
+                if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) {
+                    if (profile.must_change_password) {
+                        window.location.href = 'change-password.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    errorMsg.innerText = "ليس لديك صلاحية الدخول للوحة الإدارة.";
+                    errorMsg.style.display = 'block';
+                    await supabase.auth.signOut();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

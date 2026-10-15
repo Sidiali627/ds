@@ -1,0 +1,409 @@
+{
+  "auth": {
+    "passed": 14,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Redirect for role [super_admin] -> admin/index.html",
+        "passed": true,
+        "details": "Expected: admin/index.html, Got: admin/index.html"
+      },
+      {
+        "name": "Redirect for role [admin] -> admin/index.html",
+        "passed": true,
+        "details": "Expected: admin/index.html, Got: admin/index.html"
+      },
+      {
+        "name": "Redirect for role [specialist] -> specialist/index.html",
+        "passed": true,
+        "details": "Expected: specialist/index.html, Got: specialist/index.html"
+      },
+      {
+        "name": "Redirect for role [doctor] -> specialist/index.html",
+        "passed": true,
+        "details": "Expected: specialist/index.html, Got: specialist/index.html"
+      },
+      {
+        "name": "Redirect for role [psychologist] -> specialist/index.html",
+        "passed": true,
+        "details": "Expected: specialist/index.html, Got: specialist/index.html"
+      },
+      {
+        "name": "Redirect for role [nutritionist] -> specialist/index.html",
+        "passed": true,
+        "details": "Expected: specialist/index.html, Got: specialist/index.html"
+      },
+      {
+        "name": "Redirect for role [user] -> dashboard.html",
+        "passed": true,
+        "details": "Expected: dashboard.html, Got: dashboard.html"
+      },
+      {
+        "name": "Redirect for role [volunteer] -> dashboard.html",
+        "passed": true,
+        "details": "Expected: dashboard.html, Got: dashboard.html"
+      },
+      {
+        "name": "Redirect for role [default] -> dashboard.html",
+        "passed": true,
+        "details": "Expected: dashboard.html, Got: dashboard.html"
+      },
+      {
+        "name": "auth.js: signIn implementation",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "auth.js: signUp implementation",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "auth.js: signOut implementation",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "auth.js: requireAuth implementation",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "auth.js: graceful network/fetch error handling",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "rbac": {
+    "passed": 17,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Route [/admin/index.html] with session=false, role=null -> REDIRECT_LOGIN",
+        "passed": true,
+        "details": "Got: REDIRECT_LOGIN"
+      },
+      {
+        "name": "Route [/specialist/consultations.html] with session=false, role=null -> REDIRECT_LOGIN",
+        "passed": true,
+        "details": "Got: REDIRECT_LOGIN"
+      },
+      {
+        "name": "Route [dashboard.html] with session=false, role=null -> REDIRECT_LOGIN",
+        "passed": true,
+        "details": "Got: REDIRECT_LOGIN"
+      },
+      {
+        "name": "Route [/admin/login.html] with session=false, role=null -> ALLOW_PUBLIC_AUTH",
+        "passed": true,
+        "details": "Got: ALLOW_PUBLIC_AUTH"
+      },
+      {
+        "name": "Route [login.html] with session=false, role=null -> ALLOW_PUBLIC_AUTH",
+        "passed": true,
+        "details": "Got: ALLOW_PUBLIC_AUTH"
+      },
+      {
+        "name": "Route [articles.html] with session=false, role=null -> ALLOW_PUBLIC",
+        "passed": true,
+        "details": "Got: ALLOW_PUBLIC"
+      },
+      {
+        "name": "Route [dashboard.html] with session=true, role=user -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [/admin/index.html] with session=true, role=user -> BLOCK_UNAUTHORIZED",
+        "passed": true,
+        "details": "Got: BLOCK_UNAUTHORIZED"
+      },
+      {
+        "name": "Route [/specialist/patients.html] with session=true, role=user -> BLOCK_UNAUTHORIZED",
+        "passed": true,
+        "details": "Got: BLOCK_UNAUTHORIZED"
+      },
+      {
+        "name": "Route [/specialist/index.html] with session=true, role=specialist -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [/specialist/patients.html] with session=true, role=doctor -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [/admin/index.html] with session=true, role=specialist -> BLOCK_UNAUTHORIZED",
+        "passed": true,
+        "details": "Got: BLOCK_UNAUTHORIZED"
+      },
+      {
+        "name": "Route [dashboard.html] with session=true, role=specialist -> REDIRECT_SPECIALIST",
+        "passed": true,
+        "details": "Got: REDIRECT_SPECIALIST"
+      },
+      {
+        "name": "Route [/admin/index.html] with session=true, role=admin -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [/admin/users.html] with session=true, role=super_admin -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [/specialist/consultations.html] with session=true, role=admin -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      },
+      {
+        "name": "Route [dashboard.html] with session=true, role=admin -> ALLOW_GRANTED",
+        "passed": true,
+        "details": "Got: ALLOW_GRANTED"
+      }
+    ]
+  },
+  "specialist": {
+    "passed": 26,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Page [specialist/calendar.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/calendar.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/calendar.html] has sidebar root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/calendar.html] has header root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/consultations.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/consultations.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/consultations.html] has sidebar root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/consultations.html] has header root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/index.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/index.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/index.html] has sidebar root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/index.html] has header root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/live_session.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/live_session.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/patients.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/patients.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/patients.html] has sidebar root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/patients.html] has header root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/profile.html] exists",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/profile.html] has guard.js",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/profile.html] has sidebar root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "Page [specialist/profile.html] has header root",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "patients.js has safe avatar calculation",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "patients.js supports live search by name and email",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "patients.js has EMR modal tab switcher",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "patients.js has retry mechanism",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "consultations": {
+    "passed": 4,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "consultations.html contains consultation-form",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "consultations.html contains category select",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "consultations.html contains description textarea",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "js/consultations.js contains schema fallback handling",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "admin": {
+    "passed": 6,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "admin/articles.html contains btn-new-article",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "admin/articles.html contains article-modal",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "admin/settings.html contains save-all-btn",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "admin/settings.html contains save-indicator",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "admin/users.html contains role edit modal",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "admin/users.html contains users-tbody",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "ui_ux": {
+    "passed": 2,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "All HTML files have dir=\"rtl\" (44/44)",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "All HTML files have mobile viewport meta tag (44/44)",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "supabase_schema": {
+    "passed": 4,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "20240101000014 migration uses DROP POLICY IF EXISTS (Prevents Error 42710)",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "20240101000014 migration uses safe Realtime DO block (Prevents duplicate relation error)",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "20240101000014 migration creates performance indexes on foreign keys",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "20240101000014 migration ensures new columns exist on pre-existing tables",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  }
+}

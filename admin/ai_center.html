@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المساعد الذكي (AI Center)</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <style>
+        .ai-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 0;
+            height: calc(100vh - 120px); /* Fill screen minus header */
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--surface-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Chat History Sidebar */
+        .ai-sidebar {
+            background: rgba(0,0,0,0.02);
+            border-left: 1px solid var(--admin-border);
+            display: flex;
+            flex-direction: column;
+        }
+        @media (prefers-color-scheme: dark) {
+            .ai-sidebar { background: rgba(0,0,0,0.2); }
+        }
+        
+        .ai-sidebar-header { padding: 1rem; border-bottom: 1px solid var(--admin-border); }
+        
+        .chat-list { flex: 1; overflow-y: auto; padding: 1rem; }
+        .chat-item {
+            padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 8px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            color: var(--text-color); font-size: 0.9rem; transition: background 0.2s;
+        }
+        .chat-item:hover { background: rgba(0,0,0,0.05); }
+        .chat-item.active { background: var(--primary-color); color: white; }
+
+        /* Main Chat Area */
+        .ai-main { display: flex; flex-direction: column; height: 100%; position: relative; }
+        
+        .ai-header-tabs {
+            display: flex; border-bottom: 1px solid var(--admin-border); background: var(--surface-color);
+        }
+        .ai-tab {
+            padding: 1rem 1.5rem; cursor: pointer; color: var(--admin-text-muted); font-weight: 600;
+            border-bottom: 2px solid transparent; transition: all 0.2s;
+        }
+        .ai-tab:hover { color: var(--text-color); }
+        .ai-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+
+        .ai-view { display: none; flex: 1; overflow-y: auto; padding: 1.5rem; flex-direction: column; }
+        .ai-view.active { display: flex; }
+
+        /* Messages */
+        .messages-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; scroll-behavior: smooth; }
+        
+        .message { display: flex; gap: 1rem; max-width: 85%; }
+        .msg-user { align-self: flex-start; flex-direction: row; }
+        .msg-ai { align-self: flex-start; flex-direction: row; max-width: 95%; } /* AI responds on the right in RTL, wait: flex-start in RTL is right. So both are right aligned? Let's make user start, AI start, just different backgrounds */
+        
+        .msg-avatar { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .msg-user .msg-avatar { background: var(--primary-color); color: white; }
+        .msg-ai .msg-avatar { background: #10b981; color: white; }
+        
+        .msg-bubble { padding: 1rem 1.2rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; }
+        .msg-user .msg-bubble { background: rgba(0,0,0,0.03); color: var(--text-color); border-top-right-radius: 0; }
+        .msg-ai .msg-bubble { background: transparent; color: var(--text-color); width: 100%; }
+        
+        /* Markdown Styling in AI Bubble */
+        .msg-ai .msg-bubble p { margin-top: 0; }
+        .msg-ai .msg-bubble pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; direction: ltr; text-align: left; }
+        .msg-ai .msg-bubble code { font-family: monospace; }
+        .msg-ai .msg-bubble ul, .msg-ai .msg-bubble ol { padding-right: 1.5rem; }
+
+        /* Input Area */
+        .chat-input-wrapper {
+            padding: 1rem 1.5rem; border-top: 1px solid var(--admin-border); background: var(--surface-color);
+            display: flex; gap: 10px; align-items: flex-end;
+        }
+        .chat-textarea {
+            flex: 1; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px;
+            background: var(--bg-color); color: var(--text-color); resize: none; font-family: inherit;
+            min-height: 50px; max-height: 150px; line-height: 1.5; outline: none;
+        }
+        .chat-textarea:focus { border-color: var(--primary-color); }
+        .send-btn {
+            background: var(--primary-color); color: white; border: none; border-radius: 12px;
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            transition: transform 0.2s; flex-shrink: 0;
+        }
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Prompts & Settings */
+        .settings-form { max-width: 600px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-color); color: var(--text-color); font-family: inherit;
+        }
+
+        .prompt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .prompt-card {
+            border: 1px solid var(--border-color); padding: 1rem; border-radius: 12px;
+            cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);
+        }
+        .prompt-card:hover { border-color: var(--primary-color); background: rgba(26, 86, 219, 0.05); }
+        .prompt-title { font-weight: bold; margin-bottom: 8px; color: var(--primary-color); }
+        .prompt-desc { font-size: 0.85rem; color: var(--admin-text-muted); line-height: 1.5; }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content" style="padding-bottom:0;">
+                <div class="ai-layout">
+                    
+                    <!-- Sidebar: Chat History -->
+                    <div class="ai-sidebar">
+                        <div class="ai-sidebar-header">
+                            <button class="btn btn-primary" style="width:100%;" onclick="startNewChat()">+ محادثة جديدة</button>
+                        </div>
+                        <div class="chat-list" id="chat-history-list">
+                            <div style="color:var(--admin-text-muted); text-align:center; padding:1rem;">جاري التحميل...</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Area -->
+                    <div class="ai-main">
+                        <div class="ai-header-tabs">
+                            <div class="ai-tab active" data-target="view-chat">المحادثة</div>
+                            <div class="ai-tab" data-target="view-prompts">مكتبة الأوامر (Prompts)</div>
+                            <div class="ai-tab" data-target="view-settings">إعدادات الـ AI</div>
+                        </div>
+
+                        <!-- Chat View -->
+                        <div class="ai-view active" id="view-chat" style="padding:0;">
+                            <div class="messages-container" id="messages-container" style="padding: 1.5rem;">
+                                <!-- Messages injected here -->
+                                <div style="text-align:center; margin-top:4rem; color:var(--admin-text-muted);">
+                                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.2; margin-bottom:1rem;"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12 2.1 12"></path><path d="M12 12l8.5 4.9"></path><path d="M12 12l8.5-4.9"></path></svg>
+                                    <h2>كيف يمكنني مساعدتك اليوم؟</h2>
+                                    <p>اختر من مكتبة الأوامر أو ابدأ بكتابة ما تريد.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-input-wrapper">
+                                <textarea id="chat-input" class="chat-textarea" placeholder="اكتب رسالتك هنا... (مثال: اقترح لي 3 عناوين لمقال عن الصحة النفسية)" onkeydown="handleEnter(event)"></textarea>
+                                <button id="btn-send" class="send-btn" onclick="sendMessage()">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Prompts View -->
+                        <div class="ai-view" id="view-prompts">
+                            <h3 style="margin-bottom: 1.5rem;">الأوامر الجاهزة (Prompt Library)</h3>
+                            <div class="prompt-grid" id="prompts-grid">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Settings View -->
+                        <div class="ai-view" id="view-settings">
+                            <h3 style="margin-bottom: 1.5rem;">إعدادات الذكاء الاصطناعي (مخصصة للمدير العام)</h3>
+                            <div class="settings-form" id="ai-settings-form">
+                                <div class="form-group">
+                                    <label>مزود الخدمة (Provider)</label>
+                                    <select id="set-provider" class="form-select">
+                                        <option value="openai">OpenAI (ChatGPT)</option>
+                                        <option value="gemini">Google Gemini</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>مفتاح الـ API (API Key)</label>
+                                    <input type="password" id="set-apikey" class="form-input" placeholder="sk-...">
+                                    <div style="font-size:0.8rem; color:var(--danger-color); margin-top:4px;">تنبيه: سيتم استخدام هذا المفتاح من المتصفح مباشرة.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>النموذج (Model)</label>
+                                    <input type="text" id="set-model" class="form-input" placeholder="gpt-4o أو gemini-1.5-pro">
+                                </div>
+                                <div class="form-group">
+                                    <label>درجة الإبداع (Temperature)</label>
+                                    <input type="number" id="set-temp" class="form-input" step="0.1" min="0" max="2">
+                                </div>
+                                <div class="form-group">
+                                    <label>التعليمات الأساسية للإدارة (System Prompt)</label>
+                                    <textarea id="set-prompt-admin" class="form-textarea" rows="4"></textarea>
+                                </div>
+                                <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <!-- AI Core Engine -->
+    <script type="module" src="../js/ai_engine.js"></script>
+    <!-- Admin UI Logic -->
+    <script type="module" src="../js/admin_ai.js"></script>
+</body>
+</html>

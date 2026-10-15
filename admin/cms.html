@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المحتوى CMS - الإدارة</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div id="admin-sidebar-root"></div>
+
+        <!-- Main -->
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Hero Settings -->
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <div>
+                            <div class="admin-panel-title">إعدادات القسم الأول (Hero)</div>
+                            <div class="admin-panel-desc">التحكم في النصوص الرئيسية للواجهة.</div>
+                        </div>
+                    </div>
+                    <div class="admin-panel-body">
+                        <form id="hero-form">
+                            <label class="form-label">العنوان الرئيسي</label>
+                            <input type="text" id="hero-title" class="form-control" style="margin-bottom: 1rem;" required>
+                            
+                            <label class="form-label">الوصف</label>
+                            <textarea id="hero-desc" class="form-control" rows="3" required></textarea>
+                            
+                            <div style="margin-top: 1.5rem;">
+                                <button type="submit" class="btn btn-primary" style="border-radius: 6px;">حفظ التغييرات</button>
+                                <span id="hero-msg" style="color:#10b981; font-size:0.9rem; margin-right:1rem; display:none;">تم الحفظ بنجاح</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Campaigns -->
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <div>
+                            <div class="admin-panel-title">إدارة الحملات الوطنية</div>
+                        </div>
+                    </div>
+                    <div class="admin-panel-body">
+                        <form id="campaign-form" style="display:flex; gap:1rem; margin-bottom:1.5rem; align-items:flex-end;">
+                            <div style="flex:2;">
+                                <label class="form-label">عنوان الحملة</label>
+                                <input type="text" id="camp-title" class="form-control" required>
+                            </div>
+                            <div style="flex:1;">
+                                <label class="form-label">الإنجاز %</label>
+                                <input type="number" id="camp-prog" class="form-control" required max="100">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="border-radius: 6px; padding: 10px 20px;">إضافة</button>
+                        </form>
+                        
+                        <div style="border: 1px solid var(--admin-border); border-radius: 8px; overflow: hidden;">
+                            <table class="admin-table">
+                                <thead><tr><th>العنوان</th><th>الإنجاز</th><th>الإجراء</th></tr></thead>
+                                <tbody id="campaigns-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_cms.js"></script>
+</body>
+</html>

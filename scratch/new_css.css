@@ -1,0 +1,219 @@
+/* 
+  =========================================
+   ADVANCED ADMIN & SPECIALIST UI SYSTEM
+  =========================================
+*/
+
+/* 8. Advanced Data Table */
+.advanced-table-wrapper {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.table-toolbar {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--bg-primary);
+}
+
+.table-search {
+  position: relative;
+  flex: 1;
+  max-width: 350px;
+}
+.table-search input {
+  padding-right: 2.5rem; /* RTL padding for icon */
+}
+.table-search::before {
+  content: '🔍';
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.table-filters {
+  display: flex;
+  gap: 0.5rem;
+}
+.table-filters select {
+  padding: 0.5rem 1rem;
+  min-width: 150px;
+  border-radius: var(--border-radius-full);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.advanced-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  white-space: nowrap;
+}
+.advanced-table th {
+  padding: 1rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  border-bottom: 2px solid var(--border-color);
+}
+.advanced-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+.advanced-table tr:last-child td { border-bottom: none; }
+.advanced-table tr:hover td { background: var(--bg-secondary); }
+
+/* User Info Cell */
+.user-info-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.avatar-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+.user-info-text {
+  display: flex;
+  flex-direction: column;
+}
+.user-info-text strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+.user-info-text span {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+}
+
+/* Pagination */
+.table-pagination {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface-color);
+}
+.pagination-info { font-size: 0.9rem; color: var(--text-secondary); }
+.pagination-controls { display: flex; gap: 0.5rem; }
+.page-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.page-btn:hover:not(:disabled) { background: var(--bg-secondary); }
+.page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.page-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+/* 9. Modal System */
+.modal-overlay {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+
+.modal-dialog {
+  background: var(--surface-color);
+  width: 90%;
+  max-width: 500px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.modal-overlay.active .modal-dialog { transform: translateY(0) scale(1); }
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-title { font-size: 1.15rem; font-weight: 800; margin: 0; }
+.modal-close {
+  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-tertiary); transition: color 0.2s;
+}
+.modal-close:hover { color: var(--danger-color); }
+
+.modal-body { padding: 1.5rem; }
+.modal-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background: var(--bg-primary);
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
+
+/* 10. Drawer (Slide-in Panel) */
+.drawer-overlay {
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.3s;
+}
+.drawer-overlay.active { opacity: 1; visibility: visible; }
+.drawer {
+  position: fixed;
+  top: 0; bottom: 0; left: 0; /* Left side for RTL if we want it to slide from left, or right if standard. Let's slide from left */
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface-color);
+  box-shadow: 20px 0 25px rgba(0,0,0,0.1);
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+
+/* Unified Badges */
+.status-badge.admin { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
+.status-badge.super_admin { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
+.status-badge.specialist { background: rgba(14, 165, 233, 0.15); color: #0284c7; }
+.status-badge.user { background: rgba(107, 114, 128, 0.15); color: #4b5563; }

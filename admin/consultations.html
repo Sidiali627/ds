@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الإشراف على الاستشارات - لوحة الإدارة</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <div id="admin-sidebar-root"></div>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Header Title & Quick Stats -->
+                <div class="admin-panel-header" style="background: transparent; border: none; padding: 0 0 1.25rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h2 style="margin: 0; font-weight: 800; font-size: 1.5rem;">مركز الإشراف على الاستشارات الطبية</h2>
+                        <p style="color: var(--text-secondary); margin: 4px 0 0; font-size: 0.9rem;">متابعة طلبات المرضى، تعيين الأطباء والمختصين المناسبين، وتحديث الحالات السريرية.</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-outline" id="btn-refresh-consultations" style="display:flex; align-items:center; gap:6px;">
+                            <span>🔄</span> تحديث القائمة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Stats Cards (Unified Doctor Dashboard Pattern) -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">📋</div>
+                        <div class="stat-details">
+                            <h3>إجمالي الاستشارات</h3>
+                            <p class="stat-number" id="stat-total-consultations">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">⏳</div>
+                        <div class="stat-details">
+                            <h3>بانتظار تعيين طبيب</h3>
+                            <p class="stat-number" id="stat-pending-consultations" style="color: #d97706;">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">🟢</div>
+                        <div class="stat-details">
+                            <h3>جلسات جارية ونشطة</h3>
+                            <p class="stat-number" id="stat-active-consultations" style="color: #059669;">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(100, 116, 139, 0.12); color: #475569;">✅</div>
+                        <div class="stat-details">
+                            <h3>استشارات مكتملة</h3>
+                            <p class="stat-number" id="stat-completed-consultations">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Table Component -->
+                <div class="advanced-table-wrapper" style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <!-- Toolbar (Search & Filters) -->
+                    <div class="table-toolbar" style="padding: 1.1rem; border-bottom: 1px solid var(--border-color); display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                        <div style="display:flex; gap:0.75rem; flex:1; min-width:280px;">
+                            <input type="text" id="cons-search-input" class="form-control" placeholder="ابحث برقم الطلب، اسم المريض، أو الوصف..." style="width:100%; max-width:360px; padding:0.6rem 0.9rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-family:inherit;">
+                        </div>
+                        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+                            <select id="cons-status-filter" class="form-control" style="padding:0.6rem 0.85rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-family:inherit;">
+                                <option value="all">كل الحالات (All Statuses)</option>
+                                <option value="pending">طلبات جديدة (Pending)</option>
+                                <option value="accepted">تم التعيين / مقبول (Accepted)</option>
+                                <option value="in_progress">جلسات جارية (In Progress)</option>
+                                <option value="completed">مكتملة (Completed)</option>
+                                <option value="cancelled">ملغاة (Cancelled)</option>
+                            </select>
+
+                            <select id="cons-specialty-filter" class="form-control" style="padding:0.6rem 0.85rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-family:inherit;">
+                                <option value="all">كل التخصصات (All Specialties)</option>
+                                <option value="general">طب عام</option>
+                                <option value="psychology">صحة نفسية</option>
+                                <option value="nutrition">تغذية</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="admin-table" style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr style="background: var(--bg-secondary); text-align: right; border-bottom: 1px solid var(--border-color);">
+                                    <th style="padding: 12px 16px;">رقم الطلب</th>
+                                    <th style="padding: 12px 16px;">المريض</th>
+                                    <th style="padding: 12px 16px;">التخصص والأولوية</th>
+                                    <th style="padding: 12px 16px;">الطبيب المختص</th>
+                                    <th style="padding: 12px 16px;">تاريخ الطلب</th>
+                                    <th style="padding: 12px 16px;">الحالة الحالية</th>
+                                    <th style="padding: 12px 16px; text-align:center;">الإجراءات السريرية</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-consultations-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 3rem 1rem;">
+                                        <div class="spinner" style="margin: 0 auto 10px;"></div>
+                                        جاري تحميل بيانات الاستشارات...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Assign Specialist -->
+    <div id="assign-specialist-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:18px; max-width:520px; width:100%; box-shadow:var(--shadow-xl); overflow:hidden; text-align:right;">
+            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:800;">👨‍⚕️ تعيين طبيب مختص للاستشارة</h3>
+                <button type="button" class="btn-close-modal" onclick="closeAssignModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <div style="padding:1.5rem;">
+                <div style="background:var(--bg-secondary); padding:1rem; border-radius:12px; margin-bottom:1.25rem; border:1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">رقم الاستشارة:</span>
+                        <strong id="assign-cons-code" style="font-family:monospace;">#------</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">اسم المريض:</span>
+                        <strong id="assign-patient-name">-</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">التخصص المطلوب:</span>
+                        <strong id="assign-cons-specialty" style="color:var(--brand-accent);">-</strong>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:1.25rem;">
+                    <label for="assign-doctor-select" style="display:block; margin-bottom:8px; font-weight:700;">اختر الطبيب المختص المناسب:</label>
+                    <select id="assign-doctor-select" style="width:100%; padding:0.85rem; border:1px solid var(--border-color); border-radius:10px; font-family:inherit; font-size:0.95rem; background:var(--surface-color); color:var(--text-primary);">
+                        <option value="">جاري تحميل قائمة الأطباء...</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeAssignModal()">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-assign" onclick="confirmAssignSpecialist()">تأكيد التعيين وإشعار المختص ✅</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Change Status -->
+    <div id="change-status-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:18px; max-width:460px; width:100%; box-shadow:var(--shadow-xl); overflow:hidden; text-align:right;">
+            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:800;">🔄 تعديل حالة الاستشارة</h3>
+                <button type="button" class="btn-close-modal" onclick="closeStatusModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <div style="padding:1.5rem;">
+                <input type="hidden" id="status-cons-id">
+                <div style="margin-bottom:1.25rem;">
+                    <label for="select-new-status" style="display:block; margin-bottom:8px; font-weight:700;">اختر الحالة الجديدة:</label>
+                    <select id="select-new-status" style="width:100%; padding:0.85rem; border:1px solid var(--border-color); border-radius:10px; font-family:inherit; font-size:0.95rem; background:var(--surface-color); color:var(--text-primary);">
+                        <option value="pending">جديد / قيد الانتظار (Pending)</option>
+                        <option value="accepted">تم التعيين / مقبول (Accepted)</option>
+                        <option value="in_progress">جلسة جارية وقيد المعالجة (In Progress)</option>
+                        <option value="completed">مكتملة ومغلقة (Completed)</option>
+                        <option value="cancelled">ملغاة ومرفوضة (Cancelled)</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeStatusModal()">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-status" onclick="confirmUpdateStatus()">حفظ التغييرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:99999; display:flex; flex-direction:column; gap:10px;"></div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_consultations.js"></script>
+</body>
+</html>

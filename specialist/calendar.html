@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقويم المواعيد - بوابة المختصين</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <style>
+        .cal-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .cal-tabs { display: flex; gap: 6px; background: var(--surface-color); padding: 6px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .cal-tab { padding: 8px 18px; border-radius: 12px; font-size: 0.88rem; font-weight: 700; cursor: pointer; color: var(--text-secondary); border: none; background: transparent; transition: all 0.2s ease; }
+        .cal-tab.active { background: var(--brand-accent); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        
+        .appt-card { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .appt-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); border-color: var(--brand-accent); }
+        .appt-status { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+        .status-scheduled { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+        .status-completed { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        .status-cancelled { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 999; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-content { background: var(--surface-color); border-radius: 24px; padding: 2.25rem; width: 100%; max-width: 500px; border: 1px solid var(--border-color); box-shadow: var(--shadow-xl); }
+    </style>
+    <script type="module" src="../js/specialist_components.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Specialist Sidebar -->
+        <div id="specialist-sidebar-root"></div>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div id="specialist-header-root"></div>
+            <div class="cal-header">
+                <div>
+                    <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:4px;">تقويم المواعيد الطبية الحقيقية</h1>
+                    <p style="color:var(--text-secondary); font-size:0.95rem;">إدارة جدول المواعيد والكشوفات الطبية المباشرة مع المرضى.</p>
+                </div>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <div class="cal-tabs">
+                        <button class="cal-tab active" onclick="switchCalView('month')">الشهر</button>
+                        <button class="cal-tab" onclick="switchCalView('week')">الأسبوع</button>
+                        <button class="cal-tab" onclick="switchCalView('day')">اليوم</button>
+                    </div>
+                    <button class="btn btn-primary" style="border-radius:14px; padding:10px 20px;" onclick="openApptModal()">➕ موعد جديد</button>
+                </div>
+            </div>
+
+            <!-- Appointments Container -->
+            <div id="appointments-container">
+                <div class="skeleton" style="height:100px; width:100%; border-radius:20px; margin-bottom:1rem;"></div>
+                <div class="skeleton" style="height:100px; width:100%; border-radius:20px; margin-bottom:1rem;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Appointment Modal -->
+    <div class="modal" id="appt-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:1.25rem; font-size:1.3rem; font-weight:800;">جدولة موعد جديد للمريض</h3>
+            <form id="appt-form" onsubmit="saveAppointment(event)">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">اختر المريض *</label>
+                    <select id="appt-patient" required style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></select>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">التاريخ والوقت المحدد *</label>
+                    <input type="datetime-local" id="appt-date" required style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">ملاحظات الموعد</label>
+                    <textarea id="appt-notes" rows="3" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></textarea>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; border-radius:12px; padding:12px;">تأكيد وتحديد الموعد</button>
+                    <button type="button" class="btn btn-outline" style="border-radius:12px; padding:12px;" onclick="closeApptModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div class="modal" id="reschedule-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:1.25rem; font-size:1.3rem; font-weight:800;">🔄 إعادة جدولة الموعد الطبي</h3>
+            <form id="reschedule-form" onsubmit="confirmRescheduleAppointment(event)">
+                <input type="hidden" id="reschedule-appt-id">
+                <input type="hidden" id="reschedule-patient-id">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">اسم المريض:</label>
+                    <div id="reschedule-patient-name" style="padding:10px; border-radius:10px; background:var(--bg-secondary); font-weight:700;">-</div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">التاريخ والوقت الجديد *</label>
+                    <input type="datetime-local" id="reschedule-new-date" required style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit;">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; border-radius:12px; padding:12px;">حفظ الموعد الجديد وإشعار المريض ✅</button>
+                    <button type="button" class="btn btn-outline" style="border-radius:12px; padding:12px;" onclick="closeRescheduleModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div class="modal" id="cancel-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:1.25rem; font-size:1.3rem; font-weight:800; color:#dc2626;">❌ إلغاء الموعد الطبي</h3>
+            <form id="cancel-form" onsubmit="confirmCancelAppointment(event)">
+                <input type="hidden" id="cancel-appt-id">
+                <input type="hidden" id="cancel-patient-id">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">سبب الإلغاء (سيتم إرساله للمريض):</label>
+                    <textarea id="cancel-reason" required rows="3" placeholder="اكتب سبب إلغاء أو تعذر الموعد..." style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-family:inherit;"></textarea>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; border-radius:12px; padding:12px; background:#dc2626; border-color:#dc2626;">تأكيد الإلغاء وإشعار المريض</button>
+                    <button type="button" class="btn btn-outline" style="border-radius:12px; padding:12px;" onclick="closeCancelModal()">تراجع</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/specialist/calendar.js"></script>
+
+    <!-- Global Toast Notification System -->
+    <script>
+        window.showToast = function(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = 'position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            let bg = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+            toast.style.cssText = `background: ${bg}; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+    </script>
+
+</body>
+</html>

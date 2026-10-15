@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Center - الإدارة</title>
+    
+    <!-- Performance Optimization: Preconnect to CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://xsuednrcrzbjdyrdrgat.supabase.co">
+<link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        /* CRM Premium Layout */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --blur: blur(16px);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(17, 24, 39, 0.7);
+                --glass-border: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        .crm-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+        
+        .crm-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+        .crm-stat-card {
+            background: var(--surface-color, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px; padding: 1.35rem; text-align: right;
+            display: flex; flex-direction: column; gap: 4px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+        }
+        .crm-stat-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); border-color: var(--brand-accent); }
+        .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); }
+        .stat-title { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+        .toolbar-group { display: flex; gap: 0.5rem; align-items: center; }
+        
+        .crm-search { padding: 8px 16px; border-radius: 99px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-color); width: 250px; font-family: inherit; }
+        .crm-search:focus { outline: none; border-color: var(--primary-color); }
+        .crm-select { padding: 8px 16px; border-radius: 99px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-color); font-family: inherit; }
+
+        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--admin-border); }
+        .user-cell { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .user-cell:hover .user-name { color: var(--primary-color); text-decoration: underline; }
+        .user-name { font-weight: 600; font-size: 0.95rem; }
+        .user-email { font-size: 0.8rem; color: var(--admin-text-muted); }
+
+        .badge { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+        .badge-admin { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid #8b5cf6; }
+        .badge-specialist { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; }
+        .badge-volunteer { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid #f59e0b; }
+        .badge-user { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid #3b82f6; }
+        .badge-active { background: rgba(16,185,129,0.1); color: var(--success-color); border: 1px solid var(--success-color); }
+        .badge-banned { background: rgba(239,68,68,0.1); color: var(--danger-color); border: 1px solid var(--danger-color); }
+
+        .skeleton-row { height: 50px; background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; margin-bottom: 8px; }
+        @media (prefers-color-scheme: dark) { .skeleton-row { background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%); } }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/guard.js"></script>
+    <script type="module" src="../js/admin_components.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <div id="admin-sidebar-root"></div>
+
+        <main class="admin-main">
+            <div id="admin-header-root"></div>
+
+            <div class="admin-content">
+                <!-- Dashboard Stats -->
+                <div class="crm-stat-grid">
+                    <div class="crm-stat-card"><div class="stat-title">إجمالي المستخدمين</div><div class="stat-val" id="stat-total">--</div></div>
+                    <div class="crm-stat-card"><div class="stat-title">المستخدمون النشطون (30 يوم)</div><div class="stat-val" id="stat-active">--</div></div>
+                    <div class="crm-stat-card"><div class="stat-title">أعضاء الفريق (Admins)</div><div class="stat-val" id="stat-team">--</div></div>
+                    <div class="crm-stat-card"><div class="stat-title">المتطوعون</div><div class="stat-val" id="stat-volunteers">--</div></div>
+                    <div class="crm-stat-card"><div class="stat-title">المختصون</div><div class="stat-val" id="stat-specialists">--</div></div>
+                    <div class="crm-stat-card" style="border-color:var(--danger-color);"><div class="stat-title">الحسابات المحظورة</div><div class="stat-val" style="color:var(--danger-color);" id="stat-banned">--</div></div>
+                </div>
+
+                <!-- Users Table Panel -->
+                <div class="crm-panel">
+                    <div class="toolbar">
+                        <div class="toolbar-group">
+                            <input type="text" id="search-input" class="crm-search" placeholder="ابحث بالاسم أو البريد...">
+                            <select id="role-filter" class="crm-select">
+                                <option value="all">جميع الأدوار</option>
+                                <option value="user">مستخدم عادي</option>
+                                <option value="volunteer">متطوع</option>
+                                <option value="specialist">مختص</option>
+                                <option value="admin">مدير</option>
+                            </select>
+                            <select id="status-filter" class="crm-select">
+                                <option value="all">جميع الحالات</option>
+                                <option value="active">نشط</option>
+                                <option value="banned">محظور</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-group">
+                            <button class="btn btn-outline" onclick="exportCSV()">تصدير CSV</button>
+                            <button class="btn btn-primary" onclick="alert('لإضافة مستخدم، يمكنه التسجيل عبر صفحة التسجيل.')">إضافة مستخدم</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>المستخدم</th>
+                                    <th>الدور (Role)</th>
+                                    <th>الولاية</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>آخر نشاط</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-tbody">
+                                <!-- Skeleton -->
+                                <tr><td colspan="6"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/supabase.js"></script>
+    <script type="module" src="../js/admin_crm.js"></script>
+</body>
+</html>
