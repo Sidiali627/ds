@@ -39,12 +39,15 @@ if (fs.existsSync(envPath)) {
 }
 
 // Load environment variables or configuration defaults
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xsuednrcrzbjdyrdrgat.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzdWVkbnJjcnpiamR5cmRyZ2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NDMwNDYsImV4cCI6MjEwNzQxOTA0Nn0.5ltBXW_X1UI0YdShK_q4OLWmJs-0ItxSzjdv5otjgOQ';
-const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_ZjpnYpVc_KAjc5frrjVrF136FSzTyjA4f';
-const EMAIL_FROM = process.env.EMAIL_FROM || 'Youth Health Studio <sidialiabdouu@gmail.com>';
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Youth Health Studio <no-reply@example.com>';
 
-let defaultSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+let defaultSupabase = null;
+if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    defaultSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+}
 
 function setSupabaseClient(client) {
     if (client) defaultSupabase = client;
@@ -52,6 +55,10 @@ function setSupabaseClient(client) {
 
 function getSupabaseClient() {
     return defaultSupabase;
+}
+
+function canPersistEmailLogs(client) {
+    return Boolean(client && typeof client.from === 'function');
 }
 
 /**
@@ -298,6 +305,7 @@ const EMAIL_TEMPLATES = {
  * Checks whether an identical email was dispatched within the deduplication window (15 mins)
  */
 async function checkDuplicate(recipientEmail, templateKey, referenceId = null, client = defaultSupabase) {
+    if (!canPersistEmailLogs(client)) return false;
     try {
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
         let query = client
@@ -349,7 +357,10 @@ async function sendEmailNotification({ to, template, data = {}, referenceId = nu
     const { subject, html } = templateFn(data);
 
     // 1. Deduplication check
-    const isDuplicate = await checkDuplicate(to, template, referenceId, client);
+    const canStoreLogs = canPersistEmailLogs(client);
+    const isDuplicate = canStoreLogs
+        ? await checkDuplicate(to, template, referenceId, client)
+        : false;
     if (isDuplicate) {
         console.log(`[EmailService] Deduplication prevented email to ${to} (${template})`);
         return {
@@ -378,7 +389,9 @@ async function sendEmailNotification({ to, template, data = {}, referenceId = nu
         logEntry.error_message = 'Email provider credentials (RESEND_API_KEY) not configured in server environment. Logged safely for diagnostic tracking.';
         
         try {
-            await client.from('email_logs').insert([logEntry]);
+            if (canStoreLogs) {
+                await client.from('email_logs').insert([logEntry]);
+            }
         } catch (dbErr) {
             console.error('[EmailService] Failed to insert diagnostic log:', dbErr.message);
         }
@@ -418,7 +431,9 @@ async function sendEmailNotification({ to, template, data = {}, referenceId = nu
         if (!response.ok) {
             logEntry.status = 'failed';
             logEntry.error_message = `Resend API Error: ${result.message || response.statusText}`;
-            await client.from('email_logs').insert([logEntry]);
+            if (canStoreLogs) {
+                await client.from('email_logs').insert([logEntry]);
+            }
             return { success: false, error: logEntry.error_message };
         }
 
@@ -426,7 +441,9 @@ async function sendEmailNotification({ to, template, data = {}, referenceId = nu
         logEntry.status = 'sent';
         logEntry.sent_at = new Date().toISOString();
         logEntry.metadata.resend_id = result.id;
-        await client.from('email_logs').insert([logEntry]);
+        if (canStoreLogs) {
+            await client.from('email_logs').insert([logEntry]);
+        }
 
         return {
             success: true,
@@ -437,7 +454,9 @@ async function sendEmailNotification({ to, template, data = {}, referenceId = nu
         logEntry.status = 'failed';
         logEntry.error_message = `Network exception during dispatch: ${err.message}`;
         try {
-            await client.from('email_logs').insert([logEntry]);
+            if (canStoreLogs) {
+                await client.from('email_logs').insert([logEntry]);
+            }
         } catch (dbErr) {
             // Ignore log save errors
         }

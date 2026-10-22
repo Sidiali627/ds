@@ -6,7 +6,7 @@
   "not_run": 0,
   "tests": [
     {
-      "name": "Super Admin Authentication (sidialiabdouu@gmail.com)",
+      "name": "Super Admin Authentication (admin@example.org)",
       "status": "PASSED",
       "details": "UID: e1ffe9ec-305d-411b-a762-b157d7b5311a"
     },

@@ -1,5 +1,6 @@
 // components.js - Unified Modern Mega Navbar & Footer Component System
 import { supabase } from './supabase.js';
+import { canManageYouthHouse, isAdminRole, normalizeRole } from './roles.js';
 
 export async function renderNavbar() {
     const header = document.getElementById('main-header');
@@ -13,7 +14,7 @@ export async function renderNavbar() {
         userSession = data?.session;
         if (userSession) {
             const { data: prof } = await supabase.from('profiles').select('role').eq('id', userSession.user.id).single();
-            if (prof) userRole = prof.role;
+            if (prof) userRole = normalizeRole(prof.role);
         }
     }
 
@@ -23,8 +24,11 @@ export async function renderNavbar() {
         if (userRole === 'specialist') {
             portalLink += '<a href="specialist/index.html" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.88rem; font-weight:600;">بوابة المختص</a>';
         }
-        if (['admin', 'super_admin'].includes(userRole)) {
+        if (isAdminRole(userRole)) {
             portalLink += '<a href="admin/index.html" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.88rem; font-weight:600;">لوحة الإدارة</a>';
+        }
+        if (canManageYouthHouse(userRole)) {
+            portalLink += '<a href="my-youth-house.html" class="btn btn-outline" style="padding:0.4rem 0.9rem; font-size:0.88rem; font-weight:600;">إدارة دار الشباب</a>';
         }
 
         authLinks = `
@@ -57,6 +61,7 @@ export async function renderNavbar() {
                     <li><a href="consultations.html">الاستشارات والخدمات</a></li>
                     <li><a href="events.html" class="${window.location.pathname.includes('events') ? 'active' : ''}">الفعاليات الوطنية</a></li>
                     <li><a href="articles.html">المقالات والوعي</a></li>
+                    <li><a href="youth-houses.html">دليل دور الشباب</a></li>
                     <li><a href="ai_assistant.html">المساعد الذكي</a></li>
                     <li><a href="about.html">من نحن</a></li>
                 </ul>

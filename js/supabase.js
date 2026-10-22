@@ -12,7 +12,7 @@ if (IS_CONFIGURED) {
         console.error("Error initializing Supabase client:", error);
     }
 } else {
-    console.warn("Supabase is not configured. Please set credentials in localStorage or config.js");
+    console.warn("Supabase is not configured. Please set environment-based credentials before runtime.");
 }
 
 export const supabase = supabaseClient;

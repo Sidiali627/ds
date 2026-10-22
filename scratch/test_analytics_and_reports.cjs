@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
-const SUPABASE_URL = 'https://xsuednrcrzbjdyrdrgat.supabase.co';
+const SUPABASE_URL = 'process.env.SUPABASE_URL || 'https://your-project-ref.supabase.co'';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzdWVkbnJjcnpiamR5cmRyZ2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NDMwNDYsImV4cCI6MjEwNzQxOTA0Nn0.5ltBXW_X1UI0YdShK_q4OLWmJs-0ItxSzjdv5otjgOQ';
 
 const results = {
@@ -32,8 +32,8 @@ async function runTests() {
     // 1. Authenticate as Super Admin
     console.log("--- 1. Authenticating as Administrator ---");
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: 'sidialiabdouu@gmail.com',
-        password: 'Admin@bba2005@2026!'
+        email: 'admin@example.org',
+        password: 'CHANGE_ME_SECURE_PASSWORD'
     });
 
     recordTest(

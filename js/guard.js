@@ -1,8 +1,6 @@
 // guard.js - Strict Role-Based Access Control (RBAC) & Route Guard System
 import { supabase } from './supabase.js';
-
-const ALLOWED_SPECIALIST_ROLES = ['specialist', 'doctor', 'psychologist', 'nutritionist', 'admin', 'super_admin'];
-const ALLOWED_ADMIN_ROLES = ['admin', 'super_admin'];
+import { canAccessSpecialistPortal, isAdminRole, normalizeRole } from './roles.js';
 
 export async function enforceGuard() {
     if (!supabase) return;
@@ -38,8 +36,7 @@ export async function enforceGuard() {
         .eq('id', session.user.id)
         .single();
 
-    const rawRole = profile?.role || 'user';
-    const role = rawRole.toLowerCase().trim().replace(/\s+/g, '_');
+    const role = normalizeRole(profile?.role || 'user');
 
     if (error || !profile) {
         console.error("RBAC Guard ERROR: Could not load user profile from Supabase for ID:", session.user.id, error);
@@ -53,13 +50,13 @@ export async function enforceGuard() {
     const redirectPrefix = (isAdminRoute || isSpecialistRoute || path.includes('/user/')) ? '../' : '';
     
     // Admin trying to access unauthorized portals (Admin can access specialist, but if we want strictly separated we can enforce. Current setup allows admin to specialist).
-    if (isAdminRoute && !ALLOWED_ADMIN_ROLES.includes(role)) {
+    if (isAdminRoute && !isAdminRole(role)) {
         console.error("RBAC Guard: Access to Admin Portal blocked for role:", role);
         window.location.href = `${redirectPrefix}unauthorized.html`;
         return;
     }
 
-    if (isSpecialistRoute && !ALLOWED_SPECIALIST_ROLES.includes(role)) {
+    if (isSpecialistRoute && !canAccessSpecialistPortal(role)) {
         console.error("RBAC Guard: Access to Specialist Portal blocked for role:", role);
         window.location.href = `${redirectPrefix}unauthorized.html`;
         return;
@@ -68,7 +65,7 @@ export async function enforceGuard() {
     // A Specialist trying to access regular user dashboard should be blocked if we enforce strict separation.
     // The instructions: "إذا حاول SPECIALIST الدخول إلى /user/ /admin/ /superadmin/ يتم منعه."
     // And "إذا حاول USER الدخول إلى /specialist/ /admin/ /superadmin/ يتم منعه."
-    if (isUserRoute && ALLOWED_SPECIALIST_ROLES.includes(role) && !ALLOWED_ADMIN_ROLES.includes(role)) {
+    if (isUserRoute && canAccessSpecialistPortal(role) && !isAdminRole(role)) {
         console.error("RBAC Guard: Specialist trying to access User Portal blocked.");
         // Redirect specialist to their portal
         window.location.href = (path.includes('/user/')) ? '../specialist/index.html' : 'specialist/index.html';

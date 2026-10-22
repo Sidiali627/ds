@@ -6,7 +6,7 @@ export async function fetchArticles() {
     const { data, error } = await supabase
         .from('articles')
         .select('*')
-        .eq('status', 'published')
+        .in('status', ['published', 'approved'])
         .order('created_at', { ascending: false });
     if(error) console.error(error);
     return data || [];
@@ -18,6 +18,7 @@ export async function fetchArticleById(id) {
         .from('articles')
         .select('*, profiles(full_name, avatar_url)')
         .eq('id', id)
+        .in('status', ['published', 'approved'])
         .single();
     if(error) console.error(error);
     return data;

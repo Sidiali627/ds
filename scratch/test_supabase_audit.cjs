@@ -42,7 +42,7 @@ async function runAudit() {
   // 1. Client Initialization
   console.log('--- 1. Client Initialization & Config Contracts ---');
   assertTest('js/config.js defines valid SUPABASE_URL matching provided project',
-    SUPABASE_URL === 'https://xsuednrcrzbjdyrdrgat.supabase.co', `URL is ${SUPABASE_URL}`);
+    SUPABASE_URL === 'process.env.SUPABASE_URL || 'https://your-project-ref.supabase.co'', `URL is ${SUPABASE_URL}`);
 
   assertTest('js/config.js defines valid Anon/Publishable Key',
     Boolean(SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.startsWith('eyJ')), 'Anon key format valid');

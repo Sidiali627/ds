@@ -37,7 +37,16 @@ console.log(`Auditing ${jsFiles.length} JS files and ${htmlFiles.length} HTML fi
 // 1. Audit JS Syntax
 jsFiles.forEach(file => {
     try {
-        execSync(`node -c "${file}"`, { stdio: 'pipe' });
+        const content = fs.readFileSync(file, 'utf8');
+        const isEsm = /^\s*import\s|^\s*export\s/m.test(content);
+        if (isEsm) {
+            execSync('node --check --input-type=module', {
+                stdio: ['pipe', 'pipe', 'pipe'],
+                input: content
+            });
+        } else {
+            execSync(`node --check "${file}"`, { stdio: 'pipe' });
+        }
     } catch (e) {
         results.jsSyntaxErrors.push({ file, error: e.stderr.toString() });
     }

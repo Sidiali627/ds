@@ -1,8 +1,6 @@
 // auth.js - التعامل مع تسجيل الدخول والخروج مع التوجيه الدقيق لجميع أدوار المختصين
 import { supabase } from './supabase.js';
-
-const SPECIALIST_ROLES = ['specialist', 'doctor', 'psychologist', 'nutritionist'];
-const ADMIN_ROLES = ['admin', 'super_admin'];
+import { isAdminRole, isSpecialistRole, normalizeRole } from './roles.js';
 
 export async function signUp(email, password, fullName) {
     if(!supabase) return { error: { message: "Supabase غير متصل" } };
@@ -57,8 +55,7 @@ export async function signIn(email, password) {
                 .eq('id', userId)
                 .single();
 
-            const rawRole = userProfile?.role || 'user';
-            const role = rawRole.toLowerCase().trim().replace(/\s+/g, '_');
+            const role = normalizeRole(userProfile?.role || 'user');
 
             console.log("=== Auth SignIn Details ===");
             console.log("Current User ID:", userId);
@@ -68,9 +65,9 @@ export async function signIn(email, password) {
             console.log("Current Role:", role);
 
             let redirectUrl = 'dashboard.html';
-            if (ADMIN_ROLES.includes(role)) {
+            if (isAdminRole(role)) {
                 redirectUrl = 'admin/index.html';
-            } else if (SPECIALIST_ROLES.includes(role)) {
+            } else if (isSpecialistRole(role)) {
                 redirectUrl = 'specialist/index.html';
             }
             
@@ -131,17 +128,17 @@ export async function getUserRole(userId) {
             .eq('id', userId)
             .single();
         if (error || !data) return 'user';
-        return (data.role || 'user').toLowerCase().trim().replace(/\s+/g, '_');
+        return normalizeRole(data.role || 'user');
     } catch {
         return 'user';
     }
 }
 
 export function redirectUserByRole(role) {
-    const normalized = (role || 'user').toLowerCase().trim().replace(/\s+/g, '_');
-    if (ADMIN_ROLES.includes(normalized)) {
+    const normalized = normalizeRole(role || 'user');
+    if (isAdminRole(normalized)) {
         return 'admin/index.html';
-    } else if (SPECIALIST_ROLES.includes(normalized)) {
+    } else if (isSpecialistRole(normalized)) {
         return 'specialist/index.html';
     }
     return 'dashboard.html';

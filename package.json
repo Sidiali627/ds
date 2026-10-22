@@ -7,7 +7,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "node audit_project.js",
+    "smoke": "node scratch/test_youth_house_foundation.cjs",
+    "test": "npm run smoke"
   },
   "keywords": [],
   "author": "",
