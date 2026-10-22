@@ -2,6 +2,15 @@
 import { supabase } from './supabase.js';
 
 let currentUser = null;
+const STATUS_LABELS = {
+    draft: 'مسودة',
+    pending_review: 'قيد المراجعة',
+    approved: 'معتمد',
+    published: 'منشور',
+    rejected: 'مرفوض',
+    changes_requested: 'يتطلب تعديلات',
+    archived: 'مؤرشف'
+};
 
 async function checkAuth() {
     if (!supabase) return;
@@ -29,8 +38,12 @@ async function loadArticles() {
     data.forEach(art => {
         const tr = document.createElement('tr');
         const date = new Date(art.created_at).toLocaleDateString('ar');
-        const statusClass = art.status === 'published' ? 'pill success' : 'pill warning';
-        const statusText = art.status === 'published' ? 'منشور' : 'مسودة';
+        const statusClass = art.status === 'published' || art.status === 'approved'
+            ? 'pill success'
+            : art.status === 'pending_review'
+                ? 'pill warning'
+                : 'pill';
+        const statusText = STATUS_LABELS[art.status] || art.status || 'غير محدد';
         
         tr.innerHTML = `
             <td>${art.title}</td>
@@ -71,9 +84,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const title = document.getElementById('art-title').value;
         const content = document.getElementById('art-content').value;
         const image_url = document.getElementById('art-image').value;
+        const status = document.getElementById('art-status').value;
+
+        if (!title.trim() || !content.trim()) {
+            alert('يرجى إدخال العنوان والمحتوى.');
+            return;
+        }
         
         const { error } = await supabase.from('articles').insert({
-            title, content, image_url, status: 'published', author_id: currentUser.id
+            title: title.trim(),
+            content: content.trim(),
+            image_url: image_url.trim() || null,
+            status,
+            author_id: currentUser.id
         });
         
         if(!error) {

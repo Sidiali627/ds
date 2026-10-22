@@ -6,7 +6,7 @@
     {
       "name": "Authentication for test session",
       "status": "PASSED",
-      "details": "Authenticated sidialiabdouu@gmail.com"
+      "details": "Authenticated admin@example.org"
     },
     {
       "name": "1.1 Create consultation request notification",

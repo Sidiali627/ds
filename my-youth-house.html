@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة دار الشباب - استوديو صحة الشباب</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script type="module" src="js/theme.js"></script>
+</head>
+<body>
+    <header class="main-header" id="main-header"></header>
+
+    <main class="container" style="padding:2rem 1rem; display:grid; gap:1rem;">
+        <section class="card" style="padding:1rem;">
+            <h1 style="margin-top:0;">إدارة ملف دار الشباب</h1>
+            <p id="my-yh-state" aria-live="polite" style="margin:0; color:var(--text-secondary);">جاري التحقق من صلاحيات الوصول...</p>
+        </section>
+
+        <section class="card" id="my-yh-form-wrap" style="padding:1rem; display:none;">
+            <form id="my-yh-form" style="display:grid; gap:0.75rem;">
+                <label>المعرّف (slug)<input id="yh-slug" required placeholder="dar-chabab-alger-centre"></label>
+                <label>الاسم العربي<input id="yh-name_ar" required></label>
+                <label>الاسم الفرنسي<input id="yh-name_fr"></label>
+                <label>نبذة مختصرة<textarea id="yh-summary" rows="4"></textarea></label>
+                <label>رمز الولاية<input id="yh-wilaya_code"></label>
+                <label>اسم الولاية<input id="yh-wilaya_name" required></label>
+                <label>اسم البلدية<input id="yh-commune_name" required></label>
+                <label>العنوان<input id="yh-address_line"></label>
+                <label>الهاتف<input id="yh-phone"></label>
+                <label>البريد الإلكتروني<input id="yh-email" type="email"></label>
+                <label>الموقع الإلكتروني<input id="yh-website_url" type="url" placeholder="https://..."></label>
+                <button id="my-yh-submit" type="submit" class="btn btn-primary">حفظ وإرسال للمراجعة</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="main-footer" id="main-footer"></footer>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/components.js"></script>
+    <script type="module" src="js/my_youth_house.js"></script>
+</body>
+</html>

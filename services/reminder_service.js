@@ -11,10 +11,13 @@
 const { createClient } = require('@supabase/supabase-js');
 const { sendEmailNotification } = require('./email_service.js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xsuednrcrzbjdyrdrgat.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzdWVkbnJjcnpiamR5cmRyZ2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NDMwNDYsImV4cCI6MjEwNzQxOTA0Nn0.5ltBXW_X1UI0YdShK_q4OLWmJs-0ItxSzjdv5otjgOQ';
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-let defaultSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+let defaultSupabase = null;
+if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    defaultSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+}
 
 function setSupabaseClient(client) {
     if (client) defaultSupabase = client;
@@ -89,6 +92,11 @@ async function processAppointmentReminders({ windowHours = 24, referenceTime = n
         skippedCancelledOrRescheduled: 0,
         errors: []
     };
+
+    if (!client || typeof client.from !== 'function') {
+        summary.errors.push('Supabase service client is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
+        return summary;
+    }
 
     try {
         // Query upcoming appointments in window

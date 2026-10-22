@@ -1,7 +1,7 @@
 import { supabase } from '../supabase.js';
 import { showToast } from '../toast.js';
+import { canAccessSpecialistPortal, normalizeRole, ROLE_GROUPS } from '../roles.js';
 
-const ALLOWED_SPECIALIST_ROLES = ['specialist', 'doctor', 'psychologist', 'nutritionist', 'admin', 'super_admin'];
 let currentUser = null;
 let notifCount = 0;
 
@@ -40,7 +40,7 @@ async function checkAuth() {
         profile.specialist_profiles = spData;
     }
     
-    const role = profile?.role || 'user';
+    const role = normalizeRole(profile?.role || 'user');
 
     console.log("=== Specialist Dashboard Auth Verification ===");
     console.log("Current User ID:", session.user.id);
@@ -49,7 +49,7 @@ async function checkAuth() {
     console.log("Specialist Extra Profile:", spData);
     console.log("Profile Error:", error);
     console.log("Current Role:", role);
-    console.log("Allowed Roles:", ALLOWED_SPECIALIST_ROLES);
+    console.log("Allowed Roles:", ROLE_GROUPS.specialistPortal);
 
     if (error || !profile) {
         console.error("Specialist Auth Error: Failed to fetch profile from Supabase.", error);
@@ -58,8 +58,8 @@ async function checkAuth() {
         return;
     }
 
-    if (!ALLOWED_SPECIALIST_ROLES.includes(role)) {
-        console.error(`Specialist Auth Error: Access Denied. User role [${role}] is not in allowed specialist roles.`, ALLOWED_SPECIALIST_ROLES);
+    if (!canAccessSpecialistPortal(role)) {
+        console.error(`Specialist Auth Error: Access Denied. User role [${role}] is not in allowed specialist roles.`, ROLE_GROUPS.specialistPortal);
         showToast(`هذه البوابة مخصصة للمختصين فقط. دورك المسجل حالياً في Supabase هو: [${role}]`, 'error');
         setTimeout(() => window.location.href = '../index.html', 1500);
         return;

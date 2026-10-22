@@ -1,5 +1,6 @@
 import { supabase } from '../supabase.js';
 import { showToast } from '../toast.js';
+import { canAccessSpecialistPortal, normalizeRole } from '../roles.js';
 
 let currentUser = null;
 
@@ -8,11 +9,9 @@ async function init() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { window.location.href = '../login.html'; return; }
 
-    const ALLOWED_SPECIALIST_ROLES = ['specialist', 'doctor', 'psychologist', 'nutritionist', 'admin', 'super_admin'];
-    
     // Step 1: Fetch Profile safely
     const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-    if (error || !profile || !ALLOWED_SPECIALIST_ROLES.includes(profile.role)) {
+    if (error || !profile || !canAccessSpecialistPortal(normalizeRole(profile.role))) {
         showToast("هذه الصفحة مخصصة للمختصين فقط.", 'error');
         setTimeout(() => window.location.href = '../index.html', 1500);
         return;

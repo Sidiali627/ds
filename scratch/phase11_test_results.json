@@ -281,7 +281,7 @@
     {
       "name": "Super Admin Authentication",
       "passed": true,
-      "details": "Logged in as sidialiabdouu@gmail.com"
+      "details": "Logged in as admin@example.org"
     },
     {
       "name": "Super Admin Profile Verification",

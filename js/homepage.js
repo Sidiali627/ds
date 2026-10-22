@@ -41,8 +41,12 @@ async function fetchHomeData() {
 
     // 3. Articles
     try {
-        const { data: articles } = await supabase.from('articles').select('*').eq('status', 'published').limit(3).order('created_at', { ascending: false });
+        const { data: articles, error: articlesError } = await supabase.from('articles').select('*').in('status', ['published', 'approved']).limit(3).order('created_at', { ascending: false });
         const container = document.getElementById('home-articles-container');
+        if (articlesError) {
+            container.innerHTML = getEmptyState('تعذر تحميل المقالات حالياً. يرجى المحاولة لاحقاً.');
+            return;
+        }
         if (articles && articles.length > 0) {
             container.innerHTML = articles.map(art => `
                 <div class="card reveal active">
@@ -53,7 +57,7 @@ async function fetchHomeData() {
                     <div class="card-content">
                         <h3>${art.title}</h3>
                         <p>${art.description || 'اضغط لقراءة المزيد والتفاصيل كاملة'}</p>
-                        <div class="card-meta"><span>منذ ${Math.floor(Math.random()*5 + 1)} أيام</span><span>${Math.floor(Math.random()*10 + 2)} دقيقة قراءة</span></div>
+                        <div class="card-meta"><span>${new Date(art.created_at).toLocaleDateString('ar')}</span></div>
                         <a href="article.html?id=${art.id}" class="btn btn-outline" style="width: 100%;">اقرأ المقال</a>
                     </div>
                 </div>
@@ -61,11 +65,13 @@ async function fetchHomeData() {
         } else {
             container.innerHTML = getEmptyState('لم يتم نشر أي مقالات بعد.');
         }
-    } catch(e) {}
+    } catch(e) {
+        document.getElementById('home-articles-container').innerHTML = getEmptyState('تعذر تحميل المقالات حالياً.');
+    }
 
     // 4. Videos
     try {
-        const { data: videos } = await supabase.from('videos').select('*').limit(3).order('created_at', { ascending: false });
+        const { data: videos } = await supabase.from('videos').select('*').in('status', ['published', 'approved']).limit(3).order('created_at', { ascending: false });
         const container = document.getElementById('home-videos-container');
         if (videos && videos.length > 0) {
             container.innerHTML = videos.map(vid => `

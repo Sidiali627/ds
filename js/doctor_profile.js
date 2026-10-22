@@ -2,6 +2,7 @@
 import { supabase } from './supabase.js';
 import { requireAuth } from './auth.js';
 import { createNotification } from './notifications.js';
+import { isSpecialistRole, normalizeRole } from './roles.js';
 
 let currentDoctorId = null;
 let currentDoctorProfile = null;
@@ -35,8 +36,7 @@ async function init() {
         if (profileError || !profile) throw new Error("Doctor not found");
 
         // Validate role is actually a specialist
-        const ALLOWED_SPECIALIST_ROLES = ['specialist', 'doctor', 'psychologist', 'nutritionist'];
-        if (!ALLOWED_SPECIALIST_ROLES.includes(profile.role)) {
+        if (!isSpecialistRole(normalizeRole(profile.role))) {
             throw new Error("Invalid role for doctor profile");
         }
         currentDoctorProfile = profile;
